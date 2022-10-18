@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Response;
+namespace ESB\Response;
 
 use InvalidArgumentException;
 use JsonSerializable;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Exception;
+namespace ESB\Exception;
 
 use Exception;
 

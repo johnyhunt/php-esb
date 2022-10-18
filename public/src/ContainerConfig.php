@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB;
+namespace TestESB;
 
 class ContainerConfig
 {

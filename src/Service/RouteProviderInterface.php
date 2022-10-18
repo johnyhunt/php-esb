@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Service;
+namespace ESB\Service;
 
-use Opsway\ESB\Entity\Route;
-use Opsway\ESB\Exception\ESBException;
+use ESB\Entity\Route;
+use ESB\Exception\ESBException;
 
 interface RouteProviderInterface
 {

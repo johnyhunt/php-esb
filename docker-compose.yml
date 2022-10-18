@@ -4,7 +4,7 @@ services:
     build:
       context: .
     environment:
-      DATABASE_NAME: boodmo-esb
+      DATABASE_NAME: esb
       DATABASE_HOST: database
       DATABASE_PORT: 5432
       DATABASE_USER: root
@@ -19,7 +19,7 @@ services:
   database:
     image: postgres:13
     environment:
-      POSTGRES_DB: boodmo-esb
+      POSTGRES_DB: esb
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 123456
     ports:

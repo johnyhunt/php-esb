@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use ESB\Service\ServerAppSetupInterface;
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '/bootstrap.php';
+$container = require __DIR__ . '/bootstrap.php';
 
-
-
-$app = AppFactory::create();
-
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
+AppFactory::setContainer($container);
+// Create App instance
+$app            = AppFactory::create();
+$serverAppSetup = $container->get(ServerAppSetupInterface::class)($app);
 
 $app->run();

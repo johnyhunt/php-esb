@@ -2,55 +2,46 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Service;
+namespace ESB\Service;
 
-use Opsway\ESB\Entity\HttpMethod;
-use Opsway\ESB\Entity\Route;
-use Opsway\ESB\Entity\SystemTransport;
-use Opsway\ESB\Exception\ESBException;
+use ESB\Entity\Route;
+use ESB\Exception\ESBException;
 use Ramsey\Uuid\Uuid;
+use function var_dump;
 
 class RouteProvider implements RouteProviderInterface
 {
     /** @psalm-var array<string, Route>  */
     private array $routes;
 
-    public function __construct()
+    public function __construct(private readonly DsnInterpreterInterface $dsnInterpreter)
     {
         $routes = [
             new Route(
                 Uuid::uuid4()->toString(),
                 'dispatch-box',
-                '',
-                'boodmo',
                 'sap',
-                SystemTransport::HTTP,
-                SystemTransport::HTTP,
-                 fromSystemTransportMethod: HttpMethod::POST,
+                ($this->dsnInterpreter)('HTTP:POST:/v1/boodmo/sap/dispatch-box'),
+                [],
             ),
             new Route(
                 Uuid::uuid4()->toString(),
                 'dispatch-order',
-                '',
-                'boodmo',
-                'sap',
-                SystemTransport::ASYNC,
-                SystemTransport::HTTP,
+                'e-Invoice',
+                ($this->dsnInterpreter)('pubsub:edocument:generateDocument'),
+                [],
             ),
             new Route(
                 Uuid::uuid4()->toString(),
                 'create-invoice',
-                '',
                 'sap',
-                'boodmo',
-                SystemTransport::HTTP,
-                SystemTransport::HTTP,
-                fromSystemTransportMethod: HttpMethod::POST,
+                ($this->dsnInterpreter)('HTTP:POST:/v1/boodmo/sap/create-invoice'),
+                []
             ),
         ];
 
         foreach ($routes as $route) {
-            $this->routes[$route->key()] = $route;
+            $this->routes[$route->fromSystemDsn->dsn()] = $route;
         }
     }
 
