@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace ESB;
 
-use ESB\Handlers\ESBCoreHandler;
-use ESB\Handlers\ESBCoreHandlerInterface;
 use ESB\Handlers\ESBHandler;
 use ESB\Handlers\EsbHandlerInterface;
-use ESB\Middleware\Handler\ValidatorMiddleware;
+use ESB\Middleware\ValidatorMiddleware;
 use ESB\Service\DsnInterpreter;
 use ESB\Service\DsnInterpreterInterface;
 use ESB\Service\RouteProvider;
@@ -22,8 +20,12 @@ class ContainerConfig
     public function __invoke() : array
     {
         return [
-            'settings' => [
+            'settings'   => [
                 'routingBasePath' => '/middleware'
+            ],
+            'validators' => [
+                // Reserved key for custom validators, should implement ValidatorInterface
+                // 'alias' => CustomValidator::class,
             ],
             DsnInterpreterInterface::class => new DsnInterpreter(),
 
@@ -35,10 +37,10 @@ class ContainerConfig
                 return new ServerAppSetup($container->get(RouteProviderInterface::class), $settings['routingBasePath']);
             },
 
-            ESBCoreHandlerInterface::class => function(ContainerInterface $container) : ESBCoreHandlerInterface
+            ESBCoreInterface::class => function(ContainerInterface $container) : ESBCoreInterface
             {
-                /** @psalm-var ESBCoreHandler $coreHandler */
-                $coreHandler = $container->get(ESBCoreHandler::class);
+                /** @psalm-var ESBCore $coreHandler */
+                $coreHandler = $container->get(ESBCore::class);
                 $coreHandler->setUpMiddlewares(
                     ValidatorMiddleware::class,
                 );
@@ -51,7 +53,7 @@ class ContainerConfig
 
                 return new ESBHandler(
                     $container->get(RouteProviderInterface::class),
-                    $container->get(ESBCoreHandlerInterface::class),
+                    $container->get(ESBCoreInterface::class),
                     $settings['routingBasePath']);
             },
         ];

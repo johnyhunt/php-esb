@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace ESB\Middleware\Handler;
+namespace ESB\Middleware;
 
+use ESB\Dto\RouteData;
 use ESB\Entity\Route;
 
 class ValidatorMiddleware implements ESBHandlerMiddlewareInterface
 {
-    public function process(array $incomeData, Route $route, ESBDataHandlerInterface $handler)
+    public function process(RouteData $data, Route $route, ESBDataHandlerInterface $handler)
     {
         var_dump('ValidatorMiddleware::process');
         // TODO: Implement validation.
-        return $handler->handle($incomeData, $route);
+        return $handler->handle($data, $route);
     }
 }

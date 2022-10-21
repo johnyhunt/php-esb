@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
-namespace ESB\Handlers;
+namespace ESB;
 
+use ESB\Dto\RouteData;
 use ESB\Entity\Route;
-use ESB\Middleware\Handler\ESBDataHandlerInterface;
-use ESB\Middleware\Handler\ESBHandlerMiddlewareInterface;
+use ESB\Middleware\ESBDataHandlerInterface;
+use ESB\Middleware\ESBHandlerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 
-class ESBCoreHandler implements ESBCoreHandlerInterface
+class ESBCore implements ESBCoreInterface
 {
     private ESBDataHandlerInterface $handler;
 
     public function __construct(private readonly ContainerInterface $container)
     {
         $this->handler = new class () implements ESBDataHandlerInterface {
-            public function handle(array $incomeData, Route $route)
+            public function handle(RouteData $data, Route $route)
             {
             }
         };
@@ -37,16 +38,16 @@ class ESBCoreHandler implements ESBCoreHandlerInterface
                 {
                 }
 
-                public function handle(array $incomeData, Route $route)
+                public function handle(RouteData $data, Route $route)
                 {
-                    return $this->middleware->process($incomeData, $route, $this->next);
+                    return $this->middleware->process($data, $route, $this->next);
                 }
             };
         }
     }
 
-    public function run(array $incomeData, Route $route)
+    public function run(RouteData $data, Route $route)
     {
-        $this->handler->handle($incomeData, $route);
+        $this->handler->handle($data, $route);
     }
 }

@@ -11,7 +11,7 @@ class Route
     public function __construct(
         public readonly string $id,
         public readonly string $name,
-        public readonly string $incomeSystem,
+        public readonly string $fromSystem,
         public readonly AbstractDSN $fromSystemDsn,
         public readonly array $incomeData,
         public readonly string $description = '',

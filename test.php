@@ -2,12 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$dsn = 'middleware/asdasd/';
-$res = ! ! preg_match('/([A-Za-z1-9]+(\/[A-Za-z1-9]+)?)+/', $dsn);
-
-$target = '/middleware/v1/boodmo/sap';
-$basePath = '/middleware';
-
-$path = substr($target, strlen($basePath));
-$dsn  = implode(':', ['POST', 'http', $path]);
+$test = ['q' => [1,2]];
+$test1 = ['q' => [3]];
+$q = $test + $test1;
 $q=1;

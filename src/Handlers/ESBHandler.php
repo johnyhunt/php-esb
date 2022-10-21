@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace ESB\Handlers;
 
+use ESB\Dto\IncomeData;
+use ESB\Dto\RouteData;
+use ESB\ESBCoreInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\Service\RouteProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
 use function date;
 use function implode;
 use function strlen;
@@ -18,8 +20,8 @@ class ESBHandler implements EsbHandlerInterface
 {
     public function __construct(
         private readonly RouteProviderInterface $routeProvider,
-        private readonly ESBCoreHandlerInterface $coreHandler,
-        private readonly string $basePath,
+        private readonly ESBCoreInterface       $coreHandler,
+        private readonly string                 $basePath,
     ) {
     }
 
@@ -29,13 +31,13 @@ class ESBHandler implements EsbHandlerInterface
         $dsn  = implode(':', ['HTTP', strtoupper($request->getMethod()), $path]);
 
         $routeEntity = $this->routeProvider->get($dsn);
-        $incomeData  = [
-            'headers' => $request->getHeaders(),
-            'params'  => $request->getAttributes(),
-            'body'    => $request->getParsedBody() ?: $request->getQueryParams(),
-        ];
+        $incomeData  = new IncomeData(
+            $request->getHeaders(),
+            $request->getAttributes(),
+            $request->getParsedBody() ?: $request->getQueryParams()
+        );
 
-        $this->coreHandler->run($incomeData, $routeEntity);
+        $this->coreHandler->run(new RouteData($incomeData), $routeEntity);
 
         return new ESBJsonResponse(
             [
