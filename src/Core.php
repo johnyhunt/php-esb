@@ -6,11 +6,12 @@ namespace ESB;
 
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
+use ESB\Exception\ESBException;
 use ESB\Middleware\ESBDataHandlerInterface;
-use ESB\Middleware\ESBHandlerMiddlewareInterface;
+use ESB\Middleware\ESBMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 
-class ESBCore implements ESBCoreInterface
+class Core implements CoreInterface
 {
     private ESBDataHandlerInterface $handler;
 
@@ -27,14 +28,14 @@ class ESBCore implements ESBCoreInterface
     {
         foreach ($classes as $class) {
             if (! $middleware = $this->container->get($class)) {
-                continue;
+                throw new ESBException("Middleware not found in container class");
             }
-            if (! $middleware instanceof ESBHandlerMiddlewareInterface) {
-                continue;
+            if (! $middleware instanceof ESBMiddlewareInterface) {
+                throw new ESBException("Middleware has to implement ESBMiddlewareInterface");
             }
             $next          = $this->handler;
             $this->handler = new class ($middleware, $next) implements ESBDataHandlerInterface {
-                public function __construct(private readonly ESBHandlerMiddlewareInterface $middleware, private readonly ESBDataHandlerInterface $next)
+                public function __construct(private readonly ESBMiddlewareInterface $middleware, private readonly ESBDataHandlerInterface $next)
                 {
                 }
 

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace Example;
 
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
+use ESB\RouteProviderInterface;
+use ESB\Service\DsnInterpreterInterface;
 use Ramsey\Uuid\Uuid;
-use function var_dump;
 
 class RouteProvider implements RouteProviderInterface
 {
@@ -17,6 +18,13 @@ class RouteProvider implements RouteProviderInterface
     public function __construct(private readonly DsnInterpreterInterface $dsnInterpreter)
     {
         $routes = [
+            new Route(
+                Uuid::uuid4()->toString(),
+                'test',
+                'sap',
+                ($this->dsnInterpreter)('HTTP:GET:/v1/test'),
+                [],
+            ),
             new Route(
                 Uuid::uuid4()->toString(),
                 'dispatch-box',

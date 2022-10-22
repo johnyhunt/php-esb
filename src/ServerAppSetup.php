@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace ESB;
 
 use Assert\Assertion;
 use ESB\Entity\VO\ServerDSN;
-use ESB\Handlers\EsbHandlerInterface;
+use ESB\Handlers\ESBHandlerInterface;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
 use function preg_match;
 
-class ServerAppSetup implements ServerAppSetupInterface
+class ServerAppSetup
 {
     public function __construct(private readonly RouteProviderInterface $provider, private readonly string $basePath)
     {
@@ -34,7 +33,7 @@ class ServerAppSetup implements ServerAppSetupInterface
                 if (! $route->fromSystemDsn instanceof ServerDSN) {
                     continue;
                 }
-                $group->map([$route->fromSystemDsn->method], $route->fromSystemDsn->path, EsbHandlerInterface::class);
+                $group->map([$route->fromSystemDsn->method], $route->fromSystemDsn->path, ESBHandlerInterface::class);
             }
         });
     }

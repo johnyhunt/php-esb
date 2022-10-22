@@ -7,7 +7,7 @@ namespace ESB\Middleware;
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
 
-class ValidatorMiddleware implements ESBHandlerMiddlewareInterface
+class ValidatorMiddleware implements ESBMiddlewareInterface
 {
     public function process(RouteData $data, Route $route, ESBDataHandlerInterface $handler)
     {

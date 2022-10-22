@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace ESB;
 
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Enum;
+namespace ESB\Enum;
 
 enum SystemTransport : string
 {
-    case HTTP  = 'http';
+    case SYNC  = 'sync';
     case ASYNC = 'async';
 }

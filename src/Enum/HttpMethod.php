@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Opsway\ESB\Enum;
+namespace ESB\Enum;
 
 enum HttpMethod : string
 {
