@@ -6,9 +6,13 @@ namespace ESB;
 
 use ESB\Handlers\ESBHandler;
 use ESB\Handlers\ESBHandlerInterface;
+use ESB\Middleware\PostSuccessMiddleware;
+use ESB\Middleware\ProcessingMiddleware;
+use ESB\Middleware\SyncRecordsMiddleware;
+use ESB\Middleware\TransportMiddleware;
 use ESB\Middleware\ValidatorMiddleware;
-use ESB\Service\DsnInterpreter;
-use ESB\Service\DsnInterpreterInterface;
+use Example\Service\DsnInterpreter;
+use Example\Service\DsnInterpreterInterface;
 use Psr\Container\ContainerInterface;
 
 class ContainerConfig
@@ -34,7 +38,11 @@ class ContainerConfig
             Core::class => function(ContainerInterface $container) : Core
             {
                 return new Core(
-                    $container->get(ValidatorMiddleware::class)
+                    $container->get(ValidatorMiddleware::class),
+                    $container->get(ProcessingMiddleware::class),
+                    $container->get(TransportMiddleware::class),
+                    $container->get(SyncRecordsMiddleware::class),
+                    $container->get(PostSuccessMiddleware::class),
                 );
             },
 

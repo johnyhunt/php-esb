@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Example;
 
+use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
 use ESB\RouteProviderInterface;
-use ESB\Service\DsnInterpreterInterface;
-use Ramsey\Uuid\Uuid;
+use Example\Service\DsnInterpreterInterface;
 
 class RouteProvider implements RouteProviderInterface
 {
@@ -19,32 +19,31 @@ class RouteProvider implements RouteProviderInterface
     {
         $routes = [
             new Route(
-                Uuid::uuid4()->toString(),
-                'test',
-                'sap',
-                ($this->dsnInterpreter)('HTTP:GET:/v1/test'),
-                [],
+                id: 'id_1',
+                name: 'route_1',
+                fromSystem: new IntegrationSystem('system_1'),
+                fromSystemDsn: ($this->dsnInterpreter)('HTTP:GET:/v1/test'),
+                fromSystemData: [],
+                toSystem: new IntegrationSystem('system_2'),
+                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
             ),
             new Route(
-                Uuid::uuid4()->toString(),
-                'dispatch-box',
-                'sap',
-                ($this->dsnInterpreter)('HTTP:POST:/v1/boodmo/sap/dispatch-box'),
-                [],
+                id: 'id_2',
+                name: 'route_2',
+                fromSystem: new IntegrationSystem('system_1'),
+                fromSystemDsn: ($this->dsnInterpreter)('HTTP:POST:/v1/test-post'),
+                fromSystemData: [],
+                toSystem: new IntegrationSystem('system_2'),
+                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
             ),
             new Route(
-                Uuid::uuid4()->toString(),
-                'dispatch-order',
-                'e-Invoice',
-                ($this->dsnInterpreter)('pubsub:edocument:generateDocument'),
-                [],
-            ),
-            new Route(
-                Uuid::uuid4()->toString(),
-                'create-invoice',
-                'sap',
-                ($this->dsnInterpreter)('HTTP:POST:/v1/boodmo/sap/create-invoice'),
-                []
+                id: 'id_3',
+                name: 'route_3',
+                fromSystem: new IntegrationSystem('system_1'),
+                fromSystemDsn: ($this->dsnInterpreter)('pubsub:example:test-action'),
+                fromSystemData: [],
+                toSystem: new IntegrationSystem('system_2'),
+                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
             ),
         ];
 

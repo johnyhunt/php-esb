@@ -11,40 +11,17 @@ class Route
     public function __construct(
         private string      $id,
         private string      $name,
-        private string      $fromSystem,
+        private IntegrationSystem $fromSystem,
         private AbstractDSN $fromSystemDsn,
-        private array       $incomeData,
+        private array       $fromSystemData, // TODO: Must be VO
+        private IntegrationSystem $toSystem,
+        private AbstractDSN $toSystemDsn,
         private ?string     $description = null,
     ) {
-    }
-
-    public function id(): string
-    {
-        return $this->id;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
-    }
-
-    public function fromSystem(): string
-    {
-        return $this->fromSystem;
     }
 
     public function fromSystemDsn(): AbstractDSN
     {
         return $this->fromSystemDsn;
-    }
-
-    public function incomeData(): array
-    {
-        return $this->incomeData;
-    }
-
-    public function description(): string
-    {
-        return $this->description;
     }
 }

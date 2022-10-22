@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace Example\Service;
 
 use ESB\Entity\VO\AbstractDSN;
-use ESB\Exception\ESBException;
 
 interface DsnInterpreterInterface
 {
-    /** @throws ESBException */
     public function __invoke(string $dsn) : AbstractDSN;
 }
