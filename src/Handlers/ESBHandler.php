@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ESB\Handlers;
 
+use ESB\Core;
 use ESB\DTO\IncomeData;
 use ESB\DTO\RouteData;
-use ESB\CoreInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\RouteProviderInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -21,7 +21,7 @@ class ESBHandler implements ESBHandlerInterface
 {
     public function __construct(
         private readonly RouteProviderInterface $routeProvider,
-        private readonly CoreInterface          $coreHandler,
+        private readonly Core                   $coreHandler,
         private readonly string                 $basePath,
     ) {
     }

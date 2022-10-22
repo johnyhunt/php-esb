@@ -6,36 +6,24 @@ namespace ESB;
 
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
-use ESB\Exception\ESBException;
-use ESB\Middleware\ESBDataHandlerInterface;
 use ESB\Middleware\ESBMiddlewareInterface;
-use Psr\Container\ContainerInterface;
 
-class Core implements CoreInterface
+class Core
 {
-    private ESBDataHandlerInterface $handler;
+    private CoreHandlerInterface $handler;
 
-    public function __construct(private readonly ContainerInterface $container)
+    public function __construct(ESBMiddlewareInterface ...$middlewares)
     {
-        $this->handler = new class () implements ESBDataHandlerInterface {
+        $this->handler = new class () implements CoreHandlerInterface {
             public function handle(RouteData $data, Route $route)
             {
             }
         };
-    }
 
-    public function setUpMiddlewares(string ...$classes) : void
-    {
-        foreach ($classes as $class) {
-            if (! $middleware = $this->container->get($class)) {
-                throw new ESBException("Middleware not found in container class");
-            }
-            if (! $middleware instanceof ESBMiddlewareInterface) {
-                throw new ESBException("Middleware has to implement ESBMiddlewareInterface");
-            }
+        foreach ($middlewares as $middleware) {
             $next          = $this->handler;
-            $this->handler = new class ($middleware, $next) implements ESBDataHandlerInterface {
-                public function __construct(private readonly ESBMiddlewareInterface $middleware, private readonly ESBDataHandlerInterface $next)
+            $this->handler = new class ($middleware, $next) implements CoreHandlerInterface {
+                public function __construct(private readonly ESBMiddlewareInterface $middleware, private readonly CoreHandlerInterface $next)
                 {
                 }
 
@@ -47,7 +35,7 @@ class Core implements CoreInterface
         }
     }
 
-    public function run(RouteData $data, Route $route)
+    public function run(RouteData $data, Route $route) : void
     {
         $this->handler->handle($data, $route);
     }

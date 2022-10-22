@@ -49,7 +49,7 @@ class RouteProvider implements RouteProviderInterface
         ];
 
         foreach ($routes as $route) {
-            $this->routes[$route->fromSystemDsn->dsn()] = $route;
+            $this->routes[$route->fromSystemDsn()->dsn()] = $route;
         }
     }
 

@@ -7,7 +7,7 @@ namespace ESB;
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
 
-interface CoreInterface
+interface CoreHandlerInterface
 {
-    public function run(RouteData $data, Route $route);
+    public function handle(RouteData $data, Route $route);
 }

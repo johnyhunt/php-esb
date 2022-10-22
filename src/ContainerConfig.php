@@ -31,15 +31,11 @@ class ContainerConfig
                 return new ServerAppSetup($container->get(RouteProviderInterface::class), $settings['routingBasePath']);
             },
 
-            CoreInterface::class => function(ContainerInterface $container) : CoreInterface
+            Core::class => function(ContainerInterface $container) : Core
             {
-                /** @psalm-var Core $coreHandler */
-                $coreHandler = $container->get(Core::class);
-                $coreHandler->setUpMiddlewares(
-                    ValidatorMiddleware::class,
+                return new Core(
+                    $container->get(ValidatorMiddleware::class)
                 );
-
-                return $coreHandler;
             },
 
             ESBHandlerInterface::class => function(ContainerInterface $container) : ESBHandlerInterface {
@@ -47,7 +43,7 @@ class ContainerConfig
 
                 return new ESBHandler(
                     $container->get(RouteProviderInterface::class),
-                    $container->get(CoreInterface::class),
+                    $container->get(Core::class),
                     $settings['routingBasePath']);
             },
         ];

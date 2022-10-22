@@ -30,10 +30,10 @@ class ServerAppSetup
         $routes = $this->provider->loadAll();
         $app->group($this->basePath, function (RouteCollectorProxy $group) use ($routes) {
             foreach ($routes as $route) {
-                if (! $route->fromSystemDsn instanceof ServerDSN) {
+                if (! $route->fromSystemDsn() instanceof ServerDSN) {
                     continue;
                 }
-                $group->map([$route->fromSystemDsn->method], $route->fromSystemDsn->path, ESBHandlerInterface::class);
+                $group->map([$route->fromSystemDsn()->method], $route->fromSystemDsn()->path, ESBHandlerInterface::class);
             }
         });
     }
