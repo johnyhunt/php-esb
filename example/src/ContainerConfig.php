@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Example;
 
 use ESB\RouteProviderInterface;
+use Example\Service\DsnInterpreter;
+use Example\Service\DsnInterpreterInterface;
 use Psr\Container\ContainerInterface;
 
 class ContainerConfig
@@ -13,6 +15,7 @@ class ContainerConfig
     {
         return [
             RouteProviderInterface::class  => fn(ContainerInterface $container) => $container->get(RouteProvider::class),
+            DsnInterpreterInterface::class => new DsnInterpreter(),
         ];
     }
 }

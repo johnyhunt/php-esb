@@ -6,5 +6,4 @@ namespace ESB\Handlers;
 
 interface ESBHandlerInterface
 {
-
 }

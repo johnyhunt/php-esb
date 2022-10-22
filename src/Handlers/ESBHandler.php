@@ -22,7 +22,7 @@ class ESBHandler implements ESBHandlerInterface
     public function __construct(
         private readonly RouteProviderInterface $routeProvider,
         private readonly Core                   $coreHandler,
-        private readonly string                 $basePath,
+        private readonly string                 $basePath = '/middleware',
     ) {
     }
 
