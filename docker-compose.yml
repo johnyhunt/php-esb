@@ -14,7 +14,7 @@ services:
     volumes:
       - .:/app
       - /app/vendor
-    command: php -S 0.0.0.0:8081 -t public
+    command: php -S 0.0.0.0:8081 -t example
 
   database:
     image: postgres:13

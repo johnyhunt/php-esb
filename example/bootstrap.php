@@ -1,7 +1,7 @@
 <?php
 
 use DI\ContainerBuilder;
-use TestESB\ContainerConfig;
+use Example\ContainerConfig;
 use ESB\ContainerConfig as RouteConfig;
 
 require_once __DIR__ . '/../vendor/autoload.php';
