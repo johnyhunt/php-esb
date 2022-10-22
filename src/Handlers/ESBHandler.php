@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ESB\Handlers;
 
-use ESB\Dto\IncomeData;
-use ESB\Dto\RouteData;
+use ESB\DTO\IncomeData;
+use ESB\DTO\RouteData;
 use ESB\ESBCoreInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\Service\RouteProviderInterface;
