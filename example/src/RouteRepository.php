@@ -7,10 +7,10 @@ namespace Example;
 use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
-use ESB\RouteProviderInterface;
+use ESB\Repository\RouteRepositoryInterface;
 use Example\Service\DsnInterpreterInterface;
 
-class RouteProvider implements RouteProviderInterface
+class RouteRepository implements RouteRepositoryInterface
 {
     /** @psalm-var array<string, Route>  */
     private array $routes;

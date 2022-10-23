@@ -7,11 +7,10 @@ namespace ESB\Handlers;
 use ESB\Core;
 use ESB\DTO\IncomeData;
 use ESB\DTO\RouteData;
+use ESB\Repository\RouteRepositoryInterface;
 use ESB\Response\ESBJsonResponse;
-use ESB\RouteProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
 use function date;
 use function implode;
 use function strlen;
@@ -20,9 +19,9 @@ use function substr;
 class ESBHandler implements ESBHandlerInterface
 {
     public function __construct(
-        private readonly RouteProviderInterface $routeProvider,
-        private readonly Core                   $coreHandler,
-        private readonly string                 $basePath = '/middleware',
+        private readonly RouteRepositoryInterface $routeProvider,
+        private readonly Core                     $coreHandler,
+        private readonly string                   $basePath = '/middleware',
     ) {
     }
 

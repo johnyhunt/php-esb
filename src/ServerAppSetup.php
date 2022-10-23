@@ -7,13 +7,15 @@ namespace ESB;
 use Assert\Assertion;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Handlers\ESBHandler;
+use ESB\Repository\RouteRepositoryInterface;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
+
 use function preg_match;
 
 class ServerAppSetup
 {
-    public function __construct(private readonly RouteProviderInterface $provider, private readonly string $basePath = '/middleware')
+    public function __construct(private readonly RouteRepositoryInterface $provider, private readonly string $basePath = '/middleware')
     {
         /** TODO fix regular expression to prevent last / been as true pattern */
         Assertion::true(! ! preg_match('/(\/\w+(\/)?)+/', $this->basePath), 'ServerAppSetup: basePath expecting been uri-path');

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ESB;
+namespace ESB\Repository;
 
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
 
-interface RouteProviderInterface
+interface RouteRepositoryInterface
 {
     /** @throws ESBException */
     public function get(string $key) : Route;
