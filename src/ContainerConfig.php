@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace ESB;
 
+use ESB\Exception\ESBException;
 use ESB\Middleware\PostSuccessMiddleware;
 use ESB\Middleware\ProcessingMiddleware;
 use ESB\Middleware\SyncRecordsMiddleware;
 use ESB\Middleware\TransportMiddleware;
 use ESB\Middleware\ValidatorMiddleware;
+use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 
 class ContainerConfig
@@ -20,6 +22,22 @@ class ContainerConfig
                 // Reserved key for custom validators, should implement ValidatorInterface
                 // 'alias' => CustomValidator::class,
             ],
+
+            ValidatorMiddleware::class => function(ContainerInterface $container)
+            {
+                {
+                    $definedValidators   = $container->get('validators');
+                    $validatorMiddleware = new ValidatorMiddleware();
+                    foreach ($definedValidators as $key => $validator) {
+                        if (! $validator instanceof ValidatorInterface) {
+                            throw new ESBException('ValidatorMiddleware: custom validator config invalid');
+                        }
+                        $validatorMiddleware->addCustomValidator($key, $validator);
+                    }
+
+                    return $validatorMiddleware;
+                }
+            },
 
             Core::class => function(ContainerInterface $container) : Core
             {

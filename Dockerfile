@@ -23,7 +23,7 @@ RUN composer install -o -n --no-progress
 
 RUN chmod a+x /app/entrypoint.sh
 
-CMD ["php", "-S 0.0.0.0:8080 -t public"]
+CMD ["php", "-S 0.0.0.0:8080 -t example"]
 
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
 
