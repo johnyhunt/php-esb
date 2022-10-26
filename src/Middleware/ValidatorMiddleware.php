@@ -59,18 +59,22 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         foreach ($rule->validators as $validator) {
             $customValidator = $this->customValidators[$validator->assert] ?? null;
             $validation = match (true) {
-                $assertionReflection->hasMethod($validator->assert) => new AssertValidator($validator->assert, $validator->params),
+                $assertionReflection->hasMethod($validator->assert) => new AssertValidator($validator->assert),
                 $customValidator !== null                           => new $customValidator,
                 default                                             => throw new ESBException('ValidatorMiddleware::validateRow wrong validation config'),
             };
-            $validation->validate($row);
+            $validation->validate($row, $validator->params);
         }
     }
 
     private function validateObject(array $row, ValidationRule $rule) : void
     {
+        $this->validateRow($row, $rule);
         if (! $properties = $rule->properties) {
             throw new ESBException('ValidatorMiddleware:validateObject properties for type object should be set');
+        }
+        if (! $row && ! $rule->required) {
+            return;
         }
         foreach ($properties as $key => $property) {
             $rowValue = $row[$key] ?? null;
@@ -80,6 +84,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
 
     private function validateArray(array $row, ValidationRule $rule) : void
     {
+        $this->validateRow($row, $rule);
         $itemsRule = $rule->items;
         Assertion::notEmpty($itemsRule, 'ValidatorMiddleware::for row type = array items required');
         foreach ($row as $rowValue) {

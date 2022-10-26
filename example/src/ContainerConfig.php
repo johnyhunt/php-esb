@@ -7,6 +7,7 @@ namespace Example;
 use ESB\Repository\RouteRepositoryInterface;
 use Example\Service\DsnInterpreter;
 use Example\Service\DsnInterpreterInterface;
+use Example\Validator\OneOf;
 use Psr\Container\ContainerInterface;
 
 class ContainerConfig
@@ -14,6 +15,10 @@ class ContainerConfig
     public function  __invoke() : array
     {
         return [
+            'validators' => [
+                'oneOf' => OneOf::class,
+            ],
+
             RouteRepositoryInterface::class  => fn(ContainerInterface $container) => $container->get(RouteRepository::class),
             DsnInterpreterInterface::class => new DsnInterpreter(),
         ];

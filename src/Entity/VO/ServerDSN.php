@@ -8,11 +8,14 @@ use Assert\Assertion;
 
 use function explode;
 use function preg_match;
+use function sprintf;
 use function strtoupper;
 
 class ServerDSN extends AbstractDSN
 {
-    /** like sap:http:post:/boodmo/sap/dispatch-box */
+    private const PATTERN = '/(\w|\/+%s){2}\w+/';
+
+    /** like outer-system;http;post;/boodmo/sap/dispatch-box */
     public function __construct(
         public readonly string $client,
         public readonly string $method,
@@ -22,8 +25,8 @@ class ServerDSN extends AbstractDSN
 
     public static function fromString(string $dsn) : static
     {
-        Assertion::true(! ! preg_match('/(\w|\/+:){2}\w+/', $dsn), 'ServerDSN: dsn string invalid');
-        $items = [$client, $method, $path] = explode(':', $dsn);
+        Assertion::true(! ! preg_match(sprintf(static::PATTERN, static::DSN_SEPARATOR), $dsn), 'ServerDSN: dsn string invalid');
+        $items = [$client, $method, $path] = explode(static::DSN_SEPARATOR, $dsn);
         Assertion::allString($items);
         Assertion::true(strtoupper($client) === 'HTTP', 'ServerDSN: expecting http string as client');
 

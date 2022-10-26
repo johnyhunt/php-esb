@@ -9,6 +9,9 @@ use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\ValidationRule;
 use ESB\Entity\VO\Validator;
 
+use function array_filter;
+use function array_values;
+
 /** @psalm-type validationRuleRow = array{type: string, required: bool, validators: null|array, items: null|array, properties: null|array, example: null|string} */
 class InputDataMapAssembler
 {
@@ -21,15 +24,36 @@ class InputDataMapAssembler
         );
     }
 
-    /** TODO improve validation */
     private function validateRow(array $row) : void
     {
         Assertion::inArray(
-            $data['type'] ?? null,
+            $row['type'] ?? null,
             ['object', 'array', 'int', 'float', 'string', 'bool'],
             'InputDataMapAssembler:on top level row could be array|object only',
         );
-        Assertion::nullOrIsArray($row['validators']);
+        Assertion::boolean($row['required'] ?? null, 'InputDataMapAssembler::required field expected been boolean');
+        Assertion::string($row['example'], 'InputDataMapAssembler::example field expected been string');
+        switch (true) {
+            case $row['type'] === 'object':
+                Assertion::notEmpty($row['properties'] ?? null, 'InputDataMapAssembler::properties required for row.type = object');
+                Assertion::isArray($row['properties'], 'InputDataMapAssembler::properties required for row.type = object');
+                break;
+            case $row['type'] === 'array':
+                Assertion::notEmpty($row['items'] ?? null, 'InputDataMapAssembler::items required for row.type = array');
+                Assertion::isArray($row['items'], 'InputDataMapAssembler::items required for row.type = array');
+                break;
+        }
+        Assertion::keyExists($row, 'validators', 'InputDataMapAssembler::validators field should present');
+        $validators = $row['validators'] ?? null;
+        Assertion::nullOrIsArray($validators, 'InputDataMapAssembler::validators field could be array or null');
+        if ($validators) {
+            foreach ($validators as $validatorRow) {
+                Assertion::isArray($validatorRow,'InputDataMapAssembler::validators expected each row kind [assertion => assert, properties => []] ');
+                Assertion::notEmpty($validatorRow['assert'], 'InputDataMapAssembler::validators.assert expected non-empty string');
+                Assertion::string($validatorRow['assert'], 'InputDataMapAssembler::validators.assert expected non-empty string');
+                Assertion::isArray($validatorRow['params'], 'InputDataMapAssembler::validators.params expected array');
+            }
+        }
     }
 
     /** @psalm-param validationRuleRow $data */
@@ -59,11 +83,8 @@ class InputDataMapAssembler
      *
      * @psalm-return null|array<array-key, Validator>
      */
-    private function buildValidators(bool $required, string $type, ?array $validators) : ?array
+    private function buildValidators(bool $required, string $type, ?array $validators) : array
     {
-        if (! $validators) {
-            return null;
-        }
         $resultValidators = [];
         if ($required) {
             $resultValidators[] = new Validator('notEmpty');
@@ -75,13 +96,11 @@ class InputDataMapAssembler
             'string' => new Validator('string'),
             default  => null,
         };
-        foreach ($validators as $row) {
-            Assertion::string($row['assert'], 'InputDataMapAssembler::buildValidators assert field required string');
-            Assertion::nullOrIsArray($row['properties'], 'InputDataMapAssembler::buildValidators properties field required array or null');
-            $resultValidators = new Validator($row['assert'], $row['properties']);
+        foreach ($validators ?? [] as $row) {
+            $resultValidators[] = new Validator($row['assert'], $row['params']);
         }
 
-        return $resultValidators;
+        return array_values(array_filter($resultValidators));
     }
 
     /** @psalm-param null|validationRuleRow $items */

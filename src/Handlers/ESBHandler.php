@@ -28,7 +28,7 @@ class ESBHandler implements ESBHandlerInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
     {
         $path = substr($request->getRequestTarget(), strlen($this->basePath));
-        $dsn  = implode(':', ['HTTP', strtoupper($request->getMethod()), $path]);
+        $dsn  = implode(';', ['HTTP', strtoupper($request->getMethod()), $path]);
 
         $routeEntity = $this->routeProvider->get($dsn);
         $incomeData  = new IncomeData(

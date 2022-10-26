@@ -9,7 +9,7 @@ use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\QueueDSN;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
-use function explode;
+
 use function preg_match;
 use function strtoupper;
 
@@ -17,8 +17,9 @@ class DsnInterpreter implements DsnInterpreterInterface
 {
     public function __invoke(string $dsn) : AbstractDSN
     {
-        Assertion::true(! ! preg_match('/\w+:\w+/', $dsn), 'DsnInterpreter: dsn string invalid');
-        [$client] = explode(':', $dsn);
+        $matches = [];
+        preg_match('/^[a-zA-Z]+/', $dsn, $matches);
+        $client = $matches[0] ?? null;
         Assertion::string($client, 'DsnInterpreter: expecting client in dsn been string value');
 
         return match (strtoupper($client)) {

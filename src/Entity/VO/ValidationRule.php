@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace ESB\Entity\VO;
 
-use ESB\Exception\ESBException;
-use function sprintf;
+use Assert\Assertion;
 
 class ValidationRule
 {
@@ -18,16 +17,19 @@ class ValidationRule
         public readonly ?ValidationRule $items = null,
         /** @psalm-var null|array<string, ValidationRule> $properties */
         public readonly ?array $properties = null,
-        public readonly ?array $example = null,
+        public readonly ?string $example = null,
     ) {
-    }
-
-    public function propertyByKey(string $key) : ValidationRule
-    {
-        if ($this->properties && $validationRule = $this->properties[$key] ?? null) {
-            return $validationRule;
+        Assertion::inArray($this->type, ['object', 'array', 'int', 'float', 'string', 'bool'], 'ValidationRule:type invalid');
+        Assertion::allIsInstanceOf($this->validators, Validator::class, 'ValidationRule::validators could be ValidationRule set only');
+        switch ($this->type) {
+            case 'object':
+                Assertion::notEmpty($this->properties, 'ValidationRule::properties required for type = object');
+                Assertion::isArray($this->properties, 'ValidationRule::properties required for row.type = object');
+                Assertion::allIsInstanceOf($this->properties, ValidationRule::class, 'ValidationRule::properties could be ValidationRule set only');
+                break;
+            case 'array':
+                Assertion::notEmpty($this->items, 'ValidationRule::items required for type = array');
+                break;
         }
-
-        throw new ESBException(sprintf('ValidationRule: no property provided for key %s', $key));
     }
 }

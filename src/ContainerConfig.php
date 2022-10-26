@@ -28,7 +28,8 @@ class ContainerConfig
                 {
                     $definedValidators   = $container->get('validators');
                     $validatorMiddleware = new ValidatorMiddleware();
-                    foreach ($definedValidators as $key => $validator) {
+                    foreach ($definedValidators as $key => $validatorClass) {
+                        $validator = $container->get($validatorClass);
                         if (! $validator instanceof ValidatorInterface) {
                             throw new ESBException('ValidatorMiddleware: custom validator config invalid');
                         }
