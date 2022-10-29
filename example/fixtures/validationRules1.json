@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": true,
+  "example": "",
+  "items": null,
+  "validators": null,
+  "properties": {
+    "ids": {
+      "type": "array",
+      "required": true,
+      "example": "",
+      "items": {
+        "type": "string",
+        "required": true,
+        "example": "",
+        "items": null,
+        "validators": [{"assert":  "integerish", "params":  []}],
+        "properties": null
+      },
+      "validators": null,
+      "properties": null
+    }
+  }
+}

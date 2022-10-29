@@ -27,7 +27,9 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
 
     public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
     {
-        $this->validate($data->incomeData->body, $route->fromSystemData()->data);
+        if ($validationRulesMap = $route->fromSystemData()->data) {
+            $this->validate($data->incomeData->body, $validationRulesMap);
+        }
 
         return $handler->handle($data, $route);
     }

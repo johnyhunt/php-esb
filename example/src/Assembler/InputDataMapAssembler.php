@@ -29,7 +29,7 @@ class InputDataMapAssembler
         Assertion::inArray(
             $row['type'] ?? null,
             ['object', 'array', 'int', 'float', 'string', 'bool'],
-            'InputDataMapAssembler:on top level row could be array|object only',
+            'InputDataMapAssembler:type object|array|int|float|string|bool',
         );
         Assertion::boolean($row['required'] ?? null, 'InputDataMapAssembler::required field expected been boolean');
         Assertion::string($row['example'], 'InputDataMapAssembler::example field expected been string');

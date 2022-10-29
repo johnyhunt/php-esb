@@ -16,7 +16,7 @@ class RouteData
     ) {
     }
 
-    public function targetRequest(): TargetRequest
+    public function targetRequest() : TargetRequest
     {
         if (! $this->targetRequest) {
             throw new ESBException("Request must be setup on this stage");

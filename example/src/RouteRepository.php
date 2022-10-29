@@ -6,14 +6,24 @@ namespace Example;
 
 use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
+use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\InputDataMap;
+use ESB\Entity\VO\OutputDataMap;
+use ESB\Entity\VO\SyncTable;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use Example\Assembler\InputDataMapAssembler;
 use Example\Service\DsnInterpreterInterface;
 
+use function file_get_contents;
+use function implode;
+use function json_decode;
+use function var_dump;
+
 class RouteRepository implements RouteRepositoryInterface
 {
+    private const __FIXTURES__ = __DIR__ . '/../fixtures/';
+
     /** @psalm-var array<string, Route>  */
     private array $routes;
 
@@ -24,137 +34,34 @@ class RouteRepository implements RouteRepositoryInterface
                 id: 'id_1',
                 name: 'route_1',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)('HTTP:GET:/v1/test'),
-                fromSystemData: new InputDataMap(),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','GET','/v1/test'])),
+                fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'validationRules1.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','POST','google.com'])),
+                toSystemData: new OutputDataMap(file_get_contents(self::__FIXTURES__ .  'template1.xml.twig')),
+                syncTable: null
             ),
             new Route(
                 id: 'id_2',
                 name: 'route_2',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)('HTTP:POST:/v1/test-post'),
-                fromSystemData: (new InputDataMapAssembler())(
-                    [
-                        'type'       => 'object',
-                        'required'   => true,
-                        'example'    => '',
-                        'items'      => null,
-                        'validators' => null,
-                        'properties' => [
-                            'customer' => [
-                                'type'       => 'object',
-                                'required'   => true,
-                                'example'    => '',
-                                'items'      => null,
-                                'properties' => [
-                                    'id' => [
-                                        'type'       => 'int',
-                                        'required'   => true,
-                                        'example'    => '585781',
-                                        'items'      => null,
-                                        'properties' => null,
-                                        'validators' => [['assert' => 'min', 'params' => ['minValue' => 1]]],
-                                    ],
-                                    'person' => [
-                                        'type'       => 'object',
-                                        'required'   => false,
-                                        'example'    => '',
-                                        'items'      => null,
-                                        'properties' => [
-                                            'first_name' => [
-                                                'type'       => 'string',
-                                                'required'   => true,
-                                                'example'    => 'Test',
-                                                'items'      => null,
-                                                'properties' => null,
-                                                'validators' => null,
-                                            ],
-                                            'last_name'  => [
-                                                'type'       => 'string',
-                                                'required'   => true,
-                                                'example'    => '',
-                                                'items'      => null,
-                                                'properties' => null,
-                                                'validators' => null,
-                                            ],
-                                        ],
-                                        'validators' => null,
-                                    ],
-                                    'organization' => [
-                                        'type'       => 'object',
-                                        'required'   => false,
-                                        'example'    => '',
-                                        'items'      => null,
-                                        'properties' => [
-                                            'contact_name' => [
-                                                'type'       => 'string',
-                                                'required'   => true,
-                                                'example'    => 'Test',
-                                                'items'      => null,
-                                                'properties' => null,
-                                                'validators' => null,
-                                            ],
-                                            'company'  => [
-                                                'type'       => 'string',
-                                                'required'   => true,
-                                                'example'    => '',
-                                                'items'      => null,
-                                                'properties' => null,
-                                                'validators' => null,
-                                            ]
-                                        ],
-                                        'validators' => null,
-                                    ],
-                                ],
-                                'validators' => [['assert' => 'oneOf', 'params' => ['person', 'organization']]],
-                            ],
-                            'brands' => [
-                                'type'       => 'array',
-                                'required'   => true,
-                                'example'    => '',
-                                'items'      => [
-                                    'type'       => 'object',
-                                    'required'   => true,
-                                    'example'    => '',
-                                    'items'      => null,
-                                    'properties' => [
-                                        'id'   => [
-                                            'type'       => 'int',
-                                            'required'   => true,
-                                            'example'    => '',
-                                            'items'      => null,
-                                            'properties' => null,
-                                            'validators' => null,
-                                        ],
-                                        'name' => [
-                                            'type'       => 'string',
-                                            'required'   => true,
-                                            'example'    => '',
-                                            'items'      => null,
-                                            'properties' => null,
-                                            'validators' => null,
-                                        ],
-                                    ],
-                                    'validators' => null,
-                                ],
-                                'properties' => null,
-                                'validators' => null,
-                            ]
-                        ],
-                    ]
-                ),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','POST','/v1/test-post'])),
+                fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__  . 'validationRules2.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','POST','google.com'])),
+                toSystemData: new OutputDataMap(file_get_contents(self::__FIXTURES__  . 'template2.json.twig')),
+                syncTable: new SyncTable('sync_1', ['id' => 'customer.id', 'hash' => ['customer', 'brands']], ['id' => 'customer.id'], true, true),
             ),
             new Route(
                 id: 'id_3',
                 name: 'route_3',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)('pubsub:example:test-action'),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['pubsub','example','test-action'])),
                 fromSystemData: new InputDataMap(),
                 toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)('HTTP:POST:google.com'),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','POST','google.com'])),
+                toSystemData: new OutputDataMap(''),
+                syncTable: null,
             ),
         ];
 

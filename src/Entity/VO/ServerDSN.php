@@ -26,6 +26,7 @@ class ServerDSN extends AbstractDSN
     public static function fromString(string $dsn) : static
     {
         Assertion::true(! ! preg_match(sprintf(static::PATTERN, static::DSN_SEPARATOR), $dsn), 'ServerDSN: dsn string invalid');
+
         $items = [$client, $method, $path] = explode(static::DSN_SEPARATOR, $dsn);
         Assertion::allString($items);
         Assertion::true(strtoupper($client) === 'HTTP', 'ServerDSN: expecting http string as client');

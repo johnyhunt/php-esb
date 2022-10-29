@@ -12,6 +12,13 @@ use ESB\Middleware\TransportMiddleware;
 use ESB\Middleware\ValidatorMiddleware;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
+use Twig\Environment;
+use Twig\Extension\EscaperExtension;
+use Twig\Lexer;
+use Twig\Loader\ArrayLoader;
+use Twig\TwigFunction;
+use function sprintf;
+use function var_dump;
 
 class ContainerConfig
 {
@@ -21,6 +28,10 @@ class ContainerConfig
             'validators' => [
                 // Reserved key for custom validators, should implement ValidatorInterface
                 // 'alias' => CustomValidator::class,
+            ],
+            'formatters' => [
+                // Reserved key for twig function-helpers
+                // alias => Invocable::class
             ],
 
             ValidatorMiddleware::class => function(ContainerInterface $container)
@@ -50,6 +61,21 @@ class ContainerConfig
                     $container->get(PostSuccessMiddleware::class),
                 );
             },
+
+            Environment::class => function(ContainerInterface $container) : Environment
+            {
+                $twig = new Environment(new ArrayLoader());
+
+                $definedFormatters = $container->get('formatters');
+
+                foreach ($definedFormatters as $key => $formatterClass) {
+                    $formatter = $container->get($formatterClass);
+                    $twig->addFunction(new TwigFunction($key, $formatter(...)));
+                }
+                $twig->getExtension(EscaperExtension::class)->setEscaper('json_string', fn(Environment $twig, string $value) => sprintf('"%s"', $value));
+
+                return $twig;
+            }
         ];
     }
 }

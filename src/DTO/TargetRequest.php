@@ -6,7 +6,7 @@ namespace ESB\DTO;
 
 class TargetRequest
 {
-    public function __construct(public array $body = [], public array $headers = [])
+    public function __construct(public string $body, public array $headers = [])
     {
     }
 }
