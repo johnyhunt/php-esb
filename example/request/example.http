@@ -1,0 +1,22 @@
+GET 0.0.0.0:8081/middleware/v1/test?ids[]=1&ids[]=2&ids[]=3
+
+#######
+POST 0.0.0.0:8081/middleware/v1/test-post
+content-type: application/json
+
+{
+  "orderId": "7680d5f6-bd4b-4e66-8670-753b30504147",
+  "seller": "95f4a4d9-c482-4507-8945-cbbcb24e4448",
+  "customer": {
+    "id": 585781,
+    "person": {
+      "first_name": "Test",
+      "last_name": "Ltest"
+    },
+    "organization": {}
+  },
+  "brands": [
+    {"id": 123, "name": "BMW"},
+    {"id": 33, "name": "FORD"}
+  ]
+}
