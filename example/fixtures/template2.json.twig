@@ -1,10 +1,10 @@
 {% autoescape false %}
 {
-    "orderId": "{{ body.id }}",
+    "orderId": "{{ body.orderId }}",
     "customer": {
         "id": {{ body.customer.id | escape('json_string') }},
         {% set companyName = body.customer.person ? body.customer.person.first_name ~ " " ~ body.customer.person.last_name : body.customer.organization.company %}
-        "name": {{ companyName }}
+        "name": "{{ companyName }}"
     },
     "items": [
         {% for item in body.brands %}

@@ -72,6 +72,7 @@ class ContainerConfig
                     $formatter = $container->get($formatterClass);
                     $twig->addFunction(new TwigFunction($key, $formatter(...)));
                 }
+                /** TODO need also spaceless for json */
                 $twig->getExtension(EscaperExtension::class)->setEscaper('json_string', fn(Environment $twig, string $value) => sprintf('"%s"', $value));
 
                 return $twig;
