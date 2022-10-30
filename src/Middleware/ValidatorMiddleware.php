@@ -18,11 +18,8 @@ use ReflectionClass;
 class ValidatorMiddleware implements ESBMiddlewareInterface
 {
     /** @psalm-var array<string, ValidatorInterface> $customValidators */
-    private array $customValidators = [];
-
-    public function addCustomValidator(string $key, ValidatorInterface $validator) : void
+    public function __construct(private readonly array $customValidators = [])
     {
-        $this->customValidators[$key] = $validator;
     }
 
     public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)

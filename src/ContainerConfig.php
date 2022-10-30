@@ -58,19 +58,21 @@ class ContainerConfig
 
             ValidatorMiddleware::class => function(ContainerInterface $container) : ValidatorMiddleware
             {
-                {
-                    $definedValidators   = $container->get('validators');
-                    $validatorMiddleware = new ValidatorMiddleware();
-                    foreach ($definedValidators as $key => $validatorClass) {
-                        $validator = $container->get($validatorClass);
-                        if (! $validator instanceof ValidatorInterface) {
-                            throw new ESBException('ValidatorMiddleware: custom validator config invalid');
-                        }
-                        $validatorMiddleware->addCustomValidator($key, $validator);
-                    }
+                // Get list of defined validators
+                $definedValidators = $container->get('validators');
 
-                    return $validatorMiddleware;
+                // List with custom ValidatorInterface class objects
+                $customContainerValidators = [];
+
+                foreach ($definedValidators as $alias => $validatorClass) {
+                    $validator = $container->get($validatorClass);
+                    if (! $validator instanceof ValidatorInterface) {
+                        throw new ESBException('ValidatorMiddleware: custom validator config invalid');
+                    }
+                    $customContainerValidators[$alias] = $validator;
                 }
+
+                return new ValidatorMiddleware($customContainerValidators);
             },
 
             Environment::class => function(ContainerInterface $container) : Environment
