@@ -99,7 +99,6 @@ class ESBJsonResponse implements ResponseInterface
 
     private int $statusCode;
 
-    // phpcs:disable WebimpressCodingStandard.Functions.Param.MissingSpecification
     /**
      * @psalm-suppress NoInterfaceProperties
      * @psalm-param mixed $body
@@ -139,8 +138,6 @@ class ESBJsonResponse implements ResponseInterface
         return $this->reasonPhrase;
     }
 
-    // phpcs:disable WebimpressCodingStandard.Functions.Param.MissingSpecification
-    /** @psalm-suppress DocblockTypeContradiction */
     public function withStatus($code, $reasonPhrase = '') : self
     {
         if (! is_int($code) && ! is_string($code)) {

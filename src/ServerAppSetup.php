@@ -6,11 +6,10 @@ namespace ESB;
 
 use Assert\Assertion;
 use ESB\Entity\VO\ServerDSN;
-use ESB\Handlers\ESBHandler;
+use ESB\Handlers\HTTP\ESBHandler;
 use ESB\Repository\RouteRepositoryInterface;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
 use function preg_match;
 
 class ServerAppSetup

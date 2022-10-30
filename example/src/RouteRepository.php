@@ -9,6 +9,7 @@ use ESB\Entity\Route;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\OutputDataMap;
+use ESB\Entity\VO\PostHandler;
 use ESB\Entity\VO\SyncTable;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
@@ -30,6 +31,18 @@ class RouteRepository implements RouteRepositoryInterface
     public function __construct(private readonly DsnInterpreterInterface $dsnInterpreter)
     {
         $routes = [
+            new Route(
+                id: 'id_0',
+                name: 'route_1',
+                fromSystem: new IntegrationSystem('system_1'),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','GET','/v1/empty-test'])),
+                fromSystemData: new InputDataMap(),
+                toSystem: new IntegrationSystem('system_2'),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP','POST','google.com'])),
+                toSystemData: new OutputDataMap(),
+                syncTable: null,
+                postSuccessHandlers: [new PostHandler(name: 'my-post-handler')]
+            ),
             new Route(
                 id: 'id_1',
                 name: 'route_1',

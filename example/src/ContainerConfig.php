@@ -11,6 +11,7 @@ use ESB\Entity\VO\SyncTable;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncTableRepositoryInterface;
 use Example\Formatter\SellerMap;
+use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Service\DsnInterpreter;
 use Example\Service\DsnInterpreterInterface;
 use Example\Validator\OneOf;
@@ -27,13 +28,16 @@ class ContainerConfig
             'formatters' => [
                 'sellerMap' => SellerMap::class,
             ],
+            'post-success' => [
+                'my-post-handler' => MyPostSuccessHandler::class
+            ],
 
-            RouteRepositoryInterface::class  => fn(ContainerInterface $container) => $container->get(RouteRepository::class),
-            DsnInterpreterInterface::class => new DsnInterpreter(),
+            RouteRepositoryInterface::class     => fn(ContainerInterface $container) => $container->get(RouteRepository::class),
+            DsnInterpreterInterface::class      => new DsnInterpreter(),
             SyncTableRepositoryInterface::class => function() : SyncTableRepositoryInterface
             {
                 return new class () implements SyncTableRepositoryInterface {
-                    public function wasSynced(RouteData $data, SyncTable $syncTable) : bool
+                    public function wasSynced(SyncTable $syncTable) : bool
                     {
                         return false;
                     }

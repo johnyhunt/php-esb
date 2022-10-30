@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ESB;
 
 use ESB\Exception\ESBException;
+use ESB\Handlers\PostHandlerInterface;
 use ESB\Middleware\PostSuccessMiddleware;
 use ESB\Middleware\ProcessingMiddleware;
 use ESB\Middleware\SyncRecordsMiddleware;
@@ -17,6 +18,7 @@ use Twig\Extension\EscaperExtension;
 use Twig\Lexer;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFunction;
+
 use function sprintf;
 use function var_dump;
 
@@ -33,8 +35,28 @@ class ContainerConfig
                 // Reserved key for twig function-helpers
                 // alias => Invocable::class
             ],
+            'post-success' => [
+                // Reserved key for post success handlers
+                // alias => MyPostSuccessHandler::class
+            ],
+            'post-error' => [
+                // Reserved key for post error handlers
+                // alias => MyPostErrorHandler::class
+            ],
 
-            ValidatorMiddleware::class => function(ContainerInterface $container)
+            Core::class => function(ContainerInterface $container) : Core
+            {
+                // PostSuccessMiddleware is last, ValidatorMiddleware is first
+                return new Core(
+                    $container->get(PostSuccessMiddleware::class),
+                    $container->get(SyncRecordsMiddleware::class),
+                    $container->get(TransportMiddleware::class),
+                    $container->get(ProcessingMiddleware::class),
+                    $container->get(ValidatorMiddleware::class),
+                );
+            },
+
+            ValidatorMiddleware::class => function(ContainerInterface $container) : ValidatorMiddleware
             {
                 {
                     $definedValidators   = $container->get('validators');
@@ -51,17 +73,6 @@ class ContainerConfig
                 }
             },
 
-            Core::class => function(ContainerInterface $container) : Core
-            {
-                return new Core(
-                    $container->get(ValidatorMiddleware::class),
-                    $container->get(ProcessingMiddleware::class),
-                    $container->get(TransportMiddleware::class),
-                    $container->get(SyncRecordsMiddleware::class),
-                    $container->get(PostSuccessMiddleware::class),
-                );
-            },
-
             Environment::class => function(ContainerInterface $container) : Environment
             {
                 $twig = new Environment(new ArrayLoader());
@@ -76,6 +87,26 @@ class ContainerConfig
                 $twig->getExtension(EscaperExtension::class)->setEscaper('json_string', fn(Environment $twig, string $value) => sprintf('"%s"', $value));
 
                 return $twig;
+            },
+
+            PostSuccessMiddleware::class => function(ContainerInterface $container) : PostSuccessMiddleware
+            {
+                // Get list of defined post success handlers
+                $definedHandlers = $container->get('post-success');
+
+                // List with custom PostHandlerInterface class objects
+                $customContainerHandlers = [];
+
+                // Prepare list with all classes
+                foreach ($definedHandlers as $alias => $handlerClass) {
+                    $containerHandler = $container->get($handlerClass);
+                    if (! $containerHandler instanceof PostHandlerInterface) {
+                        throw new ESBException('PostSuccessMiddleware: custom handler config invalid');
+                    }
+                    $customContainerHandlers[$alias] = $containerHandler;
+                }
+
+                return new PostSuccessMiddleware($customContainerHandlers);
             }
         ];
     }

@@ -7,6 +7,7 @@ namespace ESB\Entity;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\OutputDataMap;
+use ESB\Entity\VO\PostHandler;
 use ESB\Entity\VO\SyncTable;
 
 class Route
@@ -21,6 +22,7 @@ class Route
         private AbstractDSN       $toSystemDsn,
         private OutputDataMap     $toSystemData,
         private ?SyncTable        $syncTable,
+        private ?array            $postSuccessHandlers = [],
         private ?string           $description = null,
     ) {
     }
@@ -43,5 +45,11 @@ class Route
     public function toSystemData() : OutputDataMap
     {
         return $this->toSystemData;
+    }
+
+    /** @psalm-return array<int, PostHandler> */
+    public function postSuccessHandlers() : array
+    {
+        return $this->postSuccessHandlers;
     }
 }

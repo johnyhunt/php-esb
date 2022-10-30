@@ -9,7 +9,7 @@ use ESB\Entity\VO\SyncTable;
 
 interface SyncTableRepositoryInterface
 {
-    public function wasSynced(RouteData $data, SyncTable $syncTable) : bool;
+    public function wasSynced(SyncTable $syncTable) : bool;
 
     public function store(RouteData $data, SyncTable $syncTable) : void;
 }

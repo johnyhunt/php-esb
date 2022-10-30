@@ -12,15 +12,31 @@ class RouteData
         public readonly IncomeData $incomeData,
         public readonly ?TargetRequest $targetRequest = null,
         public readonly ?TargetResponse $targetResponse = null,
-        public readonly ?TransactionEntity $transactionEntity = null,
     ) {
+    }
+
+    public function withTargetResponse(TargetResponse $targetResponse) : self
+    {
+        return new RouteData(
+            incomeData: $this->incomeData,
+            targetRequest: $this->targetRequest,
+            targetResponse: $targetResponse
+        );
     }
 
     public function targetRequest() : TargetRequest
     {
         if (! $this->targetRequest) {
-            throw new ESBException("Request must be setup on this stage");
+            throw new ESBException("TargetRequest must be setup on this stage");
         }
         return $this->targetRequest;
+    }
+
+    public function targetResponse() : TargetResponse
+    {
+        if (! $this->targetResponse) {
+            throw new ESBException("TargetResponse must be setup on this stage");
+        }
+        return $this->targetResponse;
     }
 }
