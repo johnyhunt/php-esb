@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ESB\DTO;
 
+use ESB\Entity\SyncRecord;
 use ESB\Exception\ESBException;
 
 class RouteData
@@ -12,6 +13,7 @@ class RouteData
         public readonly IncomeData $incomeData,
         public readonly ?TargetRequest $targetRequest = null,
         public readonly ?TargetResponse $targetResponse = null,
+        public readonly ?SyncRecord $syncRecord = null,
     ) {
     }
 

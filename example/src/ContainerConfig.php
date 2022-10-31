@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Example;
 
 use ESB\Repository\RouteRepositoryInterface;
+use ESB\Repository\SyncRecordRepositoryInterface;
 use Example\Formatter\SellerMap;
 use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Service\DsnInterpreter;
@@ -28,7 +29,10 @@ class ContainerConfig
             ],
 
             RouteRepositoryInterface::class => fn(ContainerInterface $container) => $container->get(RouteRepository::class),
-            DsnInterpreterInterface::class  => new DsnInterpreter(),
+
+            DsnInterpreterInterface::class => new DsnInterpreter(),
+
+            SyncRecordRepositoryInterface::class => new SyncRecordRepository(),
         ];
     }
 }

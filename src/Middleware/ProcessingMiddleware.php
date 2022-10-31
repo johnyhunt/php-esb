@@ -14,15 +14,20 @@ use Twig\Source;
 
 class ProcessingMiddleware implements ESBMiddlewareInterface
 {
-    public function __construct(private readonly Environment $twig)
+    public function __construct(private readonly SyncRecordRepositoryInterface $recordRepository, private readonly Environment $twig)
     {
     }
 
     public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
     {
-//        if ($route->syncSettings()?->syncOnExist() === false && $this->repository->findByPk('')) {
-//            throw new StopProcessingException();
-//        }
+        // If exist sync settings, need check before sending data actuality of them
+        if ($settings = $route->syncSettings()) {
+            $prevSyncedRecord = $this->recordRepository->findByPk($route->syncSettings()->table(), '---');
+
+            if ($settings->syncOnExist() === false) {
+                throw new StopProcessingException();
+            }
+        }
 
         /** TODO could be empty string new TargetRequest('') */
         if (! $route->toSystemData()->template) {
