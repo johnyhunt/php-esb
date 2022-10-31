@@ -6,42 +6,31 @@ namespace ESB\Handlers\HTTP;
 
 use ESB\CoreRunner;
 use ESB\CoreRunnerInterface;
-use ESB\DTO\IncomeData;
 use ESB\DTO\RouteData;
-use ESB\Repository\RouteRepositoryInterface;
+use ESB\Entity\Route;
 use ESB\Response\ESBJsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function date;
-use function implode;
-use function strlen;
-use function substr;
 
 class ESBHandler
 {
     /** @psalm-param array<string, CoreRunnerInterface> $coreRunnerList */
     public function __construct(
-        private readonly array                    $coreRunnerList,
-        private readonly RouteRepositoryInterface $routeProvider,
-        private readonly string                   $basePath = '/middleware',
+        private readonly array $coreRunnerList,
     ) {
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
     {
-        $path = substr($request->getUri()->getPath(), strlen($this->basePath));
-        $dsn  = implode(';', ['HTTP', strtoupper($request->getMethod()), $path]);
-
-        $routeEntity = $this->routeProvider->get($dsn);
-        $incomeData  = new IncomeData(
-            $request->getHeaders(),
-            $request->getAttributes(),
-            $request->getParsedBody() ?: $request->getQueryParams()
-        );
+        /** @psalm-var Route $route */
+        $route = $request->getAttribute(Route::class);
+        /** @psalm-var RouteData $routeData */
+        $routeData = $request->getAttribute(RouteData::class);
 
         // Choose runner for process request/message
-        $customRunner = $this->coreRunnerList[$routeEntity->customRunner()] ?? null;
+        $customRunner = $this->coreRunnerList[$route->customRunner()] ?? null;
 
         /** @psalm-var CoreRunnerInterface $runner */
         $runner = match (true) {
@@ -49,12 +38,12 @@ class ESBHandler
             default                => $this->coreRunnerList[CoreRunner::class]
         };
 
-        $runner->runCore(new RouteData($incomeData), $routeEntity);
+        $runner->runCore($routeData, $route);
 
         return new ESBJsonResponse(
             [
                 'date' => date('Y-m-s H:i:s'),
-                'data' => $incomeData,
+                'data' => $routeData->incomeData,
             ]
         );
     }

@@ -82,10 +82,7 @@ class ContainerConfig
 
                 $runners[CoreRunner::class] = $container->get(CoreRunner::class);
 
-                return new ESBHandler(
-                    $runners,
-                    $container->get(RouteRepositoryInterface::class)
-                );
+                return new ESBHandler($runners);
             },
 
             ValidatorMiddleware::class => function(ContainerInterface $container) : ValidatorMiddleware
