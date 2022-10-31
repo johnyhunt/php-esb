@@ -7,22 +7,19 @@ namespace ESB;
 use ESB\Exception\ESBException;
 use ESB\Handlers\HTTP\ESBHandler;
 use ESB\Handlers\PostHandlerInterface;
-use ESB\Middleware\PostSuccessMiddleware;
-use ESB\Middleware\ProcessingMiddleware;
-use ESB\Middleware\SyncRecordsMiddleware;
-use ESB\Middleware\TransportMiddleware;
-use ESB\Middleware\ValidatorMiddleware;
+use ESB\Middleware\Core\PostSuccessMiddleware;
+use ESB\Middleware\Core\ProcessingMiddleware;
+use ESB\Middleware\Core\SyncRecordsMiddleware;
+use ESB\Middleware\Core\TransportMiddleware;
+use ESB\Middleware\Core\ValidatorMiddleware;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
 use Twig\Extension\EscaperExtension;
-use Twig\Lexer;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFunction;
-
 use function sprintf;
-use function var_dump;
 
 class ContainerConfig
 {

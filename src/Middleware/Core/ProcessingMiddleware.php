@@ -1,12 +1,13 @@
 <?php
 
-namespace ESB\Middleware;
+namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
 use ESB\DTO\RouteData;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\Route;
 use ESB\Exception\StopProcessingException;
+use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;

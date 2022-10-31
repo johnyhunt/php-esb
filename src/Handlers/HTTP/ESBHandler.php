@@ -18,7 +18,7 @@ use function implode;
 use function strlen;
 use function substr;
 
-class ESBHandler implements ESBHandlerInterface
+class ESBHandler
 {
     /** @psalm-param array<string, CoreRunnerInterface> $coreRunnerList */
     public function __construct(

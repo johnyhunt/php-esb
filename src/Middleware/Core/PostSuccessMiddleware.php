@@ -1,12 +1,13 @@
 <?php
 
-namespace ESB\Middleware;
+namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
 use ESB\Handlers\PostHandlerInterface;
+use ESB\Middleware\ESBMiddlewareInterface;
 
 class PostSuccessMiddleware implements ESBMiddlewareInterface
 {

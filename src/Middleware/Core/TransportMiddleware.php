@@ -1,11 +1,12 @@
 <?php
 
-namespace ESB\Middleware;
+namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
 use ESB\DTO\RouteData;
 use ESB\DTO\TargetResponse;
 use ESB\Entity\Route;
+use ESB\Middleware\ESBMiddlewareInterface;
 
 class TransportMiddleware implements ESBMiddlewareInterface
 {

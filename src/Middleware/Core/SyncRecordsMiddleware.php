@@ -1,11 +1,12 @@
 <?php
 
-namespace ESB\Middleware;
+namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
 use ESB\DTO\RouteData;
 use ESB\Entity\Route;
 use ESB\Entity\SyncRecord;
+use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 
 class SyncRecordsMiddleware implements ESBMiddlewareInterface

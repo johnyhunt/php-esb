@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB\Middleware;
+namespace ESB\Middleware\Core;
 
 use Assert\Assertion;
 use ESB\CoreHandlerInterface;
@@ -11,6 +11,7 @@ use ESB\Entity\Route;
 use ESB\Entity\VO\ValidationRule;
 use ESB\Entity\VO\Validator;
 use ESB\Exception\ESBException;
+use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Validation\AssertValidator;
 use ESB\Validation\ValidatorInterface;
 use ReflectionClass;
