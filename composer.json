@@ -12,10 +12,22 @@
         "beberlei/assert": "^3.3",
         "twig/twig": "^3.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "vimeo/psalm": "^4.29"
+    },
     "autoload": {
         "psr-4": {
             "ESB\\": "src/",
             "Example\\": "example/src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ESB\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpunit": "phpunit --verbose --colors=always"
     }
 }
