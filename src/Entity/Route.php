@@ -23,6 +23,7 @@ class Route
         private OutputDataMap     $toSystemData,
         private ?SyncSettings     $syncSettings,
         private ?array            $postSuccessHandlers = [],
+        private ?string           $customRunner = null,
         private ?string           $description = null,
     ) {
     }
@@ -51,5 +52,10 @@ class Route
     public function postSuccessHandlers() : array
     {
         return $this->postSuccessHandlers;
+    }
+
+    public function customRunner(): ?string
+    {
+        return $this->customRunner;
     }
 }

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace ESB;
 
 use ESB\Exception\ESBException;
+use ESB\Handlers\HTTP\ESBHandler;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Middleware\PostSuccessMiddleware;
 use ESB\Middleware\ProcessingMiddleware;
 use ESB\Middleware\SyncRecordsMiddleware;
 use ESB\Middleware\TransportMiddleware;
 use ESB\Middleware\ValidatorMiddleware;
+use ESB\Repository\RouteRepositoryInterface;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
@@ -43,6 +45,10 @@ class ContainerConfig
                 // Reserved key for post error handlers
                 // alias => MyPostErrorHandler::class
             ],
+            'runner' => [
+                // Reserved key for custom runners
+                // alias => MyCustomRunner::class
+            ],
 
             Core::class => function(ContainerInterface $container) : Core
             {
@@ -53,6 +59,35 @@ class ContainerConfig
                     $container->get(TransportMiddleware::class),
                     $container->get(ProcessingMiddleware::class),
                     $container->get(ValidatorMiddleware::class),
+                );
+            },
+
+            CoreRunner::class => function(ContainerInterface $container) : CoreRunner
+            {
+                return new CoreRunner(
+                    $container->get(Core::class),
+                );
+            },
+
+            ESBHandler::class => function(ContainerInterface $container) : ESBHandler
+            {
+                $definedRunners = $container->get('runner');
+
+                $runners = [];
+
+                foreach ($definedRunners as $alias => $runnerClass) {
+                    $runner = $container->get($runnerClass);
+                    if (! $runner instanceof CoreRunnerInterface) {
+                        throw new ESBException('ESBHandler: runner config invalid');
+                    }
+                    $runners[$alias] = $runner;
+                }
+
+                $runners[CoreRunner::class] = $container->get(CoreRunner::class);
+
+                return new ESBHandler(
+                    $runners,
+                    $container->get(RouteRepositoryInterface::class)
                 );
             },
 

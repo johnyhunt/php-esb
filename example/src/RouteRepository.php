@@ -15,6 +15,7 @@ use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use Example\Assembler\InputDataMapAssembler;
 use Example\Service\DsnInterpreterInterface;
+
 use function file_get_contents;
 use function implode;
 use function json_decode;
@@ -39,7 +40,8 @@ class RouteRepository implements RouteRepositoryInterface
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
                 toSystemData: new OutputDataMap(),
                 syncSettings: null,
-                postSuccessHandlers: [new PostHandler(name: 'my-post-handler')]
+                postSuccessHandlers: [new PostHandler(name: 'my-post-handler')],
+                customRunner: 'my-runner'
             ),
             new Route(
                 id: 'id_1',

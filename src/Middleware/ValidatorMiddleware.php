@@ -17,7 +17,7 @@ use ReflectionClass;
 
 class ValidatorMiddleware implements ESBMiddlewareInterface
 {
-    /** @psalm-var array<string, ValidatorInterface> $customValidators */
+    /** @psalm-param array<string, ValidatorInterface> $customValidators */
     public function __construct(private readonly array $customValidators = [])
     {
     }

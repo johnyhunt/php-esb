@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace ESB\Handlers\HTTP;
 
-use ESB\Core;
+use ESB\CoreRunner;
+use ESB\CoreRunnerInterface;
 use ESB\DTO\IncomeData;
 use ESB\DTO\RouteData;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Response\ESBJsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Source;
 
 use function date;
 use function implode;
@@ -22,9 +20,10 @@ use function substr;
 
 class ESBHandler implements ESBHandlerInterface
 {
+    /** @psalm-param array<string, CoreRunnerInterface> $coreRunnerList */
     public function __construct(
+        private readonly array                    $coreRunnerList,
         private readonly RouteRepositoryInterface $routeProvider,
-        private readonly Core                     $coreHandler,
         private readonly string                   $basePath = '/middleware',
     ) {
     }
@@ -41,7 +40,16 @@ class ESBHandler implements ESBHandlerInterface
             $request->getParsedBody() ?: $request->getQueryParams()
         );
 
-        $this->coreHandler->run(new RouteData($incomeData), $routeEntity);
+        // Choose runner for process request/message
+        $customRunner = $this->coreRunnerList[$routeEntity->customRunner()] ?? null;
+
+        /** @psalm-var CoreRunnerInterface $runner */
+        $runner = match (true) {
+            $customRunner !== null => $customRunner,
+            default                => $this->coreRunnerList[CoreRunner::class]
+        };
+
+        $runner->runCore(new RouteData($incomeData), $routeEntity);
 
         return new ESBJsonResponse(
             [
