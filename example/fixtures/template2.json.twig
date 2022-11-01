@@ -1,8 +1,7 @@
-{% autoescape false %}
 {
     "orderId": "{{ body.orderId }}",
     "customer": {
-        "id": {{ body.customer.id | escape('json_string') }},
+        "id": "{{ body.customer.id }}",
         {% set companyName = body.customer.person ? body.customer.person.first_name ~ " " ~ body.customer.person.last_name : body.customer.organization.company %}
         "name": "{{ companyName }}"
     },
@@ -10,12 +9,11 @@
         {% for item in body.brands %}
             {
                 "id": {{ item.id }},
-                "name": {{ item.name | escape('json_string') }}
+                "name": "{{ item.name }}"
             },
         {% endfor %}
     ],
     {% set sellerData = sellerMap(body.seller) %}
-    "warehouse": {{ sellerData.warehouse | escape('json_string') }},
-    "departnent": {{ sellerData.department | escape('json_string') }}
+    "warehouse": "{{ sellerData.warehouse }}",
+    "departnent": "{{ sellerData.department }}"
 }
-{% endautoescape %}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ESB;
 
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Middleware\ESBMiddlewareInterface;
 
@@ -15,8 +15,9 @@ class Core
     public function __construct(ESBMiddlewareInterface ...$middlewares)
     {
         $this->handler = new class () implements CoreHandlerInterface {
-            public function handle(RouteData $data, Route $route)
+            public function handle(ProcessingData $data, Route $route) : ProcessingData
             {
+                return $data;
             }
         };
 
@@ -27,7 +28,7 @@ class Core
                 {
                 }
 
-                public function handle(RouteData $data, Route $route)
+                public function handle(ProcessingData $data, Route $route)
                 {
                     return $this->middleware->process($data, $route, $this->next);
                 }
@@ -35,8 +36,8 @@ class Core
         }
     }
 
-    public function run(RouteData $data, Route $route) : void
+    public function run(ProcessingData $data, Route $route) : ProcessingData
     {
-        $this->handler->handle($data, $route);
+        return $this->handler->handle($data, $route);
     }
 }

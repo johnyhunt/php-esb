@@ -3,7 +3,7 @@
 namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\Route;
 use ESB\Exception\StopProcessingException;
@@ -19,7 +19,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
     {
     }
 
-    public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
+    public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If exist sync settings, need check before sending data actuality of them
         if ($settings = $route->syncSettings()) {
@@ -43,7 +43,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         }
 
         return $handler->handle(
-            new RouteData(
+            new ProcessingData(
                 $data->incomeData,
                 new TargetRequest($template->render(
                     [

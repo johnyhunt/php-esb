@@ -2,9 +2,9 @@
 
 namespace ESB\Handlers;
 
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 
 interface PostHandlerInterface
 {
-    public function handle(RouteData $routeData);
+    public function handle(ProcessingData $routeData);
 }

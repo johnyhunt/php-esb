@@ -58,4 +58,9 @@ class Route
     {
         return $this->customRunner;
     }
+
+    public function toSystemDsn() : AbstractDSN
+    {
+        return $this->toSystemDsn;
+    }
 }

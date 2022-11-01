@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace ESB\Middleware;
 
 use ESB\CoreHandlerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 
 interface ESBMiddlewareInterface
 {
-    public function process(RouteData $data, Route $route, CoreHandlerInterface $handler);
+    public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData;
 }

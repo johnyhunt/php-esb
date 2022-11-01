@@ -3,7 +3,7 @@
 namespace ESB\Middleware\HTTP;
 
 use ESB\DTO\IncomeData;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Repository\RouteRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +33,7 @@ class InitRouteDataMiddleware implements MiddlewareInterface
         return $handler->handle(
             $request
                 ->withAttribute(Route::class, $routeEntity)
-                ->withAttribute(RouteData::class, new RouteData($incomeData))
+                ->withAttribute(ProcessingData::class, new ProcessingData($incomeData))
         );
     }
 }

@@ -3,7 +3,7 @@
 namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Exception\ESBException;
 use ESB\Handlers\PostHandlerInterface;
@@ -16,7 +16,7 @@ class PostSuccessMiddleware implements ESBMiddlewareInterface
     {
     }
 
-    public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
+    public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If response from target system not 200, skip this middleware
         if ($data->targetResponse()->statusCode !== 200) {

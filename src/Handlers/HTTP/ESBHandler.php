@@ -6,7 +6,7 @@ namespace ESB\Handlers\HTTP;
 
 use ESB\CoreRunner;
 use ESB\CoreRunnerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Response\ESBJsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -26,8 +26,8 @@ class ESBHandler
     {
         /** @psalm-var Route $route */
         $route = $request->getAttribute(Route::class);
-        /** @psalm-var RouteData $routeData */
-        $routeData = $request->getAttribute(RouteData::class);
+        /** @psalm-var ProcessingData $routeData */
+        $routeData = $request->getAttribute(ProcessingData::class);
 
         // Choose runner for process request/message
         $customRunner = $this->coreRunnerList[$route->customRunner()] ?? null;
@@ -38,12 +38,13 @@ class ESBHandler
             default                => $this->coreRunnerList[CoreRunner::class]
         };
 
-        $runner->runCore($routeData, $route);
+        $result = $runner->runCore($routeData, $route);
 
         return new ESBJsonResponse(
             [
                 'date' => date('Y-m-s H:i:s'),
                 'data' => $routeData->incomeData,
+                'targetRequest' => $result->targetRequest()->body
             ]
         );
     }

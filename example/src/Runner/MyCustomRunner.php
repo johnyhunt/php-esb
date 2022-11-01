@@ -4,7 +4,7 @@ namespace Example\Runner;
 
 use ESB\Core;
 use ESB\CoreRunnerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 
 class MyCustomRunner implements CoreRunnerInterface
@@ -13,8 +13,8 @@ class MyCustomRunner implements CoreRunnerInterface
     {
     }
 
-    public function runCore(RouteData $data, Route $route): void
+    public function runCore(ProcessingData $data, Route $route) : ProcessingData
     {
-        $this->core->run($data, $route);
+        return $this->core->run($data, $route);
     }
 }

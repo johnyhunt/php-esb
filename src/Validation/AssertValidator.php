@@ -14,12 +14,14 @@ class AssertValidator implements ValidatorInterface
     public function __construct(private readonly string $assertName) {
     }
 
-    public function validate(mixed $value, array $params = []) : void
+    public function validate(mixed $value, string $propertyPath, array $params = []) : void
     {
         try {
             Assertion::{$this->assertName}($value, ...$params);
         } catch (BadMethodCallException | AssertionFailedException $exception) {
-            throw new ESBException((string) ($this->params['message'] ?? $exception->getMessage()));
+            throw new ESBException(
+                sprintf('%s - %s', $propertyPath, $this->params['message'] ?? $exception->getMessage())
+            );
         }
     }
 }

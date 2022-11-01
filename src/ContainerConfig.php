@@ -106,7 +106,10 @@ class ContainerConfig
 
             Environment::class => function(ContainerInterface $container) : Environment
             {
-                $twig = new Environment(new ArrayLoader());
+                $twig = new Environment(new ArrayLoader(), [
+                    'strict_variables' => false,
+                    'autoescape' => false,
+                ]);
 
                 $definedFormatters = $container->get('formatters');
 
@@ -114,8 +117,7 @@ class ContainerConfig
                     $formatter = $container->get($formatterClass);
                     $twig->addFunction(new TwigFunction($key, $formatter(...)));
                 }
-                /** TODO need also spaceless for json */
-                $twig->getExtension(EscaperExtension::class)->setEscaper('json_string', fn(Environment $twig, string $value) => sprintf('"%s"', $value));
+                /** TODO need spaceless for json */
 
                 return $twig;
             },

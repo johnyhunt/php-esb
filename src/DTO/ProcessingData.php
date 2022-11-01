@@ -7,7 +7,7 @@ namespace ESB\DTO;
 use ESB\Entity\SyncRecord;
 use ESB\Exception\ESBException;
 
-class RouteData
+class ProcessingData
 {
     public function __construct(
         public readonly IncomeData $incomeData,
@@ -19,7 +19,7 @@ class RouteData
 
     public function withTargetResponse(TargetResponse $targetResponse) : self
     {
-        return new RouteData(
+        return new ProcessingData(
             incomeData: $this->incomeData,
             targetRequest: $this->targetRequest,
             targetResponse: $targetResponse

@@ -3,7 +3,7 @@
 namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Entity\SyncRecord;
 use ESB\Middleware\ESBMiddlewareInterface;
@@ -15,7 +15,7 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
     {
     }
 
-    public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
+    public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If isn't set sync settings - skip this step
         if (! $route->syncSettings()) {

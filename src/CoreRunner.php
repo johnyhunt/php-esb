@@ -2,7 +2,7 @@
 
 namespace ESB;
 
-use ESB\DTO\RouteData;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 
 /**
@@ -15,8 +15,8 @@ class CoreRunner implements CoreRunnerInterface
     {
     }
 
-    public function runCore(RouteData $data, Route $route): void
+    public function runCore(ProcessingData $data, Route $route) : ProcessingData
     {
-        $this->core->run($data, $route);
+        return $this->core->run($data, $route);
     }
 }

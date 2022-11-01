@@ -6,5 +6,5 @@ namespace ESB\Validation;
 
 interface ValidatorInterface
 {
-    public function validate(mixed $value, array $params = []) : void;
+    public function validate(mixed $value, string $propertyPath, array $params = []) : void;
 }
