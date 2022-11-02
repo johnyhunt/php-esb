@@ -8,8 +8,9 @@ use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
 use ESB\Entity\SyncTable;
 use ESB\Entity\VO\AbstractDSN;
+use ESB\Entity\VO\AuthMap;
 use ESB\Entity\VO\InputDataMap;
-use ESB\Entity\VO\OutputDataMap;
+use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
@@ -38,7 +39,7 @@ class RouteRepository implements RouteRepositoryInterface
                 fromSystemData: new InputDataMap(),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new OutputDataMap(),
+                toSystemData: new TargetRequestMap(),
                 syncSettings: null,
                 postSuccessHandlers: [new PostHandler(name: 'my-post-handler')],
                 customRunner: 'my-runner'
@@ -51,7 +52,7 @@ class RouteRepository implements RouteRepositoryInterface
                 fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'validationRules1.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new OutputDataMap(file_get_contents(self::__FIXTURES__ . 'template1.xml.twig')),
+                toSystemData: new TargetRequestMap(template: file_get_contents(self::__FIXTURES__ . 'template1.xml.twig')),
                 syncSettings: null
             ),
             new Route(
@@ -62,7 +63,16 @@ class RouteRepository implements RouteRepositoryInterface
                 fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'validationRules2.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new OutputDataMap(file_get_contents(self::__FIXTURES__ . 'template2.json.twig')),
+                toSystemData: new TargetRequestMap(
+                    template: file_get_contents(self::__FIXTURES__ . 'template2.json.twig'),
+                    auth: new AuthMap('JsonAuthService', [
+                        'data'        => ['login' => '123', 'password' => '345'],
+                        'dsn'         => implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com']),
+                        'headers'     => ['Content-Type' => 'application/json'],
+                        'token'       => 'response.body.session',
+                        'output-name' => 'token',
+                    ]),
+                ),
                 syncSettings: null,
             ),
             new Route(
@@ -73,7 +83,7 @@ class RouteRepository implements RouteRepositoryInterface
                 fromSystemData: new InputDataMap(),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new OutputDataMap(''),
+                toSystemData: new TargetRequestMap(template: ''),
                 syncSettings: null,
             ),
         ];

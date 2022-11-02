@@ -31,27 +31,29 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         }
 
         /** TODO could be empty string new TargetRequest('') */
-        if (! $route->toSystemData()->template) {
+        if (! $route->toSystemData()->template()) {
             return $handler->handle($data, $route);
         }
 
         try {
-            $template = $this->twig->load($route->toSystemData()->template);
+            $template = $this->twig->load($route->toSystemData()->template());
         } catch (LoaderError) {
-            $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template, '')));
-            $template = $this->twig->createTemplate($route->toSystemData()->template);
+            $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template(), '')));
+            $template = $this->twig->createTemplate($route->toSystemData()->template());
         }
 
         return $handler->handle(
-            new ProcessingData(
-                $data->incomeData,
-                new TargetRequest($template->render(
-                    [
-                        'body'    => $data->incomeData->body,
-                        'headers' => $data->incomeData->headers,
-                        'params'  => $data->incomeData->params,
-                    ]
-                ))
+            $data->withTargetRequest(
+                new TargetRequest(
+                    $template->render(
+                        [
+                            'body'    => $data->incomeData->body,
+                            'headers' => $data->incomeData->headers,
+                            'params'  => $data->incomeData->params,
+                        ]
+                    ),
+                    $route->toSystemData()->headers(),
+                )
             ),
             $route
         );

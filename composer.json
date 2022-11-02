@@ -10,7 +10,8 @@
         "symfony/console": "^6.1",
         "ramsey/uuid": "^4.5",
         "beberlei/assert": "^3.3",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "guzzlehttp/guzzle": "^7.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
