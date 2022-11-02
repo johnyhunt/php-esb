@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ESB;
 
+use ESB\Client\HttpClient;
 use ESB\Exception\ESBException;
 use ESB\Handlers\HTTP\ESBHandler;
 use ESB\Handlers\PostHandlerInterface;
@@ -12,14 +13,13 @@ use ESB\Middleware\Core\ProcessingMiddleware;
 use ESB\Middleware\Core\SyncRecordsMiddleware;
 use ESB\Middleware\Core\TransportMiddleware;
 use ESB\Middleware\Core\ValidatorMiddleware;
-use ESB\Repository\RouteRepositoryInterface;
+use ESB\Service\AuthServicePool;
+use ESB\Service\ClientPool;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
-use Twig\Extension\EscaperExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFunction;
-use function sprintf;
 
 class ContainerConfig
 {
@@ -140,7 +140,11 @@ class ContainerConfig
                 }
 
                 return new PostSuccessMiddleware($customContainerHandlers);
-            }
+            },
+
+            ClientPool::class => fn() => new ClientPool(new HttpClient()),
+
+            AuthServicePool::class => fn() => new AuthServicePool(),
         ];
     }
 }

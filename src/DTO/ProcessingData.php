@@ -17,9 +17,17 @@ class ProcessingData
     ) {
     }
 
+    public function withTargetRequest(TargetRequest $targetRequest) : self
+    {
+        return new self(
+            incomeData: $this->incomeData,
+            targetRequest: $targetRequest,
+        );
+    }
+
     public function withTargetResponse(TargetResponse $targetResponse) : self
     {
-        return new ProcessingData(
+        return new self(
             incomeData: $this->incomeData,
             targetRequest: $this->targetRequest,
             targetResponse: $targetResponse

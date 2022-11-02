@@ -3,25 +3,31 @@
 namespace ESB\Middleware\Core;
 
 use ESB\CoreHandlerInterface;
-use ESB\DTO\RouteData;
-use ESB\DTO\TargetResponse;
+use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Middleware\ESBMiddlewareInterface;
+use ESB\Service\AuthServicePool;
+use ESB\Service\ClientPool;
 
 class TransportMiddleware implements ESBMiddlewareInterface
 {
-    public function process(RouteData $data, Route $route, CoreHandlerInterface $handler)
+    public function __construct(private readonly ClientPool $clientPool, private readonly AuthServicePool $authServicePool)
     {
-        // 1. Get DSN and detect transport sending interface
-            // 1.1 For sync interface, with use default sync transport
-            // 1.2 For async - trigger exception if not setup async transport
+    }
 
-        // 2. Authorize request (if you need)
+    public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
+    {
+        if ($authMap = $route->toSystemData()->auth()) {
+            $authService = $this->authServicePool->get($authMap->serviceAlias());
+            $authService->authenticate($data->targetRequest, $authMap->settings());
+        }
+        $client = $this->clientPool->get($route->toSystemDsn());
 
-        // 3. Using DSN(Method sending) send body $data->targetRequest()->body to target system (ServerDSN->path or QueueDSN->action)
-
-        // 4. $handler->handle with withTargetResponse
-
-        return $handler->handle($data->withTargetResponse(new TargetResponse('ok', 200)), $route);
+        return $handler->handle(
+            $data->withTargetResponse(
+                $client->send($route->toSystemDsn(), $data->targetRequest)
+            ),
+            $route,
+        );
     }
 }

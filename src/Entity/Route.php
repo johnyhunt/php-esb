@@ -6,7 +6,7 @@ namespace ESB\Entity;
 
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\InputDataMap;
-use ESB\Entity\VO\OutputDataMap;
+use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Entity\VO\SyncSettings;
 
@@ -20,7 +20,7 @@ class Route
         private InputDataMap      $fromSystemData,
         private IntegrationSystem $toSystem,
         private AbstractDSN       $toSystemDsn,
-        private OutputDataMap     $toSystemData,
+        private TargetRequestMap  $toSystemData,
         private ?SyncSettings     $syncSettings,
         private ?array            $postSuccessHandlers = [],
         private ?string           $customRunner = null,
@@ -38,7 +38,7 @@ class Route
         return $this->fromSystemData;
     }
 
-    public function toSystemData() : OutputDataMap
+    public function toSystemData() : TargetRequestMap
     {
         return $this->toSystemData;
     }
