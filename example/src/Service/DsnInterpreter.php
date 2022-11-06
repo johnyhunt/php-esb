@@ -6,7 +6,7 @@ namespace Example\Service;
 
 use Assert\Assertion;
 use ESB\Entity\VO\AbstractDSN;
-use ESB\Entity\VO\QueueDSN;
+use ESB\Entity\VO\PubSubDSN;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
 
@@ -24,7 +24,7 @@ class DsnInterpreter implements DsnInterpreterInterface
 
         return match (strtoupper($client)) {
             'HTTP'   => ServerDSN::fromString($dsn),
-            'PUBSUB' => QueueDSN::fromString($dsn),
+            'PUBSUB' => PubSubDSN::fromString($dsn),
             default  => throw new ESBException('DsnInterpreter: unknown client')
         };
     }

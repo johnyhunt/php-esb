@@ -10,14 +10,15 @@ use function explode;
 use function preg_match;
 use function sprintf;
 
-class QueueDSN extends AbstractDSN
+class PubSubDSN extends AbstractDSN
 {
     private const PATTERN = '/(\w+%s){2}\w+/';
 
-    /** like outer-system;pubsub;topic-name;generateDocument */
+    /** like pubsub;topic-name;subscription-name;generateDocument */
     public function __construct(
       public readonly string $client,
       public readonly string $topic,
+      public readonly string $subscription,
       public readonly string $action,
     ) {
     }
@@ -25,10 +26,10 @@ class QueueDSN extends AbstractDSN
     public static function fromString(string $dsn) : static
     {
         Assertion::true(! ! preg_match(sprintf(static::PATTERN, static::DSN_SEPARATOR), $dsn), 'QueueDSN: dsn string invalid');
-        $items = [$client, $topic, $action] = explode(static::DSN_SEPARATOR, $dsn);
+        $items = [$client, $topic, $subscription, $action] = explode(static::DSN_SEPARATOR, $dsn);
         Assertion::allString($items);
-        Assertion::true($client === 'pubsub', 'QueueDSN: expecting pubsub as client string');
+        Assertion::true($client === 'pubsub', 'PubSubDSN: expecting pubsub as client string');
 
-        return new self($client, $topic, $action);
+        return new self($client, $topic, $subscription, $action);
     }
 }

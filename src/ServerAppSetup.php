@@ -44,8 +44,9 @@ class ServerAppSetup
     protected function setupMiddlewares(App $app) : void
     {
         $app->addRoutingMiddleware();
-        $app->addBodyParsingMiddleware();
 
         $app->add(new InitRouteDataMiddleware($this->provider, $this->basePath));
+
+        $app->addBodyParsingMiddleware();
     }
 }
