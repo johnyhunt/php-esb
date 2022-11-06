@@ -28,7 +28,7 @@ class Route
     ) {
     }
 
-    public function fromSystemDsn(): AbstractDSN
+    public function fromSystemDsn() : AbstractDSN
     {
         return $this->fromSystemDsn;
     }
@@ -43,7 +43,7 @@ class Route
         return $this->toSystemData;
     }
 
-    public function syncSettings(): ?SyncSettings
+    public function syncSettings() : ?SyncSettings
     {
         return $this->syncSettings;
     }
@@ -54,7 +54,7 @@ class Route
         return $this->postSuccessHandlers;
     }
 
-    public function customRunner(): ?string
+    public function customRunner() : ?string
     {
         return $this->customRunner;
     }

@@ -79,7 +79,7 @@ class RouteRepository implements RouteRepositoryInterface
                 id: 'id_3',
                 name: 'route_3',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['pubsub', 'example', 'test-action'])),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['pubsub', 'example', 'example.sub', 'test-action'])),
                 fromSystemData: new InputDataMap(),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),

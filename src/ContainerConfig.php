@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace ESB;
 
 use ESB\Client\HttpClient;
+use ESB\Client\PubSubClient;
 use ESB\Exception\ESBException;
-use ESB\Handlers\HTTP\ESBHandler;
+use ESB\Handlers\MessageMiddlewares\ErrorHandlerMiddleware;
+use ESB\Handlers\MessageMiddlewares\RunCoreMiddleware;
 use ESB\Handlers\PostHandlerInterface;
+use ESB\Handlers\QueueMessageHandler;
 use ESB\Middleware\Core\PostSuccessMiddleware;
 use ESB\Middleware\Core\ProcessingMiddleware;
 use ESB\Middleware\Core\SyncRecordsMiddleware;
@@ -15,6 +18,7 @@ use ESB\Middleware\Core\TransportMiddleware;
 use ESB\Middleware\Core\ValidatorMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
+use ESB\Service\CoreRunnersPool;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
@@ -66,23 +70,20 @@ class ContainerConfig
                 );
             },
 
-            ESBHandler::class => function(ContainerInterface $container) : ESBHandler
+            CoreRunnersPool::class => function(ContainerInterface $container) : CoreRunnersPool
             {
+                $pool           = new CoreRunnersPool($container->get(CoreRunner::class));
                 $definedRunners = $container->get('runner');
-
-                $runners = [];
 
                 foreach ($definedRunners as $alias => $runnerClass) {
                     $runner = $container->get($runnerClass);
                     if (! $runner instanceof CoreRunnerInterface) {
                         throw new ESBException('ESBHandler: runner config invalid');
                     }
-                    $runners[$alias] = $runner;
+                    $pool->add($alias, $runner);
                 }
 
-                $runners[CoreRunner::class] = $container->get(CoreRunner::class);
-
-                return new ESBHandler($runners);
+                return $pool;
             },
 
             ValidatorMiddleware::class => function(ContainerInterface $container) : ValidatorMiddleware
@@ -142,7 +143,12 @@ class ContainerConfig
                 return new PostSuccessMiddleware($customContainerHandlers);
             },
 
-            ClientPool::class => fn() => new ClientPool(new HttpClient()),
+            QueueMessageHandler::class => fn(ContainerInterface $container) => new QueueMessageHandler(
+                $container->get(ErrorHandlerMiddleware::class),
+                $container->get(RunCoreMiddleware::class),
+            ),
+
+            ClientPool::class => fn(ContainerInterface $container) => new ClientPool(new HttpClient(), $container->get(PubSubClient::class)),
 
             AuthServicePool::class => fn() => new AuthServicePool(),
         ];
