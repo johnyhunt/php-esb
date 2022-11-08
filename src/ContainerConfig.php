@@ -148,7 +148,7 @@ class ContainerConfig
                 $container->get(RunCoreMiddleware::class),
             ),
 
-            ClientPool::class => fn(ContainerInterface $container) => new ClientPool(new HttpClient(), $container->get(PubSubClient::class)),
+            ClientPool::class => fn(ContainerInterface $container) => new ClientPool($container->get(HttpClient::class), $container->get(PubSubClient::class)),
 
             AuthServicePool::class => fn() => new AuthServicePool(),
         ];

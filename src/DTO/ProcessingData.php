@@ -17,11 +17,20 @@ class ProcessingData
     ) {
     }
 
+    public function withSyncData(SyncRecord $syncRecord) : self
+    {
+        return new self(
+            incomeData: $this->incomeData,
+            syncRecord: $syncRecord,
+        );
+    }
+
     public function withTargetRequest(TargetRequest $targetRequest) : self
     {
         return new self(
             incomeData: $this->incomeData,
             targetRequest: $targetRequest,
+            syncRecord: $this->syncRecord,
         );
     }
 
@@ -30,7 +39,8 @@ class ProcessingData
         return new self(
             incomeData: $this->incomeData,
             targetRequest: $this->targetRequest,
-            targetResponse: $targetResponse
+            targetResponse: $targetResponse,
+            syncRecord: $this->syncRecord
         );
     }
 

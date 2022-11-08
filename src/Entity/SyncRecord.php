@@ -2,6 +2,7 @@
 
 namespace ESB\Entity;
 
+/** TODO is it really hash(requestHash) or some json|xml body ? */
 class SyncRecord
 {
     public function __construct(
@@ -13,10 +14,12 @@ class SyncRecord
         $this->updatedAt = time();
     }
 
-    public function updateRecord(string $requestHash)
+    public function updateRecord(string $requestHash) : self
     {
         $this->requestHash = $requestHash;
         $this->updatedAt   = time();
+
+        return $this;
     }
 
     public function fromId(): string
