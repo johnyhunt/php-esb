@@ -8,9 +8,21 @@ class SyncSettings
 {
     public function __construct(
         private SyncTable $table,
+        private string $pkPath,
+        private string $responsePkPath,
         private bool $syncOnExist,
         private bool $syncOnChange,
     ) {
+    }
+
+    public function pkPath() : string
+    {
+        return $this->pkPath;
+    }
+
+    public function responsePkPath() : string
+    {
+        return $this->responsePkPath;
     }
 
     public function table(): SyncTable

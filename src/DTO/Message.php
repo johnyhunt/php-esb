@@ -10,10 +10,9 @@ use JsonSerializable;
 
 use function json_decode;
 
-/** TODO do we need other properties, except action? */
 class Message implements JsonSerializable
 {
-    private ?object $nativeMessage = null;
+    private ?object $nativeMessage   = null;
     private ?AbstractDSN $routingDsn = null;
 
     public function __construct(public readonly string $body, public readonly string $action, public readonly array $attributes)

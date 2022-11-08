@@ -10,6 +10,7 @@ use ESB\Entity\SyncTable;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\AuthMap;
 use ESB\Entity\VO\InputDataMap;
+use ESB\Entity\VO\SyncSettings;
 use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Exception\ESBException;
@@ -73,7 +74,7 @@ class RouteRepository implements RouteRepositoryInterface
                         'output-name' => 'token',
                     ]),
                 ),
-                syncSettings: null,
+                syncSettings: new SyncSettings(new SyncTable('example'), 'body.id', 'data.externalId', true, false),
             ),
             new Route(
                 id: 'id_3',

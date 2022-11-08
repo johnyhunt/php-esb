@@ -6,8 +6,10 @@ use ESB\CoreHandlerInterface;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Entity\SyncRecord;
+use ESB\Exception\ESBException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
+use ESB\Utils\ArrayFetch;
 
 class SyncRecordsMiddleware implements ESBMiddlewareInterface
 {
@@ -18,14 +20,15 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
     public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If isn't set sync settings - skip this step
-        if (! $route->syncSettings()) {
+        if (! $settings = $route->syncSettings()) {
             return $handler->handle($data, $route);
         }
 
-        if ($syncRecord = $data->syncRecord) {
-            $syncRecord->updateRecord($data->targetRequest()->body);
-        } else {
-            $syncRecord = new SyncRecord('', '', $data->targetRequest()->body);
+        /** TODO should run exception on toId fails */
+        $toId = (new ArrayFetch($data->targetResponse()->content))($settings->responsePkPath());
+        if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
+            $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
+            $syncRecord = new SyncRecord($fromId, $toId ?? '', $data->targetRequest()->body);
         }
 
         $this->recordRepository->store($route->syncSettings()->table(), $syncRecord);

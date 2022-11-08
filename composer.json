@@ -3,6 +3,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-pcntl": "*",
+        "ext-simplexml": "*",
         "php": "^8.1",
         "php-di/php-di": "^6.4",
         "slim/slim": "4.*",
