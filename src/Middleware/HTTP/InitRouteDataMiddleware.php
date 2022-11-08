@@ -5,6 +5,7 @@ namespace ESB\Middleware\HTTP;
 use ESB\DTO\IncomeData;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
+use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,17 +14,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class InitRouteDataMiddleware implements MiddlewareInterface
 {
-    public function __construct(
-        private readonly RouteRepositoryInterface $routeProvider,
-        private readonly string                   $basePath = '/middleware'
-    ) {}
+    public function __construct(private readonly RouteRepositoryInterface $routeProvider) {}
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $path = substr($request->getUri()->getPath(), strlen($this->basePath));
-        $dsn  = implode(';', ['HTTP', strtoupper($request->getMethod()), $path]);
+        $xRoute = $request->getHeader('X-ROUTE')[0] ?? throw new ESBException('X-ROUTE header required in InitRouteDataMiddleware');
 
-        $routeEntity = $this->routeProvider->get($dsn);
+        $routeEntity = $this->routeProvider->get($xRoute);
         $incomeData  = new IncomeData(
             $request->getHeaders(),
             $request->getAttributes(),

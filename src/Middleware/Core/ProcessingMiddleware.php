@@ -36,9 +36,11 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
             $data = $data->withSyncData($prevSyncedRecord);
         }
 
-        /** TODO could be empty string new TargetRequest(''), should we do json_encode($data->incomeData->body) */
         if (! $route->toSystemData()->template()) {
-            return $handler->handle($data, $route);
+            return $handler->handle(
+                $data->withTargetRequest(new TargetRequest('', $route->toSystemData()->headers())),
+                $route,
+            );
         }
 
         try {
@@ -47,20 +49,20 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
             $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template(), '')));
             $template = $this->twig->createTemplate($route->toSystemData()->template());
         }
+        $content = $template->render(
+            [
+                'body'    => $data->incomeData->body,
+                'headers' => $data->incomeData->headers,
+                'params'  => $data->incomeData->params,
+            ]
+        );
+        // duplicate call check
+        if ($content === $data->syncRecord?->requestBody()) {
+            throw new StopProcessingException();
+        }
 
         return $handler->handle(
-            $data->withTargetRequest(
-                new TargetRequest(
-                    $template->render(
-                        [
-                            'body'    => $data->incomeData->body,
-                            'headers' => $data->incomeData->headers,
-                            'params'  => $data->incomeData->params,
-                        ]
-                    ),
-                    $route->toSystemData()->headers(),
-                )
-            ),
+            $data->withTargetRequest(new TargetRequest($content, $route->toSystemData()->headers())),
             $route
         );
     }

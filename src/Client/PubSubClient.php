@@ -24,8 +24,8 @@ class PubSubClient implements EsbClientInterface
         if (! $dsn instanceof PubSubDSN) {
             throw new ESBException('PubSubClient expects dsn been PubSubDSN instance');
         }
-        $producer = $this->factory->producer(new PubSubConfig($dsn->topic, "$dsn->topic.sub", []));
-        $result   = $producer->send(new Message($targetRequest->body, $dsn->action, $targetRequest->headers));
+        $producer = $this->factory->producer(new PubSubConfig($dsn->topic, $dsn->subscription, []));
+        $result   = $producer->send(new Message($targetRequest->body, $dsn->xroute, $targetRequest->headers));
 
         return new TargetResponse($result, 200, []);
     }

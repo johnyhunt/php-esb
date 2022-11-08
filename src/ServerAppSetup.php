@@ -45,7 +45,7 @@ class ServerAppSetup
     {
         $app->addRoutingMiddleware();
 
-        $app->add(new InitRouteDataMiddleware($this->provider, $this->basePath));
+        $app->add(new InitRouteDataMiddleware($this->provider));
 
         $app->addBodyParsingMiddleware();
     }

@@ -5,27 +5,22 @@ declare(strict_types=1);
 namespace ESB\DTO;
 
 use Assert\Assertion;
-use ESB\Entity\VO\AbstractDSN;
 use JsonSerializable;
 
+use function get_object_vars;
 use function json_decode;
 
 class Message implements JsonSerializable
 {
     private ?object $nativeMessage   = null;
-    private ?AbstractDSN $routingDsn = null;
 
-    public function __construct(public readonly string $body, public readonly string $action, public readonly array $attributes)
+    public function __construct(public readonly string $body, public readonly string $xroute, public readonly array $attributes)
     {
     }
 
     public function jsonSerialize() : array
     {
-        return [
-            'body'    => $this->body,
-            'action'  => $this->action,
-            'headers' => $this->attributes,
-        ];
+        return get_object_vars($this);
     }
 
     public static function deserialize(string $message) : self
@@ -52,15 +47,5 @@ class Message implements JsonSerializable
     public function nativeMessage() : object
     {
         return $this->nativeMessage;
-    }
-
-    public function injectRoutingDsn(AbstractDSN $dsn) : void
-    {
-        $this->routingDsn = $dsn;
-    }
-
-    public function routingDsn() : ?AbstractDSN
-    {
-        return $this->routingDsn;
     }
 }

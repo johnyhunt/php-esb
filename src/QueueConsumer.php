@@ -30,7 +30,6 @@ class QueueConsumer
             if(! $message = $consumer->receive()) {
                 continue;
             }
-            $message->injectRoutingDsn($config->buildDsn($message->action));
 
             $handlerResult = $this->handler->handle($message);
             switch ($handlerResult->result) {

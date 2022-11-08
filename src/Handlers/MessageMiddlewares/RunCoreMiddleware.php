@@ -30,7 +30,7 @@ class RunCoreMiddleware implements QueueMessageHandlerMiddlewareInterface
             new IncomeData(headers: $message->attributes, params: [], body: $body)
         );
 
-        $route = $this->routeRepository->get($message->routingDsn()->dsn());
+        $route = $this->routeRepository->get($message->xroute);
 
         $this->runnersPool->get($route->customRunner())->runCore($processingData, $route);
 

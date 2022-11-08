@@ -90,7 +90,7 @@ class RouteRepository implements RouteRepositoryInterface
         ];
 
         foreach ($routes as $route) {
-            $this->routes[$route->fromSystemDsn()->dsn()] = $route;
+            $this->routes[$route->name()] = $route;
         }
     }
 
