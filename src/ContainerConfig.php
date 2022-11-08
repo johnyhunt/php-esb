@@ -118,7 +118,6 @@ class ContainerConfig
                     $formatter = $container->get($formatterClass);
                     $twig->addFunction(new TwigFunction($key, $formatter(...)));
                 }
-                /** TODO need spaceless for json */
 
                 return $twig;
             },

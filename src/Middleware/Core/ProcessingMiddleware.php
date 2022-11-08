@@ -10,6 +10,7 @@ use ESB\Exception\StopProcessingException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Utils\ArrayFetch;
+use ESB\Utils\Spaceless;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Source;
@@ -49,13 +50,17 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
             $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template(), '')));
             $template = $this->twig->createTemplate($route->toSystemData()->template());
         }
-        $content = $template->render(
-            [
-                'body'    => $data->incomeData->body,
-                'headers' => $data->incomeData->headers,
-                'params'  => $data->incomeData->params,
-            ]
-        );
+
+        $content = (new Spaceless(
+            $template->render(
+                [
+                    'body'    => $data->incomeData->body,
+                    'headers' => $data->incomeData->headers,
+                    'params'  => $data->incomeData->params,
+                ]
+            )
+        ))();
+
         // duplicate call check
         if ($content === $data->syncRecord?->requestBody()) {
             throw new StopProcessingException();
