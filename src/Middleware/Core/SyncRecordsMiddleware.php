@@ -24,7 +24,6 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
             return $handler->handle($data, $route);
         }
 
-        /** TODO should run exception on toId fails */
         $toId = (new ArrayFetch($data->targetResponse()->content))($settings->responsePkPath());
         if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
             $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');

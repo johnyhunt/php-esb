@@ -87,7 +87,7 @@ class InputDataMapAssembler
     {
         $resultValidators = [];
         if ($required) {
-            $resultValidators[] = new Validator('notEmpty');
+            $resultValidators[] = new Validator('notEmpty', ['message' => "Empty body"]);
         }
         $resultValidators[] = match ($type) {
             'int'    => new Validator('integer'),

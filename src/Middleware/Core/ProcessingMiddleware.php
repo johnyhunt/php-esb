@@ -29,7 +29,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
     {
         // If exist sync settings, need check before sending data actuality of them
         if ($settings = $route->syncSettings()) {
-            $prevSyncedRecord = $data->syncRecord ?? $this->recordRepository->findByPk(
+            $prevSyncedRecord = $this->recordRepository->findByPk(
                 $route->syncSettings()->table(),
                 (new ArrayFetch($data->incomeData->jsonSerialize()))($route->syncSettings()->pkPath())
             );

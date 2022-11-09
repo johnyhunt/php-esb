@@ -15,6 +15,7 @@ class AssertValidator implements ValidatorInterface
 
     public function validate(mixed $value, string $propertyPath, array $params = []) : void
     {
+        $params['propertyPath'] = $propertyPath;
         try {
             Assertion::{$this->assertName}($value, ...$params);
         } catch (BadMethodCallException $e) {
