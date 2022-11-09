@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ESB\Client;
+namespace Example\Clients;
 
+use ESB\Client\EsbClientInterface;
 use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
-use ESB\Service\ResponseDecodeService;
+use Example\Service\ResponseDecodeService;
 use GuzzleHttp\Client;
 
 class HttpClient implements EsbClientInterface

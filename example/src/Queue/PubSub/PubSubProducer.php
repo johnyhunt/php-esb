@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ESB\Queue\PubSub;
+namespace Example\Queue\PubSub;
 
 use ESB\DTO\Message;
 use ESB\Queue\QueueProducerInterface;
 use Google\Cloud\PubSub\Topic;
-
 use function json_encode;
 
 class PubSubProducer implements QueueProducerInterface

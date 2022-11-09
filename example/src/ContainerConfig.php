@@ -8,7 +8,9 @@ use ESB\Core;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Service\AuthServicePool;
+use ESB\Service\ClientPool;
 use Example\Auth\JsonAuthService;
+use Example\Clients\HttpClient;
 use Example\Formatter\SellerMap;
 use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Runner\MyCustomRunner;
@@ -42,6 +44,8 @@ class ContainerConfig
             SyncRecordRepositoryInterface::class => new SyncRecordRepository(),
 
             MyCustomRunner::class => fn(ContainerInterface $container) => new MyCustomRunner($container->get(Core::class)),
+
+            ClientPool::class => fn(ContainerInterface $container) => new ClientPool($container->get(HttpClient::class)),
 
             AuthServicePool::class => fn (ContainerInterface $container) => new AuthServicePool($container->get(JsonAuthService::class)),
         ];

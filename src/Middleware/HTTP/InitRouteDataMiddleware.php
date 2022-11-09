@@ -18,7 +18,7 @@ class InitRouteDataMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $xRoute = $request->getHeader('X-ROUTE')[0] ?? throw new ESBException('X-ROUTE header required in InitRouteDataMiddleware');
+        $xRoute = $request->getHeader('xroute')[0] ?? throw new ESBException('xroute header required in InitRouteDataMiddleware');
 
         $routeEntity = $this->routeProvider->get($xRoute);
         $incomeData  = new IncomeData(

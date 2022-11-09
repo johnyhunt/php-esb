@@ -12,7 +12,13 @@ class SyncSettings
         private string $responsePkPath,
         private bool $syncOnExist,
         private bool $syncOnChange,
+        private ?string $updateRoteId = null,
     ) {
+    }
+
+    public function updateRoteId() : ?string
+    {
+        return $this->updateRoteId;
     }
 
     public function pkPath() : string

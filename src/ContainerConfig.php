@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace ESB;
 
-use ESB\Client\HttpClient;
-use ESB\Client\PubSubClient;
 use ESB\Exception\ESBException;
 use ESB\Handlers\MessageMiddlewares\ErrorHandlerMiddleware;
 use ESB\Handlers\MessageMiddlewares\RunCoreMiddleware;
@@ -147,7 +145,7 @@ class ContainerConfig
                 $container->get(RunCoreMiddleware::class),
             ),
 
-            ClientPool::class => fn(ContainerInterface $container) => new ClientPool($container->get(HttpClient::class), $container->get(PubSubClient::class)),
+            ClientPool::class => fn() => new ClientPool(),
 
             AuthServicePool::class => fn() => new AuthServicePool(),
         ];

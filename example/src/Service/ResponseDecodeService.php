@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace Example\Service;
 
 use Assert\Assertion;
 use Psr\Http\Message\ResponseInterface;

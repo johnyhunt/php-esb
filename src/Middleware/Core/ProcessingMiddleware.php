@@ -8,6 +8,7 @@ use ESB\DTO\TargetRequest;
 use ESB\Entity\Route;
 use ESB\Exception\StopProcessingException;
 use ESB\Middleware\ESBMiddlewareInterface;
+use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Utils\ArrayFetch;
 use ESB\Utils\Spaceless;
@@ -17,24 +18,31 @@ use Twig\Source;
 
 class ProcessingMiddleware implements ESBMiddlewareInterface
 {
-    public function __construct(private readonly SyncRecordRepositoryInterface $recordRepository, private readonly Environment $twig)
-    {
+    public function __construct(
+        private readonly SyncRecordRepositoryInterface $recordRepository,
+        private readonly Environment $twig,
+        private readonly RouteRepositoryInterface $routeRepository,
+    ) {
     }
 
     public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If exist sync settings, need check before sending data actuality of them
         if ($settings = $route->syncSettings()) {
-            $prevSyncedRecord = $this->recordRepository->findByPk(
+            $prevSyncedRecord = $data->syncRecord ?? $this->recordRepository->findByPk(
                 $route->syncSettings()->table(),
                 (new ArrayFetch($data->incomeData->jsonSerialize()))($route->syncSettings()->pkPath())
             );
 
-            if ($settings->syncOnExist() === false) {
+            if ($settings->syncOnExist() === false && $prevSyncedRecord) {
                 throw new StopProcessingException();
             }
 
             $data = $data->withSyncData($prevSyncedRecord);
+
+            if ($prevSyncedRecord && $updateRouteId = $settings->updateRoteId()) {
+                $route = $this->routeRepository->get($updateRouteId);
+            }
         }
 
         if (! $route->toSystemData()->template()) {

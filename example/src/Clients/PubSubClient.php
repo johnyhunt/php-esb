@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace ESB\Client;
+namespace Example\Clients;
 
+use ESB\Client\EsbClientInterface;
 use ESB\DTO\Message;
 use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\PubSubDSN;
 use ESB\Exception\ESBException;
-use ESB\Queue\PubSub\PubSubConfig;
-use ESB\Queue\PubSub\PubSubFactory;
+use Example\Queue\PubSub\PubSubConfig;
+use Example\Queue\PubSub\PubSubFactory;
 
 class PubSubClient implements EsbClientInterface
 {

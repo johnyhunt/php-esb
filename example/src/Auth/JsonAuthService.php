@@ -6,12 +6,11 @@ namespace Example\Auth;
 
 use Assert\Assertion;
 use ESB\Auth\AuthServiceInterface;
-use ESB\Client\HttpClient;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
 use ESB\Utils\ArrayFetch;
-
+use Example\Clients\HttpClient;
 use function json_decode;
 use function json_encode;
 

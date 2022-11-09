@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace ESB\Validation;
 
 use Assert\Assertion;
-use Assert\AssertionFailedException;
 use BadMethodCallException;
-use ESB\Exception\ESBException;
+use ESB\Exception\ValidationException;
 
 class AssertValidator implements ValidatorInterface
 {
@@ -18,10 +17,8 @@ class AssertValidator implements ValidatorInterface
     {
         try {
             Assertion::{$this->assertName}($value, ...$params);
-        } catch (BadMethodCallException | AssertionFailedException $exception) {
-            throw new ESBException(
-                sprintf('%s - %s', $propertyPath, $this->params['message'] ?? $exception->getMessage())
-            );
+        } catch (BadMethodCallException $e) {
+            throw new ValidationException($e->getMessage(), $propertyPath);
         }
     }
 }

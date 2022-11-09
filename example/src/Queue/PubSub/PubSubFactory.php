@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB\Queue\PubSub;
+namespace Example\Queue\PubSub;
 
 use ESB\Exception\ESBException;
 use ESB\Queue\QueueConfigInterface;

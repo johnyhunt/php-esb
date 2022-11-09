@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ESB\Queue\PubSub;
+namespace Example\Queue\PubSub;
 
 use ESB\DTO\Message;
 use ESB\Exception\ESBException;
 use ESB\Queue\QueueConsumerInterface;
 use Google\Cloud\PubSub\Message as PubSubMessage;
 use Google\Cloud\PubSub\Subscription;
-
 use function current;
 
 class PubSubConsumer implements QueueConsumerInterface
