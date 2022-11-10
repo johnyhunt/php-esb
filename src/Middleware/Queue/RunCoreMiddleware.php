@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ESB\Handlers\MessageMiddlewares;
+namespace ESB\Middleware\Queue;
 
 use ESB\DTO\IncomeData;
 use ESB\DTO\Message;

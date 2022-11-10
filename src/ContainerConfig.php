@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace ESB;
 
 use ESB\Exception\ESBException;
-use ESB\Handlers\MessageMiddlewares\ErrorHandlerMiddleware;
-use ESB\Handlers\MessageMiddlewares\RunCoreMiddleware;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Handlers\QueueMessageHandler;
 use ESB\Middleware\Core\PostSuccessMiddleware;
@@ -14,6 +12,8 @@ use ESB\Middleware\Core\ProcessingMiddleware;
 use ESB\Middleware\Core\SyncRecordsMiddleware;
 use ESB\Middleware\Core\TransportMiddleware;
 use ESB\Middleware\Core\ValidatorMiddleware;
+use ESB\Middleware\Queue\ErrorHandlerMiddleware;
+use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;

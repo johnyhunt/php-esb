@@ -18,7 +18,7 @@ class PostSuccessMiddleware implements ESBMiddlewareInterface
 
     public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
-        // If response from target system not 200, skip this middleware
+        // TODO: Not use statusCode, use isSuccess
         if ($data->targetResponse()->statusCode !== 200) {
             return $handler->handle($data, $route);
         }
