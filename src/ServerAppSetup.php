@@ -38,14 +38,12 @@ class ServerAppSetup
                 }
                 $group->map([$route->fromSystemDsn()->method], $route->fromSystemDsn()->path, ESBHandler::class);
             }
-        });
+        })->add(new InitRouteDataMiddleware($this->provider));
     }
 
     protected function setupMiddlewares(App $app) : void
     {
         $app->addRoutingMiddleware();
-
-        $app->add(new InitRouteDataMiddleware($this->provider));
 
         $app->addBodyParsingMiddleware();
     }
