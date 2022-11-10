@@ -10,6 +10,7 @@ use ESB\Exception\ESBException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Utils\ArrayFetch;
+use function array_merge;
 
 class SyncRecordsMiddleware implements ESBMiddlewareInterface
 {
@@ -24,7 +25,9 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
             return $handler->handle($data, $route);
         }
 
-        $toId = (new ArrayFetch($data->targetResponse()->content))($settings->responsePkPath());
+        $resultFetchSource = ['response' => $data->targetResponse()->content, 'request' => $data->incomeData->jsonSerialize()];
+
+        $toId = (new ArrayFetch($resultFetchSource))($settings->responsePkPath()) ?? throw new ESBException('Invalid syncSettings::responsePkPath or result is non-success');
         if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
             $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
             $syncRecord = new SyncRecord($fromId, $toId ?? '', $data->targetRequest()->body);

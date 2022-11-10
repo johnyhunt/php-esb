@@ -18,7 +18,6 @@ class ServerAppSetup
 {
     public function __construct(private readonly RouteRepositoryInterface $provider, private readonly string $basePath = '/middleware')
     {
-        /** TODO fix regular expression to prevent last / been as true pattern */
         Assertion::true(! ! preg_match('/(\/\w+(\/)?)+/', $this->basePath), 'ServerAppSetup: basePath expecting been uri-path');
     }
 
