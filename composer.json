@@ -1,4 +1,19 @@
 {
+    "name": "johnyhunt/php-esb",
+    "type": "library",
+    "description": "Enterprise service bus with PHP implementation",
+    "keywords": ["esb", "bus", "data-transfer"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eugene N.",
+            "email": "evnec@opsway.com"
+        },
+        {
+            "name": "Maxym G.",
+            "email": "magod@opsway.com"
+        }
+    ],
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
