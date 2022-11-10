@@ -8,26 +8,26 @@ use Assert\Assertion;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
-use function in_array;
 use function json_decode;
 use function json_encode;
 use function simplexml_load_string;
+use function str_contains;
 
 class ResponseDecodeService
 {
     public function __invoke(ResponseInterface $response) : array
     {
         try {
-            $contentType     = $response->getHeader('Content-type');
+            $contentType     = strtr($response->getHeaderLine('Content-type'), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
             $responseContent = $response->getBody()->getContents();
             switch (true)
             {
-                case in_array('text/xml', $contentType):
+                case str_contains($contentType, 'text/xml') || str_contains($contentType, 'application/xml'):
                     $xml = simplexml_load_string($responseContent);
                     Assertion::true($xml !== false);
 
                     return json_decode(json_encode($xml), true);
-                case in_array('application/json', $contentType):
+                case str_contains($contentType, 'application/json'):
                     Assertion::isJsonString($responseContent);
 
                     return json_decode($responseContent, true);

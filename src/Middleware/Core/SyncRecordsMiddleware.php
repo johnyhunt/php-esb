@@ -10,7 +10,6 @@ use ESB\Exception\ESBException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Utils\ArrayFetch;
-use function array_merge;
 
 class SyncRecordsMiddleware implements ESBMiddlewareInterface
 {
@@ -25,12 +24,15 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
             return $handler->handle($data, $route);
         }
 
-        $resultFetchSource = ['response' => $data->targetResponse()->content, 'request' => $data->incomeData->jsonSerialize()];
+        $fetchSource = ['clientResponse' => $data->targetResponse()->content, 'incomeRequest' => $data->incomeData->jsonSerialize()];
 
-        $toId = (new ArrayFetch($resultFetchSource))($settings->responsePkPath()) ?? throw new ESBException('Invalid syncSettings::responsePkPath or result is non-success');
+        $toId = '';
+        if ($settings->responsePkPath()) {
+            $toId = (new ArrayFetch($fetchSource))($settings->responsePkPath()) ?? throw new ESBException('Invalid syncSettings::responsePkPath or result is non-success');
+        }
         if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
-            $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
-            $syncRecord = new SyncRecord($fromId, $toId ?? '', $data->targetRequest()->body);
+            $fromId     = (new ArrayFetch($fetchSource))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
+            $syncRecord = new SyncRecord($fromId, (string) $toId, $data->targetRequest()->body);
         }
 
         $this->recordRepository->store($route->syncSettings()->table(), $syncRecord);

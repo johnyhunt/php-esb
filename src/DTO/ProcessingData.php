@@ -17,8 +17,12 @@ class ProcessingData
     ) {
     }
 
-    public function withSyncData(SyncRecord $syncRecord) : self
+    public function withSyncData(?SyncRecord $syncRecord) : self
     {
+        if (! $syncRecord) {
+            return $this;
+        }
+
         return new self(
             incomeData: $this->incomeData,
             syncRecord: $syncRecord,
