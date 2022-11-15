@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace ESB\Entity\VO;
 
-class AuthMap
+use JsonSerializable;
+
+use function get_object_vars;
+
+class AuthMap implements JsonSerializable
 {
     public function __construct(private readonly string $serviceAlias, private readonly array $settings)
     {
@@ -18,5 +22,10 @@ class AuthMap
     public function settings() : array
     {
         return $this->settings;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return get_object_vars($this);
     }
 }

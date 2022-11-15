@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace ESB\Entity\VO;
 
 use Assert\Assertion;
+use JsonSerializable;
+use function get_object_vars;
 
-class ValidationRule
+class ValidationRule implements JsonSerializable
 {
     /** type one of [string,int,object,array,float,bool] */
     public function __construct(
@@ -31,5 +33,10 @@ class ValidationRule
                 Assertion::notEmpty($this->items, 'ValidationRule::items required for type = array');
                 break;
         }
+    }
+
+    public function jsonSerialize() : array
+    {
+        return get_object_vars($this);
     }
 }

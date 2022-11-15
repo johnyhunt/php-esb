@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace ESB\Entity\VO;
 
-class TargetRequestMap
+use JsonSerializable;
+
+use function get_object_vars;
+
+class TargetRequestMap implements JsonSerializable
 {
     public function __construct(
         private readonly array $headers = [],
@@ -26,5 +30,10 @@ class TargetRequestMap
     public function template() : ?string
     {
         return $this->template;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return get_object_vars($this);
     }
 }
