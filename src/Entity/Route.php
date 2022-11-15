@@ -13,7 +13,6 @@ use ESB\Entity\VO\SyncSettings;
 class Route
 {
     public function __construct(
-        private string            $id,
         private string            $name,
         private IntegrationSystem $fromSystem,
         private AbstractDSN       $fromSystemDsn,
@@ -26,6 +25,21 @@ class Route
         private ?string           $customRunner = null,
         private ?string           $description = null,
     ) {
+    }
+
+    public function fromSystem() : IntegrationSystem
+    {
+        return $this->fromSystem;
+    }
+
+    public function toSystem() : IntegrationSystem
+    {
+        return $this->toSystem;
+    }
+
+    public function description() : ?string
+    {
+        return $this->description;
     }
 
     public function name() : string
