@@ -3,8 +3,9 @@
 namespace ESB\Entity\VO;
 
 use ESB\Entity\SyncTable;
+use JsonSerializable;
 
-class SyncSettings
+class SyncSettings implements JsonSerializable
 {
     public function __construct(
         private SyncTable $table,
@@ -44,5 +45,16 @@ class SyncSettings
     public function syncOnExist(): bool
     {
         return $this->syncOnExist;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return [
+            'pkPath'         => $this->pkPath,
+            'responsePkPath' => $this->responsePkPath,
+            'syncOnExist'    => $this->syncOnExist,
+            'syncOnChange'   => $this->syncOnChange,
+            'updateRoteId'   => $this->updateRoteId,
+        ];
     }
 }
