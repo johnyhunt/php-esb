@@ -31,7 +31,7 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
             $toId = (new ArrayFetch($fetchSource))($settings->responsePkPath()) ?? throw new ESBException('Invalid syncSettings::responsePkPath or result is non-success');
         }
         if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
-            $fromId     = (new ArrayFetch($fetchSource))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
+            $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new ESBException('Invalid syncSettings::pkPath');
             $syncRecord = new SyncRecord($fromId, (string) $toId, $data->targetRequest()->body);
         }
 
