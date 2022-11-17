@@ -9,6 +9,7 @@ use Assert\Assertion;
 use function explode;
 use function preg_match;
 use function sprintf;
+use function strtoupper;
 
 class PubSubDSN extends AbstractDSN
 {
@@ -28,7 +29,7 @@ class PubSubDSN extends AbstractDSN
         Assertion::true(! ! preg_match(sprintf(static::PATTERN, static::DSN_SEPARATOR), $dsn), 'QueueDSN: dsn string invalid');
         $items = [$client, $topic, $subscription, $xroute] = explode(static::DSN_SEPARATOR, $dsn);
         Assertion::allString($items);
-        Assertion::true($client === 'pubsub', 'PubSubDSN: expecting pubsub as client string');
+        Assertion::true(strtoupper($client) === 'PUBSUB', 'PubSubDSN: expecting pubsub as client string');
 
         return new self($client, $topic, $subscription, $xroute);
     }

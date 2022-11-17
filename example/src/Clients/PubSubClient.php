@@ -20,7 +20,7 @@ class PubSubClient implements EsbClientInterface
     {
     }
 
-    public function send(AbstractDSN $dsn, TargetRequest $targetRequest): TargetResponse
+    public function send(AbstractDSN $dsn, TargetRequest $targetRequest, string $responseFormat): TargetResponse
     {
         if (! $dsn instanceof PubSubDSN) {
             throw new ESBException('PubSubClient expects dsn been PubSubDSN instance');

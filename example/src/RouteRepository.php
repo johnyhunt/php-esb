@@ -63,6 +63,7 @@ class RouteRepository implements RouteRepositoryInterface
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
                 toSystemData: new TargetRequestMap(
                     template: file_get_contents(self::__FIXTURES__ . 'template2.json.twig'),
+                    responseFormat: 'json',
                     auth: new AuthMap('JsonAuthService', [
                         'data'        => ['login' => '123', 'password' => '345'],
                         'dsn'         => implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com']),

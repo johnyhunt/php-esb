@@ -25,7 +25,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
 
         return $handler->handle(
             $data->withTargetResponse(
-                $client->send($route->toSystemDsn(), $data->targetRequest)
+                $client->send($route->toSystemDsn(), $data->targetRequest, $route->toSystemData()->responseFormat())
             ),
             $route,
         );

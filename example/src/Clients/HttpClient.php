@@ -22,7 +22,7 @@ class HttpClient implements EsbClientInterface
         $this->client = new Client($config);
     }
 
-    public function send(AbstractDSN $dsn, TargetRequest $targetRequest) : TargetResponse
+    public function send(AbstractDSN $dsn, TargetRequest $targetRequest, string $responseFormat) : TargetResponse
     {
         if (! $dsn instanceof ServerDSN) {
             throw new ESBException('Http client expects dsn been ServerDSN instance');
@@ -30,7 +30,7 @@ class HttpClient implements EsbClientInterface
         $response = $this->client->request($dsn->method, $dsn->path, ['headers' => $targetRequest->headers, 'body' => $targetRequest->body]);
 
         return new TargetResponse(
-            ($this->responseDecodeService)($response),
+            ($this->responseDecodeService)($response, $responseFormat),
             $response->getStatusCode(),
             $response->getHeaders(),
         );

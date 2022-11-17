@@ -13,6 +13,7 @@ class TargetRequestMap implements JsonSerializable
     public function __construct(
         private readonly array $headers = [],
         private readonly ?string $template = null,
+        private readonly string $responseFormat = '',
         private readonly ?AuthMap $auth = null,
     ) {
     }
@@ -30,6 +31,11 @@ class TargetRequestMap implements JsonSerializable
     public function template() : ?string
     {
         return $this->template;
+    }
+
+    public function responseFormat(): string
+    {
+        return $this->responseFormat;
     }
 
     public function jsonSerialize() : array
