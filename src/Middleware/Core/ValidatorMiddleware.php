@@ -71,7 +71,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
             $validation = match (true) {
                 $assertionReflection->hasMethod($validator->assert) => new AssertValidator($validator->assert),
                 $customValidator !== null                           => new $customValidator,
-                default                                             => throw new ESBException('ValidatorMiddleware::validateRow wrong validation config'),
+                default                                             => throw new ESBException(sprintf('ValidatorMiddleware::validateRow wrong validation config %s', $validator->assert)),
             };
             $validation->validate($row, $propertyPath, $validator->params);
         }

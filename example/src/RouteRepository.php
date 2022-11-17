@@ -33,20 +33,18 @@ class RouteRepository implements RouteRepositoryInterface
     {
         $routes = [
             new Route(
-                id: 'id_0',
                 name: 'route_1',
                 fromSystem: new IntegrationSystem('system_1'),
                 fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/empty-test'])),
                 fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'test.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', 'localhost:8888/'])),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', 'app:8080/test'])),
                 toSystemData: new TargetRequestMap(),
-                syncSettings: null,
+                syncSettings: new SyncSettings(new SyncTable('example'), 'body.id', 'response.soapenv:Envelope.Item.ItemProduct.ProductInternalID', true, true),
                 postSuccessHandlers: [new PostHandler(name: 'my-post-handler')],
                 customRunner: 'my-runner'
             ),
             new Route(
-                id: 'id_1',
                 name: 'route_2',
                 fromSystem: new IntegrationSystem('system_1'),
                 fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', '/v1/test'])),
@@ -57,7 +55,6 @@ class RouteRepository implements RouteRepositoryInterface
                 syncSettings: null
             ),
             new Route(
-                id: 'id_2',
                 name: 'route_3',
                 fromSystem: new IntegrationSystem('system_1'),
                 fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/test-post'])),
@@ -77,7 +74,6 @@ class RouteRepository implements RouteRepositoryInterface
                 syncSettings: new SyncSettings(new SyncTable('example'), 'body.id', 'data.externalId', true, false),
             ),
             new Route(
-                id: 'id_3',
                 name: 'route_4',
                 fromSystem: new IntegrationSystem('system_1'),
                 fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['pubsub', 'example', 'example.sub', 'test-action'])),
