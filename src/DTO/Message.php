@@ -29,12 +29,12 @@ class Message implements JsonSerializable
         $data = json_decode($message, true);
         Assertion::keyExists($data, 'body', 'Message::deserialize expected message contain body');
         Assertion::string($data['body'], 'Message::deserialize expected body been string');
-        Assertion::keyExists($data, 'action', 'Message::deserialize expected message contain action');
-        Assertion::string($data['action'], 'Message::deserialize expected action been string');
+        Assertion::keyExists($data, 'xroute', 'Message::deserialize expected message contain xroute');
+        Assertion::string($data['xroute'], 'Message::deserialize expected xroute been string');
         Assertion::keyExists($data, 'headers', 'Message::deserialize expected message contain headers');
         Assertion::isArray($data['headers'], 'Message::deserialize expected headers been array');
 
-        return new self($data['body'], $data['action'], $data['headers']);
+        return new self($data['body'], $data['xroute'], $data['headers']);
     }
 
     public function injectNativeMessage(object $nativeMessage) : self
