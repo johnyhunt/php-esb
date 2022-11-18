@@ -141,8 +141,8 @@ class ContainerConfig
             },
 
             QueueMessageHandler::class => fn(ContainerInterface $container) => new QueueMessageHandler(
-                $container->get(ErrorHandlerMiddleware::class),
                 $container->get(RunCoreMiddleware::class),
+                $container->get(ErrorHandlerMiddleware::class),
             ),
 
             ClientPool::class => fn() => new ClientPool(),
