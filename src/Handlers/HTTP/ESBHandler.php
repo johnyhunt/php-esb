@@ -11,8 +11,6 @@ use ESB\Service\CoreRunnersPool;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-use function date;
-
 class ESBHandler
 {
     public function __construct(private readonly CoreRunnersPool $runnersPool)
@@ -28,12 +26,6 @@ class ESBHandler
 
         $result = $this->runnersPool->get($route->customRunner())->runCore($routeData, $route);
 
-        return new ESBJsonResponse(
-            [
-                'date' => date('Y-m-s H:i:s'),
-                'data' => $routeData->incomeData,
-                'targetRequest' => $result->targetRequest()->body
-            ]
-        );
+        return new ESBJsonResponse($result->targetResponse()->content);
     }
 }

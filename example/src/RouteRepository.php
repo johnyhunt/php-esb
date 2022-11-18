@@ -33,9 +33,21 @@ class RouteRepository implements RouteRepositoryInterface
     {
         $routes = [
             new Route(
+                name: 'route_0',
+                fromSystem: new IntegrationSystem('system_1'),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', '/v1/empty'])),
+                fromSystemData: new InputDataMap(),
+                toSystem: new IntegrationSystem('system_2'),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', 'https://catfact.ninja/fact'])),
+                toSystemData: new TargetRequestMap(responseFormat: 'json'),
+                syncSettings: null,
+                postSuccessHandlers: null,
+                customRunner: null
+            ),
+            new Route(
                 name: 'route_1',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/empty-test'])),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/test123'])),
                 fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'test.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', 'app:8080/test'])),

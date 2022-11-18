@@ -70,7 +70,7 @@ class Route
     /** @psalm-return array<int, PostHandler> */
     public function postSuccessHandlers() : array
     {
-        return $this->postSuccessHandlers;
+        return $this->postSuccessHandlers ?? [];
     }
 
     public function customRunner() : ?string
