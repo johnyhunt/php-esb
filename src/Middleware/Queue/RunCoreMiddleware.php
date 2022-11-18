@@ -10,6 +10,7 @@ use ESB\DTO\ProcessingData;
 use ESB\DTO\QueueHandlerOptions;
 use ESB\DTO\QueueHandlerResult;
 use ESB\Enum\MessageResultEnum;
+use ESB\Exception\ESBException;
 use ESB\Handlers\QueueMessageHandlerInterface;
 use ESB\Handlers\QueueMessageHandlerMiddlewareInterface;
 use ESB\Repository\RouteRepositoryInterface;
@@ -25,7 +26,11 @@ class RunCoreMiddleware implements QueueMessageHandlerMiddlewareInterface
 
     public function process(Message $message, QueueMessageHandlerInterface $handler) : QueueHandlerResult
     {
-        $body           = json_decode($message->body, true);
+        $body = json_decode($message->body, true);
+        /** json in message is corrupted */
+        if ($message->body && ! $body) {
+            throw new ESBException(sprintf('Message body corrupted = %s', $message->body));
+        }
         $processingData = new ProcessingData(
             new IncomeData(headers: $message->attributes, params: [], body: $body)
         );
