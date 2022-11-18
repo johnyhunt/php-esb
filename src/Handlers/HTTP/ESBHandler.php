@@ -26,6 +26,6 @@ class ESBHandler
 
         $result = $this->runnersPool->get($route->customRunner())->runCore($routeData, $route);
 
-        return new ESBJsonResponse($result->targetResponse()->content);
+        return new ESBJsonResponse(body: $result->targetResponse()->content, status: $result->targetResponse()->statusCode);
     }
 }
