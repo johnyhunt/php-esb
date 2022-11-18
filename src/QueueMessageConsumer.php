@@ -12,7 +12,7 @@ use ESB\Queue\QueueFactoryInterface;
 use function pcntl_async_signals;
 use function pcntl_signal;
 
-class QueueConsumer
+class QueueMessageConsumer
 {
     private bool $run = true;
 
