@@ -28,7 +28,7 @@ class PubSubClient implements EsbClientInterface
         $producer = $this->factory->producer(new PubSubConfig($dsn->topic, $dsn->subscription, []));
         $result   = $producer->send(new Message($targetRequest->body, $dsn->xroute, $targetRequest->headers));
 
-        return new TargetResponse($result, 200, []);
+        return new TargetResponse($result);
     }
 
     public function dsnMatchClass() : string

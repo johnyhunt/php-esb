@@ -31,6 +31,7 @@ class HttpClient implements EsbClientInterface
 
         return new TargetResponse(
             ($this->responseDecodeService)($response, $responseFormat),
+            $response->getStatusCode() === 200,
             $response->getStatusCode(),
             $response->getHeaders(),
         );
