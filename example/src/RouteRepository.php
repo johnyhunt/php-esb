@@ -112,4 +112,14 @@ class RouteRepository implements RouteRepositoryInterface
     {
         return $this->routes;
     }
+
+    public function store(Route $route): void
+    {
+        // TODO: Implement store() method.
+    }
+
+    public function delete(Route $route): void
+    {
+        // TODO: Implement delete() method.
+    }
 }

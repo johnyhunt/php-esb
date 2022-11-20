@@ -14,4 +14,8 @@ interface RouteRepositoryInterface
 
     /** @psalm-return array<string, Route> */
     public function loadAll() : array;
+
+    public function store(Route $route) : void;
+
+    public function delete(Route $route) : void;
 }
