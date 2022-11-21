@@ -40,7 +40,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
 
             $data = $data->withSyncData($prevSyncedRecord);
 
-            if ($prevSyncedRecord && $updateRouteId = $settings->updateRoteId()) {
+            if ($prevSyncedRecord && $updateRouteId = $settings->updateRouteId()) {
                 $route = $this->routeRepository->get($updateRouteId);
             }
         }

@@ -9,17 +9,17 @@ class SyncSettings implements JsonSerializable
 {
     public function __construct(
         private SyncTable $table,
-        private string $pkPath,
-        private string $responsePkPath,
-        private bool $syncOnExist,
-        private bool $syncOnChange,
-        private ?string $updateRoteId = null,
+        private string    $pkPath,
+        private string    $responsePkPath,
+        private bool      $syncOnExist,
+        private bool      $syncOnChange,
+        private ?string   $updateRouteId = null,
     ) {
     }
 
-    public function updateRoteId() : ?string
+    public function updateRouteId() : ?string
     {
-        return $this->updateRoteId;
+        return $this->updateRouteId;
     }
 
     public function pkPath() : string
@@ -54,7 +54,7 @@ class SyncSettings implements JsonSerializable
             'responsePkPath' => $this->responsePkPath,
             'syncOnExist'    => $this->syncOnExist,
             'syncOnChange'   => $this->syncOnChange,
-            'updateRoteId'   => $this->updateRoteId,
+            'updateRoteId'   => $this->updateRouteId,
         ];
     }
 }
