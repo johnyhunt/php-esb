@@ -9,6 +9,8 @@ use ESB\Response\ESBJsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function array_values;
+
 class RouteListHandler
 {
     public function __construct(private readonly RouteRepositoryInterface $routeRepository)
@@ -19,6 +21,6 @@ class RouteListHandler
     {
         $routes = $this->routeRepository->loadAll();
 
-        return new ESBJsonResponse($routes);
+        return new ESBJsonResponse(array_values($routes));
     }
 }

@@ -7,7 +7,7 @@ namespace ESB;
 use Assert\Assertion;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Handlers\HTTP\ESBHandler;
-use ESB\Handlers\HTTP\RouteCRUDHadler;
+use ESB\Handlers\HTTP\RouteCRUDHandler;
 use ESB\Handlers\HTTP\RouteListHandler;
 use ESB\Middleware\HTTP\InitRouteDataMiddleware;
 use ESB\Repository\RouteRepositoryInterface;
@@ -32,9 +32,9 @@ class ServerAppSetup
 
     protected function setupCrudRoutes(App $app) : void
     {
-        $app->map(['POST', 'PUT'], '/route', RouteCRUDHadler::class);
-        $app->delete('/route/{name}', RouteCRUDHadler::class);
-        $app->get('/route/{name}', RouteCRUDHadler::class);
+        $app->map(['POST', 'PUT'], '/route', RouteCRUDHandler::class);
+        $app->delete('/route/{name}', RouteCRUDHandler::class);
+        $app->get('/route/{name}', RouteCRUDHandler::class);
 
         $app->get('/route', RouteListHandler::class);
     }

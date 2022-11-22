@@ -51,7 +51,6 @@ class TargetRequestMapValidator
                 Assertion::string($auth['serviceAlias'] ?? null, 'TargetRequestMapValidator::auth::serviceAlias expected non-blank string');
                 Assertion::notBlank($auth['serviceAlias'], 'TargetRequestMapValidator::auth::serviceAlias expected non-blank string');
                 Assertion::isArray($auth['settings'] ?? null, 'TargetRequestMapValidator::auth::settings expected string array');
-                Assertion::allString($auth['settings'], 'TargetRequestMapValidator::auth::settings expected string array');
             }
             Assertion::string($row['responseFormat'] ?? null, 'TargetRequestMapValidator::responseFormat expected string');
         } catch (AssertionFailedException|SyntaxError $e) {

@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace ESB\Handlers\HTTP;
 
 use ESB\Assembler\RouteEntityAssembler;
+use ESB\Entity\Route;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\Validation\Route\RouteEntityInputValidator;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function array_filter;
 use function is_array;
+use function reset;
 use function strtoupper;
 
-class RouteCRUDHadler
+class RouteCRUDHandler
 {
     public function __construct(
         private readonly RouteRepositoryInterface $routeRepository,
@@ -28,16 +32,19 @@ class RouteCRUDHadler
     {
         if (strtoupper($request->getMethod()) === 'DELETE') {
             $name  = $request->getAttribute('name');
-            $route = $this->routeRepository->get($name);
-            $this->routeRepository->delete($route);
+            $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
+            if (! $route) {
+                throw new ESBException('Unknown route');
+            }
+            $this->routeRepository->delete(reset($route));
 
             return new ESBJsonResponse(['message' => 'Successfully deleted']);
         }
         if (strtoupper($request->getMethod()) === 'GET') {
             $name  = $request->getAttribute('name');
-            $route = $this->routeRepository->get($name);
+            $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
 
-            return new ESBJsonResponse($route);
+            return new ESBJsonResponse(reset($route));
         }
         $requestData = $request->getParsedBody();
         if (! is_array($requestData)) {
