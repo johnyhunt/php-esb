@@ -21,8 +21,8 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
     public function process(ProcessingData $data, Route $route, CoreHandlerInterface $handler) : ProcessingData
     {
         // If isn't set sync settings or request wasn't success - skip sync stage
-        /** @psalm-var SyncSettings $settings */
-        if (! $settings = $route->syncSettings() || ! $data->targetResponse()->isSuccess) {
+        $settings = $route->syncSettings();
+        if (! $settings || ! $data->targetResponse()->isSuccess) {
             return $handler->handle($data, $route);
         }
 
