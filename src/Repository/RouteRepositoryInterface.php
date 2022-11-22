@@ -18,4 +18,6 @@ interface RouteRepositoryInterface
     public function store(Route $route) : void;
 
     public function delete(Route $route) : void;
+
+    public function checkConsistence(Route $route) : bool;
 }

@@ -14,16 +14,15 @@ use ESB\Entity\VO\Validator;
 use ESB\Exception\ESBException;
 use ESB\Exception\ValidationException;
 use ESB\Middleware\ESBMiddlewareInterface;
+use ESB\Service\CustomValidatorsPool;
 use ESB\Validation\AssertValidator;
-use ESB\Validation\ValidatorInterface;
 use ReflectionClass;
 
 use function implode;
 
 class ValidatorMiddleware implements ESBMiddlewareInterface
 {
-    /** @psalm-param array<string, ValidatorInterface> $customValidators */
-    public function __construct(private readonly array $customValidators = [])
+    public function __construct(private readonly CustomValidatorsPool $customValidators)
     {
     }
 
@@ -67,11 +66,9 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         $assertionReflection = new ReflectionClass(Assertion::class);
         /** @psalm-var Validator $validator */
         foreach ($rule->validators as $validator) {
-            $customValidator = $this->customValidators[$validator->assert] ?? null;
             $validation = match (true) {
                 $assertionReflection->hasMethod($validator->assert) => new AssertValidator($validator->assert),
-                $customValidator !== null                           => new $customValidator,
-                default                                             => throw new ESBException(sprintf('ValidatorMiddleware::validateRow wrong validation config %s', $validator->assert)),
+                default                                             => $this->customValidators->get($validator->assert),
             };
             $validation->validate($row, $propertyPath, $validator->params);
         }

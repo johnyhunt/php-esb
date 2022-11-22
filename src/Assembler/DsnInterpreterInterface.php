@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Example\Service;
+namespace ESB\Assembler;
 
 use ESB\Entity\VO\AbstractDSN;
 

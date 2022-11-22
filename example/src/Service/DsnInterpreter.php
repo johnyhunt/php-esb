@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Example\Service;
 
 use Assert\Assertion;
+use ESB\Assembler\DsnInterpreterInterface;
 use ESB\Entity\VO\AbstractDSN;
-use ESB\Entity\VO\PubSubDSN;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
+use Example\Entity\VO\PubSubDSN;
 
 use function preg_match;
 use function strtoupper;

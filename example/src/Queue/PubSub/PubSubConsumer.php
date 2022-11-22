@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Example\Queue\PubSub;
 
-use ESB\DTO\Message;
+use ESB\DTO\Message\Envelope;
+use ESB\DTO\Message\Message;
+use ESB\DTO\Message\ReceiveStamp;
 use ESB\Exception\ESBException;
+use ESB\Queue\QueueConfigInterface;
 use ESB\Queue\QueueConsumerInterface;
+use Example\Entity\VO\PubSubDSN;
 use Google\Cloud\PubSub\Message as PubSubMessage;
 use Google\Cloud\PubSub\Subscription;
+
 use function current;
 
 class PubSubConsumer implements QueueConsumerInterface
@@ -17,37 +22,44 @@ class PubSubConsumer implements QueueConsumerInterface
     {
     }
 
-    public function receive(int $timeout = 0) : ?Message
+    public function receive(QueueConfigInterface|PubSubConfig $config) : ?Envelope
     {
         $messages = $this->subscription->pull([
-            'maxMessages' => 1,
+            'maxMessages'       => 1,
             'returnImmediately' => true,
         ]);
 
-        if ($messages && $message = current($messages)) {
-            return (Message::deserialize($message->data()))->injectNativeMessage($message);
+        if ($messages && $nativeMessage = current($messages)) {
+            $message = Message::deserialize($nativeMessage->data());
+            $dsn     = new PubSubDSN($config->topic, $config->subscription, $message->action);
+
+            return new Envelope($message, new ReceiveStamp($dsn, $nativeMessage));
         }
 
         return null;
     }
 
-    public function acknowledge(Message $message) : void
+    public function acknowledge(Envelope $envelope) : void
     {
-        $nativeMessage = $message->nativeMessage();
+        /** @psalm-var ReceiveStamp|null $receivedStamp */
+        $receivedStamp = $envelope->getStamp(ReceiveStamp::class);
+        $nativeMessage = $receivedStamp?->nativeMessage;
         if (! $nativeMessage instanceof PubSubMessage) {
             throw new ESBException('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
         }
         $this->subscription->acknowledge($nativeMessage);
     }
 
-    public function reject(Message $message) : void
+    public function reject(Envelope $envelope) : void
     {
-        $this->acknowledge($message);
+        $this->acknowledge($envelope);
     }
 
-    public function requeue(Message $message, int $delay = 0) : void
+    public function requeue(Envelope $envelope, int $delay = 0) : void
     {
-        $nativeMessage = $message->nativeMessage();
+        /** @psalm-var ReceiveStamp|null $receivedStamp */
+        $receivedStamp = $envelope->getStamp(ReceiveStamp::class);
+        $nativeMessage = $receivedStamp?->nativeMessage;
         if (! $nativeMessage instanceof PubSubMessage) {
             throw new ESBException('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
         }

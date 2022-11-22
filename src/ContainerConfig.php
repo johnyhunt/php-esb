@@ -17,6 +17,8 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\CustomValidatorsPool;
+use ESB\Service\PostSuccessHandlersPool;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
@@ -84,25 +86,6 @@ class ContainerConfig
                 return $pool;
             },
 
-            ValidatorMiddleware::class => function(ContainerInterface $container) : ValidatorMiddleware
-            {
-                // Get list of defined validators
-                $definedValidators = $container->get('validators');
-
-                // List with custom ValidatorInterface class objects
-                $customContainerValidators = [];
-
-                foreach ($definedValidators as $alias => $validatorClass) {
-                    $validator = $container->get($validatorClass);
-                    if (! $validator instanceof ValidatorInterface) {
-                        throw new ESBException('ValidatorMiddleware: custom validator config invalid');
-                    }
-                    $customContainerValidators[$alias] = $validator;
-                }
-
-                return new ValidatorMiddleware($customContainerValidators);
-            },
-
             Environment::class => function(ContainerInterface $container) : Environment
             {
                 $twig = new Environment(new ArrayLoader(), [
@@ -120,26 +103,6 @@ class ContainerConfig
                 return $twig;
             },
 
-            PostSuccessMiddleware::class => function(ContainerInterface $container) : PostSuccessMiddleware
-            {
-                // Get list of defined post success handlers
-                $definedHandlers = $container->get('post-success');
-
-                // List with custom PostHandlerInterface class objects
-                $customContainerHandlers = [];
-
-                // Prepare list with all classes
-                foreach ($definedHandlers as $alias => $handlerClass) {
-                    $containerHandler = $container->get($handlerClass);
-                    if (! $containerHandler instanceof PostHandlerInterface) {
-                        throw new ESBException('PostSuccessMiddleware: custom handler config invalid');
-                    }
-                    $customContainerHandlers[$alias] = $containerHandler;
-                }
-
-                return new PostSuccessMiddleware($customContainerHandlers);
-            },
-
             QueueMessageHandler::class => fn(ContainerInterface $container) => new QueueMessageHandler(
                 $container->get(RunCoreMiddleware::class),
                 $container->get(ErrorHandlerMiddleware::class),
@@ -148,6 +111,40 @@ class ContainerConfig
             ClientPool::class => fn() => new ClientPool(),
 
             AuthServicePool::class => fn() => new AuthServicePool(),
+
+            CustomValidatorsPool::class => function(ContainerInterface $container) : CustomValidatorsPool
+            {
+                // Get list of defined validators
+                $definedValidators = $container->get('validators');
+
+                $pool = new CustomValidatorsPool;
+                foreach ($definedValidators as $alias => $validatorClass) {
+                    $validator = $container->get($validatorClass);
+                    if (! $validator instanceof ValidatorInterface) {
+                        throw new ESBException('ValidatorMiddleware: custom validator config invalid');
+                    }
+                    $pool->add($alias, $validator);
+                }
+
+                return $pool;
+            },
+
+            PostSuccessHandlersPool::class => function(ContainerInterface $container) : PostSuccessHandlersPool {
+                $pool = new PostSuccessHandlersPool();
+                // Get list of defined post success handlers
+                $definedHandlers = $container->get('post-success');
+
+                // Prepare list with all classes
+                foreach ($definedHandlers as $alias => $handlerClass) {
+                    $containerHandler = $container->get($handlerClass);
+                    if (! $containerHandler instanceof PostHandlerInterface) {
+                        throw new ESBException('PostSuccessMiddleware: custom handler config invalid');
+                    }
+                    $pool->add($alias, $containerHandler);
+                }
+
+                return $pool;
+            },
         ];
     }
 }

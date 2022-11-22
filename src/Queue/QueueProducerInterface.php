@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ESB\Queue;
 
-use ESB\DTO\Message;
+use ESB\DTO\Message\Message;
 
 interface QueueProducerInterface
 {

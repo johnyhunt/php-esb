@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Example;
 
+use ESB\Assembler\DsnInterpreterInterface;
 use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
 use ESB\Entity\SyncTable;
@@ -16,7 +17,6 @@ use ESB\Entity\VO\PostHandler;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use Example\Assembler\InputDataMapAssembler;
-use Example\Service\DsnInterpreterInterface;
 
 use function file_get_contents;
 use function implode;
@@ -113,13 +113,18 @@ class RouteRepository implements RouteRepositoryInterface
         return $this->routes;
     }
 
-    public function store(Route $route): void
+    public function store(Route $route) : void
     {
         // TODO: Implement store() method.
     }
 
-    public function delete(Route $route): void
+    public function delete(Route $route) : void
     {
         // TODO: Implement delete() method.
+    }
+
+    public function checkConsistence(Route $route) : bool
+    {
+        return true;
     }
 }

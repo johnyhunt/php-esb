@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace ESB\Queue;
 
-use ESB\DTO\Message;
+use ESB\DTO\Message\Envelope;
 
 interface QueueConsumerInterface
 {
-    public function receive(int $timeout = 0) : ?Message;
+    public function receive(QueueConfigInterface $config) : ?Envelope;
 
-    public function acknowledge(Message $message) : void;
+    public function acknowledge(Envelope $envelope) : void;
 
-    public function reject(Message $message) : void;
+    public function reject(Envelope $envelope) : void;
 
-    public function requeue(Message $message, int $delay = 0) : void;
+    public function requeue(Envelope $envelope, int $delay = 0) : void;
 }

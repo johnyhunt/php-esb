@@ -7,6 +7,8 @@ namespace ESB;
 use Assert\Assertion;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Handlers\HTTP\ESBHandler;
+use ESB\Handlers\HTTP\RouteCRUDHadler;
+use ESB\Handlers\HTTP\RouteListHandler;
 use ESB\Middleware\HTTP\InitRouteDataMiddleware;
 use ESB\Repository\RouteRepositoryInterface;
 use Slim\App;
@@ -24,7 +26,17 @@ class ServerAppSetup
     public function __invoke(App $app) : void
     {
         $this->setupRoutes($app);
+        $this->setupCrudRoutes($app);
         $this->setupMiddlewares($app);
+    }
+
+    protected function setupCrudRoutes(App $app) : void
+    {
+        $app->map(['POST', 'PUT'], '/route', RouteCRUDHadler::class);
+        $app->delete('/route/{name}', RouteCRUDHadler::class);
+        $app->get('/route/{name}', RouteCRUDHadler::class);
+
+        $app->get('/route', RouteListHandler::class);
     }
 
     protected function setupRoutes(App $app) : void
@@ -37,7 +49,7 @@ class ServerAppSetup
                 }
                 $group->map([$route->fromSystemDsn()->method], $route->fromSystemDsn()->path, ESBHandler::class);
             }
-        })->add(new InitRouteDataMiddleware($this->provider));
+        })->add(new InitRouteDataMiddleware($this->provider, $this->basePath));
     }
 
     protected function setupMiddlewares(App $app) : void

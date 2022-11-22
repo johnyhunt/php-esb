@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ESB\Handlers;
 
-use ESB\DTO\Message;
+use ESB\DTO\Message\Envelope;
 use ESB\DTO\QueueHandlerResult;
 
 interface QueueMessageHandlerMiddlewareInterface
 {
-    public function process(Message $message, QueueMessageHandlerInterface $handler) : QueueHandlerResult;
+    public function process(Envelope $envelope, QueueMessageHandlerInterface $handler) : QueueHandlerResult;
 }

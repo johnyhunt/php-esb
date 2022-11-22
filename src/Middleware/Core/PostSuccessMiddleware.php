@@ -5,14 +5,12 @@ namespace ESB\Middleware\Core;
 use ESB\CoreHandlerInterface;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
-use ESB\Exception\ESBException;
-use ESB\Handlers\PostHandlerInterface;
 use ESB\Middleware\ESBMiddlewareInterface;
+use ESB\Service\PostSuccessHandlersPool;
 
 class PostSuccessMiddleware implements ESBMiddlewareInterface
 {
-    /** @psalm-param array<string, PostHandlerInterface> $customContainerHandlers */
-    public function __construct(private readonly array $customContainerHandlers)
+    public function __construct(private readonly PostSuccessHandlersPool $customContainerHandlers)
     {
     }
 
@@ -24,8 +22,7 @@ class PostSuccessMiddleware implements ESBMiddlewareInterface
         }
 
         foreach ($route->postSuccessHandlers() as $psh) {
-            $concreteHandler = $this->customContainerHandlers[$psh->name()] ??
-                throw new ESBException("Handler {$psh->name()} isn't registered in container config");
+            $concreteHandler = $this->customContainerHandlers->get($psh->name());
             $concreteHandler->handle($data);
         }
 

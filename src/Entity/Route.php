@@ -9,8 +9,11 @@ use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Entity\VO\SyncSettings;
+use JsonSerializable;
 
-class Route
+use function get_object_vars;
+
+class Route implements JsonSerializable
 {
     public function __construct(
         private string            $name,
@@ -81,5 +84,10 @@ class Route
     public function toSystemDsn() : AbstractDSN
     {
         return $this->toSystemDsn;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return get_object_vars($this);
     }
 }

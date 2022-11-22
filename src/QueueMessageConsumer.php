@@ -27,20 +27,20 @@ class QueueMessageConsumer
     {
         $consumer = $this->factory->consumer($config);
         while ($this->run === true) {
-            if(! $message = $consumer->receive()) {
+            if(! $envelope = $consumer->receive($config)) {
                 continue;
             }
 
-            $handlerResult = $this->handler->handle($message);
+            $handlerResult = $this->handler->handle($envelope);
             switch ($handlerResult->result) {
                 case MessageResultEnum::ACK:
-                    $consumer->acknowledge($message);
+                    $consumer->acknowledge($envelope);
                     break;
                 case MessageResultEnum::REQUEUE:
-                    $consumer->requeue($message, $handlerResult->options->requeueDelay);
+                    $consumer->requeue($envelope, $handlerResult->options->requeueDelay);
                     break;
                 default:
-                    $consumer->reject($message);
+                    $consumer->reject($envelope);
             }
         }
     }
