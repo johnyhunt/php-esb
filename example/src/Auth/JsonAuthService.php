@@ -11,7 +11,7 @@ use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
 use ESB\Utils\ArrayFetch;
 use Example\Clients\HttpClient;
-use function json_decode;
+
 use function json_encode;
 
 class JsonAuthService implements AuthServiceInterface
@@ -37,7 +37,7 @@ class JsonAuthService implements AuthServiceInterface
         Assertion::string($outputTokenName, 'JsonAuthService::settings::output-name expected been non-blank string');
         Assertion::notBlank($outputTokenName, 'JsonAuthService::settings::output-name expected been non-blank string');
 
-        $response = $this->client->send($dsn, new TargetRequest(json_encode($data), $headers));
+        $response = $this->client->send($dsn, new TargetRequest(json_encode($data), $headers), $settings['responseFormat'] ?? '');
 
         foreach ($response->headers as $key => $value) {
             if ($key === $token) {
@@ -48,8 +48,7 @@ class JsonAuthService implements AuthServiceInterface
             }
         }
         Assertion::isJsonString($response->content, 'JsonAuthService::response::content expected been json-string');
-        $responseBody = json_decode($response->content, true);
-        if ($tokenValue = (new ArrayFetch($responseBody))($token)) {
+        if ($tokenValue = (new ArrayFetch($response->content))($token)) {
             $targetRequest->headers += [$outputTokenName => $tokenValue];
 
             return;

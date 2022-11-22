@@ -54,7 +54,7 @@ class SyncSettings implements JsonSerializable
             'responsePkPath' => $this->responsePkPath,
             'syncOnExist'    => $this->syncOnExist,
             'syncOnChange'   => $this->syncOnChange,
-            'updateRoteId'   => $this->updateRouteId,
+            'updateRouteId'   => $this->updateRouteId,
         ];
     }
 }

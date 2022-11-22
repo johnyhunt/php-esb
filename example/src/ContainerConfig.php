@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Example;
 
+use ESB\Assembler\DsnInterpreterInterface;
 use ESB\Core;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
@@ -15,7 +16,6 @@ use Example\Formatter\SellerMap;
 use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Runner\MyCustomRunner;
 use Example\Service\DsnInterpreter;
-use Example\Service\DsnInterpreterInterface;
 use Example\Validator\OneOf;
 use Psr\Container\ContainerInterface;
 
