@@ -55,9 +55,4 @@ class JsonAuthService implements AuthServiceInterface
         }
         throw new ESBException('JsonAuthService::authentication failed');
     }
-
-    public function matchAlias(): string
-    {
-        return 'JsonAuthService';
-    }
 }

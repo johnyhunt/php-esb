@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ESB\Queue;
 
-use ESB\DTO\Message\Message;
+use ESB\DTO\Message\Envelope;
 
 interface QueueProducerInterface
 {
-    public function send(Message $message) : mixed;
+    public function send(Envelope $envelope) : mixed;
 }

@@ -122,9 +122,4 @@ class RouteRepository implements RouteRepositoryInterface
     {
         // TODO: Implement delete() method.
     }
-
-    public function checkConsistence(Route $route) : bool
-    {
-        return true;
-    }
 }

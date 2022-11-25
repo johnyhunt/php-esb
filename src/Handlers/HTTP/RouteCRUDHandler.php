@@ -10,7 +10,6 @@ use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\Validation\Route\RouteEntityInputValidator;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -30,33 +29,57 @@ class RouteCRUDHandler
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
     {
-        if (strtoupper($request->getMethod()) === 'DELETE') {
-            $name  = $request->getAttribute('name');
-            $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
-            if (! $route) {
-                throw new ESBException('Unknown route');
-            }
-            $this->routeRepository->delete(reset($route));
+        return match (strtoupper($request->getMethod())) {
+            'POST'   => $this->create($request),
+            'GET'    => $this->read($request),
+            'PUT'    => $this->update($request),
+            'DELETE' => $this->delete($request),
+        };
+    }
 
-            return new ESBJsonResponse(['message' => 'Successfully deleted']);
-        }
-        if (strtoupper($request->getMethod()) === 'GET') {
-            $name  = $request->getAttribute('name');
-            $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
-
-            return new ESBJsonResponse(reset($route));
-        }
+    private function create(ServerRequestInterface $request) : ResponseInterface
+    {
         $requestData = $request->getParsedBody();
         if (! is_array($requestData)) {
             throw new ESBException('RouteCRUDHadler - wrong request body');
         }
         $this->validator->validate($requestData);
         $route = $this->assembler->buildRoute($requestData);
-        if (! $this->routeRepository->checkConsistence($route)) {
-            throw new ESBException('Provided route is inconsistent, check used foreign keys');
-        }
         $this->routeRepository->store($route);
 
         return new ESBJsonResponse(['message' => 'Successfully processed']);
+    }
+
+    private function read(ServerRequestInterface $request) : ResponseInterface
+    {
+        $name  = $request->getAttribute('name');
+        $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
+
+        return new ESBJsonResponse(reset($route));
+    }
+
+    private function update(ServerRequestInterface $request) : ResponseInterface
+    {
+        $requestData = $request->getParsedBody();
+        if (! is_array($requestData)) {
+            throw new ESBException('RouteCRUDHadler - wrong request body');
+        }
+        $this->validator->validate($requestData);
+        $route = $this->assembler->buildRoute($requestData);
+        $this->routeRepository->store($route);
+
+        return new ESBJsonResponse(['message' => 'Successfully processed']);
+    }
+
+    private function delete(ServerRequestInterface $request) : ResponseInterface
+    {
+        $name  = $request->getAttribute('name');
+        $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
+        if (! $route) {
+            throw new ESBException('Unknown route');
+        }
+        $this->routeRepository->delete(reset($route));
+
+        return new ESBJsonResponse(['message' => 'Successfully deleted']);
     }
 }

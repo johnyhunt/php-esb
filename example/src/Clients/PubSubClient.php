@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Example\Clients;
 
 use ESB\Client\EsbClientInterface;
+use ESB\DTO\Message\Envelope;
 use ESB\DTO\Message\Message;
 use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
@@ -26,7 +27,9 @@ class PubSubClient implements EsbClientInterface
             throw new ESBException('PubSubClient expects dsn been PubSubDSN instance');
         }
         $producer = $this->factory->producer(new PubSubConfig($dsn->topic, $dsn->subscription, []));
-        $result   = $producer->send(new Message($targetRequest->body, $dsn->action, $targetRequest->headers));
+        $result   = $producer->send(
+            new Envelope(new Message($targetRequest->body, $dsn->action, $targetRequest->headers))
+        );
 
         return new TargetResponse($result);
     }

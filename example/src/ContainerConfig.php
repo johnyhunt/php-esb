@@ -24,17 +24,20 @@ class ContainerConfig
     public function  __invoke() : array
     {
         return [
-            'validators' => [
+            'validators'   => [
                 'oneOf' => OneOf::class,
             ],
-            'formatters' => [
+            'formatters'   => [
                 'sellerMap' => SellerMap::class,
             ],
             'post-success' => [
                 'my-post-handler' => MyPostSuccessHandler::class
             ],
-            'runner' => [
+            'runner'       => [
                 'my-runner' => MyCustomRunner::class,
+            ],
+            'auth'         => [
+                'jsonAuthService' => JsonAuthService::class,
             ],
 
             RouteRepositoryInterface::class => fn(ContainerInterface $container) => $container->get(RouteRepository::class),

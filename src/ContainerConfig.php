@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ESB;
 
+use ESB\Auth\AuthServiceInterface;
 use ESB\Exception\ESBException;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Handlers\QueueMessageHandler;
@@ -49,6 +50,10 @@ class ContainerConfig
             'runner' => [
                 // Reserved key for custom runners
                 // alias => MyCustomRunner::class
+            ],
+            'auth' => [
+                // Reserved key for auth services
+                // alias => MyAuthService::class
             ],
 
             Core::class => function(ContainerInterface $container) : Core
@@ -110,7 +115,20 @@ class ContainerConfig
 
             ClientPool::class => fn() => new ClientPool(),
 
-            AuthServicePool::class => fn() => new AuthServicePool(),
+            AuthServicePool::class => function(ContainerInterface $container) : AuthServicePool {
+                $pool         = new AuthServicePool;
+                $authServices = $container->get('auth');
+
+                foreach ($authServices as $alias => $serviceClass) {
+                    $service = $container->get($serviceClass);
+                    if (! $service instanceof AuthServiceInterface) {
+                        throw new ESBException('AuthServicePool: auth config invalid');
+                    }
+                    $pool->add($alias, $service);
+                }
+
+                return $pool;
+            },
 
             CustomValidatorsPool::class => function(ContainerInterface $container) : CustomValidatorsPool
             {
