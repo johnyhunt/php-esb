@@ -10,7 +10,7 @@ use ESB\Exception\ESBException;
 interface RouteRepositoryInterface
 {
     /** @throws ESBException */
-    public function get(string $key) : Route;
+    public function get(string $fromSystemDsn) : Route;
 
     /** @psalm-return array<string, Route> */
     public function loadAll() : array;

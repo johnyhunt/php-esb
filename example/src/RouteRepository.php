@@ -103,9 +103,9 @@ class RouteRepository implements RouteRepositoryInterface
         }
     }
 
-    public function get(string $key) : Route
+    public function get(string $fromSystemDsn) : Route
     {
-        return $this->routes[$key] ?? throw new ESBException('Unknown route');
+        return $this->routes[$fromSystemDsn] ?? throw new ESBException('Unknown route');
     }
 
     public function loadAll() : array
