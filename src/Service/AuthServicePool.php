@@ -16,7 +16,7 @@ class AuthServicePool
 
     public function add(string $alias, AuthServiceInterface $service) : void
     {
-
+        $this->pool[$alias] = $service;
     }
 
     public function get(string $alias) : AuthServiceInterface
