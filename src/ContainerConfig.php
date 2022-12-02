@@ -18,7 +18,7 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
-use ESB\Service\CustomValidatorsPool;
+use ESB\Service\ValidatorsPool;
 use ESB\Service\PostSuccessHandlersPool;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
@@ -130,12 +130,12 @@ class ContainerConfig
                 return $pool;
             },
 
-            CustomValidatorsPool::class => function(ContainerInterface $container) : CustomValidatorsPool
+            ValidatorsPool::class => function(ContainerInterface $container) : ValidatorsPool
             {
                 // Get list of defined validators
                 $definedValidators = $container->get('validators');
 
-                $pool = new CustomValidatorsPool;
+                $pool = new ValidatorsPool;
                 foreach ($definedValidators as $alias => $validatorClass) {
                     $validator = $container->get($validatorClass);
                     if (! $validator instanceof ValidatorInterface) {

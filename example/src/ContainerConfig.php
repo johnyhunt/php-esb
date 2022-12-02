@@ -16,7 +16,8 @@ use Example\Formatter\SellerMap;
 use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Runner\MyCustomRunner;
 use Example\Service\DsnInterpreter;
-use Example\Validator\OneOf;
+use Example\Validation\AssertValidator;
+use Example\Validation\OneOf;
 use Psr\Container\ContainerInterface;
 
 class ContainerConfig
@@ -25,7 +26,8 @@ class ContainerConfig
     {
         return [
             'validators'   => [
-                'oneOf' => OneOf::class,
+                'oneOf'           => OneOf::class,
+                'assertValidator' => AssertValidator::class,
             ],
             'formatters'   => [
                 'sellerMap' => SellerMap::class,

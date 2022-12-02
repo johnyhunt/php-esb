@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Example\Validator;
+namespace Example\Validation;
 
 use Assert\Assertion;
 use ESB\Validation\ValidatorInterface;
@@ -12,9 +12,10 @@ class OneOf implements ValidatorInterface
 
     public function validate(mixed $value, string $propertyPath, array $params = []) : void
     {
-        Assertion::notEmpty($params, 'OneOf::expected array of 2 keys', propertyPath: $propertyPath);
+        Assertion::isArray($params['rows'] ?? null, 'OneOf::expected array of 2 keys', propertyPath: $propertyPath);
+        Assertion::notEmpty($params['rows'], 'OneOf::expected array of 2 keys', propertyPath: $propertyPath);
 
-        [$firstKey, $secondKey] = $params;
+        [$firstKey, $secondKey] = $params['rows'];
 
         Assertion::string($firstKey, propertyPath: $propertyPath);
         Assertion::keyExists($value, $firstKey, 'OneOf::firstKey invalid', propertyPath: $propertyPath);

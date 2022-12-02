@@ -7,8 +7,7 @@ namespace ESB\Validation\Route;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 use ESB\Exception\ValidationException;
-use ESB\Service\CustomValidatorsPool;
-use ReflectionClass;
+use ESB\Service\ValidatorsPool;
 use Throwable;
 
 use function implode;
@@ -29,7 +28,7 @@ use function implode;
  */
 class InputDataMapValidator
 {
-    public function __construct(private readonly CustomValidatorsPool $pool)
+    public function __construct(private readonly ValidatorsPool $pool)
     {
     }
 
@@ -84,11 +83,10 @@ class InputDataMapValidator
             }
             $validators = $row['validators'] ?? null;
             Assertion::nullOrIsArray($validators, 'InputDataMap::validators field could be array or null');
-            $assertReflection = new ReflectionClass(Assertion::class);
             if ($validators) {
                 foreach ($validators as $validatorRow) {
                     /** will throw ESBException in case of wrong assert */
-                    $assertReflection->hasMethod($validatorRow['assert']) || $this->pool->get($validatorRow['assert']);
+                    $this->pool->get($validatorRow['assert']);
 
                     Assertion::isArray($validatorRow, 'InputDataMap::validators expected each row kind [assertion => assert, properties => []] ');
                     Assertion::notEmpty($validatorRow['assert'], 'InputDataMap::validators.assert expected non-empty string');

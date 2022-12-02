@@ -14,15 +14,13 @@ use ESB\Entity\VO\Validator;
 use ESB\Exception\ESBException;
 use ESB\Exception\ValidationException;
 use ESB\Middleware\ESBMiddlewareInterface;
-use ESB\Service\CustomValidatorsPool;
-use ESB\Validation\AssertValidator;
-use ReflectionClass;
+use ESB\Service\ValidatorsPool;
 
 use function implode;
 
 class ValidatorMiddleware implements ESBMiddlewareInterface
 {
-    public function __construct(private readonly CustomValidatorsPool $customValidators)
+    public function __construct(private readonly ValidatorsPool $validators)
     {
     }
 
@@ -63,13 +61,27 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     /** @throws AssertionFailedException|ESBException */
     private function validateRow(mixed $row, ValidationRule $rule, string $propertyPath) : void
     {
-        $assertionReflection = new ReflectionClass(Assertion::class);
+        if ($rule->required) {
+            Assertion::notEmpty($row, '', $propertyPath);
+        }
+        switch ($rule->type) {
+            case 'int':
+                Assertion::integer($row, 'Value expected integer', $propertyPath);
+                break;
+            case 'float':
+                Assertion::float($row, 'Value expected float', $propertyPath);
+                break;
+            case 'string':
+                Assertion::string($row, 'Value expected string', $propertyPath);
+                break;
+            case 'bool':
+                Assertion::boolean($row, 'Value expected boolean', $propertyPath);
+                break;
+        }
+
         /** @psalm-var Validator $validator */
         foreach ($rule->validators as $validator) {
-            $validation = match (true) {
-                $assertionReflection->hasMethod($validator->assert) => new AssertValidator($validator->assert),
-                default                                             => $this->customValidators->get($validator->assert),
-            };
+            $validation = $this->validators->get($validator->assert);
             $validation->validate($row, $propertyPath, $validator->params);
         }
     }

@@ -11,7 +11,7 @@
       "example": "",
       "items": null,
       "properties": null,
-      "validators": [{"assert" : "uuid", "params" : {}}]
+      "validators": [{"assert" : "assertValidator", "params" : {"assertName":  "uuid"}}]
     },
     "customer": {
       "type": "object",
@@ -25,7 +25,7 @@
           "example": "585781",
           "items": null,
           "properties": null,
-          "validators": [{"assert" : "min", "params" : {"minValue" : 1}}]
+          "validators": [{"assert" : "assertValidator", "params" : {"assertName":  "min", "minValue" : 1}}]
         },
         "person": {
           "type": "object",
@@ -78,7 +78,7 @@
           "validators": null
         }
       },
-      "validators": [{"assert" : "oneOf", "params" : ["person", "organization"]}]
+      "validators": [{"assert" : "oneOf", "params" : {"rows": ["person", "organization"]}}]
     },
     "brands": {
       "type": "array",
@@ -118,7 +118,7 @@
       "example": "",
       "items": null,
       "properties": null,
-      "validators": [{"assert" : "uuid", "params" : []}]
+      "validators": [{"assert" : "assertValidator", "params" : {"assertName":  "uuid"}}]
     }
   }
 }

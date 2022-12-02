@@ -8,8 +8,7 @@ use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\ValidationRule;
 use ESB\Entity\VO\Validator;
 
-use function array_filter;
-use function array_values;
+use function array_map;
 
 /**
  * @psalm-type assert = array{
@@ -59,34 +58,23 @@ class InputDataMapAssembler
         return new ValidationRule(
             type: $type,
             required:  $required,
-            validators:  $this->buildValidators($required, $type, $validators),
+            validators:  $this->buildValidators($validators),
             items:  $this->buildItemsValidation($items),
             properties:  $this->buildPropertiesValidation($properties),
             example:  $example,
         );
     }
 
-    /**@psalm-param null|array<array-key, array{assert: string, properties: array}> $validators
+    /**@psalm-param null|array<array-key, assert> $validators
      * @psalm-return null|array<array-key, Validator>
      */
-    private function buildValidators(bool $required, string $type, ?array $validators) : array
+    private function buildValidators(?array $validators) : array
     {
-        $resultValidators = [];
-        if ($required) {
-            $resultValidators[] = new Validator('notEmpty', ['message' => "Empty body"]);
-        }
-        $resultValidators[] = match ($type) {
-            'int'    => new Validator('integer'),
-            'bool'   => new Validator('boolean'),
-            'float'  => new Validator('float'),
-            'string' => new Validator('string'),
-            default  => null,
-        };
-        foreach ($validators ?? [] as $row) {
-            $resultValidators[] = new Validator($row['assert'], $row['params']);
+        if (! $validators) {
+            return [];
         }
 
-        return array_values(array_filter($resultValidators));
+        return array_map(fn(array $row) => new Validator($row['assert'], $row['params']), $validators);
     }
 
     /** @psalm-param null|validationRuleRow $items */

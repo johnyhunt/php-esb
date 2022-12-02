@@ -14,7 +14,7 @@
         "required": true,
         "example": "",
         "items": null,
-        "validators": [{"assert":  "integerish", "params":  []}],
+        "validators": [{"assert":  "assertValidator", "params": {"assertName":  "integerish"}}],
         "properties": null
       },
       "validators": null,

@@ -9,7 +9,7 @@ use ESB\Validation\ValidatorInterface;
 
 use function sprintf;
 
-class CustomValidatorsPool
+class ValidatorsPool
 {
     /** @psalm-var array<string, ValidatorInterface> $validators  */
     private array $validators = [];
