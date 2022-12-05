@@ -6,7 +6,7 @@ use ESB\CoreHandlerInterface;
 use ESB\DTO\ProcessingData;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\Route;
-use ESB\Exception\StopProcessingException;
+use ESB\Exception\DuplicateRecordException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
@@ -34,8 +34,9 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
                 (new ArrayFetch($data->incomeData->jsonSerialize()))($route->syncSettings()->pkPath())
             );
 
+            /** no update, due to settings, available - so exit */
             if ($settings->syncOnExist() === false && $prevSyncedRecord) {
-                throw new StopProcessingException();
+                throw new DuplicateRecordException();
             }
 
             $data = $data->withSyncData($prevSyncedRecord);
@@ -69,9 +70,9 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
             )
         ))();
 
-        // duplicate call check
+        // nothing to update, same content passed, duplicate call
         if ($content === $data->syncRecord?->requestBody()) {
-            throw new StopProcessingException();
+            throw new DuplicateRecordException();
         }
 
         return $handler->handle(
