@@ -12,6 +12,8 @@ interface RouteRepositoryInterface
     /** @throws ESBException */
     public function get(string $fromSystemDsn) : Route;
 
+    public function find(string $name) : ?Route;
+
     /** @psalm-return array<string, Route> */
     public function loadAll() : array;
 
