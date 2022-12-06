@@ -15,12 +15,14 @@ class ServerDSN extends AbstractDSN
 {
     private const PATTERN = '/(\w|\/+%s){2}\w+/';
 
+    public readonly string $client;
+
     /** like outer-system;http;post;/boodmo/sap/dispatch-box */
     public function __construct(
-        public readonly string $client,
         public readonly string $method,
         public readonly string $path,
     ) {
+        $this->client = 'HTTP';
     }
 
     public static function fromString(string $dsn) : static
@@ -31,6 +33,6 @@ class ServerDSN extends AbstractDSN
         Assertion::allString($items);
         Assertion::true(strtoupper($client) === 'HTTP', 'ServerDSN: expecting http string as client');
 
-        return new self(strtoupper($client), strtoupper($method), $path);
+        return new self(strtoupper($method), $path);
     }
 }
