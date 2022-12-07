@@ -61,21 +61,33 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     /** @throws AssertionFailedException|ESBException */
     private function validateRow(mixed $row, ValidationRule $rule, string $propertyPath) : void
     {
-        if ($rule->required) {
-            Assertion::notEmpty($row, '', $propertyPath);
-        }
-        switch ($rule->type) {
-            case 'int':
+        switch (true) {
+            case $rule->type == 'int' && $rule->required:
+                Assertion::notBlank($row, 'Value required', $propertyPath);
                 Assertion::integer($row, 'Value expected integer', $propertyPath);
                 break;
-            case 'float':
+            case $rule->type == 'int':
+                Assertion::nullOrInteger($row, 'Value expected integer', $propertyPath);
+                break;
+            case $rule->type == 'float' && $rule->required:
+                Assertion::notBlank($row, 'Value required', $propertyPath);
                 Assertion::float($row, 'Value expected float', $propertyPath);
                 break;
-            case 'string':
+            case $rule->type == 'float':
+                Assertion::nullOrFloat($row, 'Value expected float', $propertyPath);
+                break;
+            case $rule->type == 'string' && $rule->required:
+                Assertion::notBlank($row, 'Value required', $propertyPath);
                 Assertion::string($row, 'Value expected string', $propertyPath);
                 break;
-            case 'bool':
+            case $rule->type == 'string':
+                Assertion::nullOrString($row, 'Value expected string', $propertyPath);
+                break;
+            case $rule->type == 'bool' && $rule->required:
                 Assertion::boolean($row, 'Value expected boolean', $propertyPath);
+                break;
+            case $rule->type == 'bool':
+                Assertion::nullOrBoolean($row, 'Value expected boolean', $propertyPath);
                 break;
         }
 
