@@ -14,6 +14,7 @@ use ESB\Exception\ESBException;
 use Example\Entity\VO\PubSubDSN;
 use Example\Queue\PubSub\PubSubConfig;
 use Example\Queue\PubSub\PubSubFactory;
+use function microtime;
 
 class PubSubClient implements EsbClientInterface
 {
@@ -27,11 +28,13 @@ class PubSubClient implements EsbClientInterface
             throw new ESBException('PubSubClient expects dsn been PubSubDSN instance');
         }
         $producer = $this->factory->producer(new PubSubConfig($dsn->topic, $dsn->subscription, []));
+        $start    = microtime();
         $result   = $producer->send(
             new Envelope(new Message($targetRequest->body, $dsn->action, $targetRequest->headers))
         );
+        $spentTime = microtime() - $start;
 
-        return new TargetResponse($result);
+        return new TargetResponse($result, (int) $spentTime);
     }
 
     public function dsnMatchClass() : string

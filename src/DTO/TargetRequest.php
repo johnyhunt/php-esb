@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 namespace ESB\DTO;
 
-class TargetRequest
+use JsonSerializable;
+
+use function get_object_vars;
+
+class TargetRequest implements JsonSerializable
 {
     public function __construct(public string $body, public array $headers = [])
     {
+    }
+
+    public function jsonSerialize() : array
+    {
+        return get_object_vars($this);
     }
 }

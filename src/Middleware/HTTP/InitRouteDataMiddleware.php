@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Ramsey\Uuid\Uuid;
 
 use function strtoupper;
 
@@ -27,7 +28,8 @@ class InitRouteDataMiddleware implements MiddlewareInterface
         $incomeData  = new IncomeData(
             $request->getHeaders(),
             $request->getAttributes(),
-            $request->getParsedBody() ?: $request->getQueryParams()
+            $request->getParsedBody() ?: $request->getQueryParams(),
+            Uuid::uuid4()->toString(),
         );
 
         return $handler->handle(
