@@ -12,6 +12,7 @@ use ESB\Entity\VO\ServerDSN;
 use ESB\Exception\ESBException;
 use Example\Service\ResponseDecodeService;
 use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
 
 class HttpClient implements EsbClientInterface
 {
@@ -27,10 +28,22 @@ class HttpClient implements EsbClientInterface
         if (! $dsn instanceof ServerDSN) {
             throw new ESBException('Http client expects dsn been ServerDSN instance');
         }
-        $response = $this->client->request($dsn->method, $dsn->path, ['headers' => $targetRequest->headers, 'body' => $targetRequest->body]);
+        $requestTime = 0;
+        $response    = $this->client->request(
+            $dsn->method,
+            $dsn->path,
+            [
+                'headers'  => $targetRequest->headers,
+                'body'     => $targetRequest->body,
+                'on_stats' => function (TransferStats $stats) use (& $requestTime) {
+                    $requestTime = $stats->getTransferTime();
+                }
+            ],
+        );
 
         return new TargetResponse(
             ($this->responseDecodeService)($response, $responseFormat),
+            $requestTime,
             $response->getStatusCode() === 200,
             $response->getStatusCode(),
             $response->getHeaders(),

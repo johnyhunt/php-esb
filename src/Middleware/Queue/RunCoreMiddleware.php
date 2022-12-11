@@ -17,6 +17,8 @@ use ESB\Handlers\QueueMessageHandlerInterface;
 use ESB\Handlers\QueueMessageHandlerMiddlewareInterface;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Service\CoreRunnersPool;
+use Ramsey\Uuid\Uuid;
+
 use function json_decode;
 
 class RunCoreMiddleware implements QueueMessageHandlerMiddlewareInterface
@@ -33,7 +35,7 @@ class RunCoreMiddleware implements QueueMessageHandlerMiddlewareInterface
             throw new ESBException(sprintf('Message body corrupted = %s', $envelope->message->body));
         }
         $processingData = new ProcessingData(
-            new IncomeData(headers: $envelope->message->attributes, params: [], body: $body)
+            new IncomeData(headers: $envelope->message->attributes, params: [], body: $body, requestId: Uuid::uuid4()->toString())
         );
 
         $receivedStamp = $envelope->getStamp(ReceiveStamp::class);

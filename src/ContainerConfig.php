@@ -26,6 +26,8 @@ use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFunction;
 
+use function getenv;
+
 class ContainerConfig
 {
     public function __invoke() : array
