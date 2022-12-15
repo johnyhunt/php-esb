@@ -32,11 +32,17 @@ class ServerAppSetup
 
     protected function setupCrudRoutes(App $app) : void
     {
-        $app->map(['POST', 'PUT'], '/route', RouteCRUDHandler::class);
-        $app->delete('/route/{name}', RouteCRUDHandler::class);
-        $app->get('/route/{name}', RouteCRUDHandler::class);
 
-        $app->get('/route', RouteListHandler::class);
+        $app->group('/route', function (RouteCollectorProxy $group) {
+            $group->options('{routes:.*}', function ($request, $response, $args) {
+                return $response;
+            });
+            $group->map(['POST', 'PUT'], '', RouteCRUDHandler::class);
+            $group->delete('/{name}', RouteCRUDHandler::class);
+            $group->get('/{name}', RouteCRUDHandler::class);
+
+            $group->get('', RouteListHandler::class);
+        });
     }
 
     protected function setupRoutes(App $app) : void
