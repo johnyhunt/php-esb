@@ -49,6 +49,9 @@ class ServerAppSetup
     {
         $routes = $this->provider->loadAll();
         $app->group($this->basePath, function (RouteCollectorProxy $group) use ($routes) {
+            $group->options('{routes:.*}', function ($request, $response, $args) {
+                return $response;
+            });
             foreach ($routes as $route) {
                 if (! $route->fromSystemDsn() instanceof ServerDSN) {
                     continue;
