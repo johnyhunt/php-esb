@@ -68,10 +68,10 @@ class InputDataMapAssembler
     /**@psalm-param null|array<array-key, assert> $validators
      * @psalm-return null|array<array-key, Validator>
      */
-    private function buildValidators(?array $validators) : array
+    private function buildValidators(?array $validators) : ?array
     {
         if (! $validators) {
-            return [];
+            return null;
         }
 
         return array_map(fn(array $row) => new Validator($row['assert'], $row['params']), $validators);

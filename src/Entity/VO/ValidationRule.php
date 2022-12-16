@@ -14,15 +14,17 @@ class ValidationRule implements JsonSerializable
     public function __construct(
         public readonly string $type,
         public readonly bool $required = false,
-        /** @psalm-var array<array-key, Validator> $validators */
-        public readonly array $validators = [],
+        /** @psalm-var null|array<array-key, Validator> $validators */
+        public readonly ?array $validators = null,
         public readonly ?ValidationRule $items = null,
         /** @psalm-var null|array<string, ValidationRule> $properties */
         public readonly ?array $properties = null,
         public readonly ?string $example = null,
     ) {
         Assertion::inArray($this->type, ['object', 'array', 'int', 'float', 'string', 'bool'], 'ValidationRule:type invalid');
-        Assertion::allIsInstanceOf($this->validators, Validator::class, 'ValidationRule::validators could be ValidationRule set only');
+        if ($this->validators) {
+            Assertion::allIsInstanceOf($this->validators, Validator::class, 'ValidationRule::validators could be ValidationRule set only');
+        }
         switch ($this->type) {
             case 'object':
                 Assertion::notEmpty($this->properties, 'ValidationRule::properties required for type = object');
