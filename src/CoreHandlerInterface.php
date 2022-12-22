@@ -9,5 +9,5 @@ use ESB\Entity\Route;
 
 interface CoreHandlerInterface
 {
-    public function handle(ProcessingData $data, Route $route);
+    public function handle(ProcessingData $data, Route $route) : ProcessingData;
 }

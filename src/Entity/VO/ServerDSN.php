@@ -11,7 +11,7 @@ use function preg_match;
 use function sprintf;
 use function strtoupper;
 
-class ServerDSN extends AbstractDSN
+final class ServerDSN extends AbstractDSN
 {
     private const PATTERN = '/(\w|\/+%s){2}\w+/';
 
@@ -33,6 +33,6 @@ class ServerDSN extends AbstractDSN
         Assertion::allString($items);
         Assertion::true(strtoupper($client) === 'HTTP', 'ServerDSN: expecting http string as client');
 
-        return new self(strtoupper($method), $path);
+        return new static(strtoupper($method), $path);
     }
 }

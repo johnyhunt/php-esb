@@ -8,6 +8,7 @@ use JsonSerializable;
 
 use function get_object_vars;
 
+/** Is template nullable */
 class TargetRequestMap implements JsonSerializable
 {
     public function __construct(

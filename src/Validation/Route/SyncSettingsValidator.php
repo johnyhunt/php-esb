@@ -23,10 +23,12 @@ class SyncSettingsValidator
                 Assertion::string($table['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
                 Assertion::notBlank($table['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
             }
-            Assertion::string($row['pkPath'] ?? null, 'SyncSettingsValidator::pkPath expected non-blank string');
+            Assertion::keyExists($row, 'pkPath', 'SyncSettingsValidator::pkPath expected non-blank string');
+            Assertion::string($row['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
             Assertion::notBlank($row['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
 
-            Assertion::string($row['responsePkPath'] ?? null, 'SyncSettingsValidator::responsePkPath expected non-blank string');
+            Assertion::keyExists($row, 'responsePkPath', 'SyncSettingsValidator::responsePkPath expected non-blank string');
+            Assertion::string($row['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
             Assertion::notBlank($row['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
 
             Assertion::boolean($row['syncOnExist'] ?? null, 'SyncSettingsValidator::syncOnExist expected boolean');

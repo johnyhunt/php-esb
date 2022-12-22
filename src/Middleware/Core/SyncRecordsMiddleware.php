@@ -37,7 +37,7 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
             $syncRecord = new SyncRecord($fromId, (string) $toId, $data->targetRequest()->body);
         }
 
-        $this->recordRepository->store($route->syncSettings()->table(), $syncRecord);
+        $this->recordRepository->store($settings->table(), $syncRecord);
 
         // Start sync
         return $handler->handle($data, $route);

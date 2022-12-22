@@ -11,6 +11,8 @@ use ESB\Handlers\HTTP\RouteCRUDHandler;
 use ESB\Handlers\HTTP\RouteListHandler;
 use ESB\Middleware\HTTP\InitRouteDataMiddleware;
 use ESB\Repository\RouteRepositoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -34,7 +36,7 @@ class ServerAppSetup
     {
 
         $app->group('/route', function (RouteCollectorProxy $group) {
-            $group->options('{routes:.*}', function ($request, $response, $args) {
+            $group->options('{routes:.*}', function (RequestInterface $request, ResponseInterface $response, array $args) {
                 return $response;
             });
             $group->map(['POST', 'PUT'], '', RouteCRUDHandler::class);
@@ -49,14 +51,15 @@ class ServerAppSetup
     {
         $routes = $this->provider->loadAll();
         $app->group($this->basePath, function (RouteCollectorProxy $group) use ($routes) {
-            $group->options('{routes:.*}', function ($request, $response, $args) {
+            $group->options('{routes:.*}', function (RequestInterface $request, ResponseInterface $response, array $args) {
                 return $response;
             });
             foreach ($routes as $route) {
-                if (! $route->fromSystemDsn() instanceof ServerDSN) {
+                $routeDsn = $route->fromSystemDsn();
+                if (! $routeDsn instanceof ServerDSN) {
                     continue;
                 }
-                $group->map([$route->fromSystemDsn()->method], $route->fromSystemDsn()->path, ESBHandler::class);
+                $group->map([$routeDsn->method], $routeDsn->path, ESBHandler::class);
             }
         })->add(new InitRouteDataMiddleware($this->provider, $this->basePath));
     }

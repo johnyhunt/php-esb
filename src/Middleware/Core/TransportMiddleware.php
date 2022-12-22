@@ -28,12 +28,12 @@ class TransportMiddleware implements ESBMiddlewareInterface
     {
         if ($authMap = $route->toSystemData()->auth()) {
             $authService = $this->authServicePool->get($authMap->serviceAlias());
-            $authService->authenticate($data->targetRequest, $authMap->settings());
+            $authService->authenticate($data->targetRequest(), $authMap->settings());
         }
         $client     = $this->clientPool->get($route->toSystemDsn());
         $resultData = $handler->handle(
             $data->withTargetResponse(
-                $client->send($route->toSystemDsn(), $data->targetRequest, $route->toSystemData()->responseFormat())
+                $client->send($route->toSystemDsn(), $data->targetRequest(), $route->toSystemData()->responseFormat())
             ),
             $route,
         );

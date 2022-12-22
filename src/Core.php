@@ -29,7 +29,7 @@ class Core
                 {
                 }
 
-                public function handle(ProcessingData $data, Route $route)
+                public function handle(ProcessingData $data, Route $route) : ProcessingData
                 {
                     return $this->middleware->process($data, $route, $this->next);
                 }

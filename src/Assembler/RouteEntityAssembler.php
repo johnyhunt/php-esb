@@ -41,7 +41,7 @@ use function array_map;
  *      name: string,
  *      description: string|null,
  *      fromSystem: integrationSystem,
- *      fromSystem_dsn: string,
+ *      fromSystemDsn: string,
  *      fromSystemData: array,
  *      toSystem: integrationSystem,
  *      toSystemDsn: string,

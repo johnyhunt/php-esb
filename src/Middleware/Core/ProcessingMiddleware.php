@@ -30,8 +30,8 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         // If exist sync settings, need check before sending data actuality of them
         if ($settings = $route->syncSettings()) {
             $prevSyncedRecord = $this->recordRepository->findByPk(
-                $route->syncSettings()->table(),
-                (new ArrayFetch($data->incomeData->jsonSerialize()))($route->syncSettings()->pkPath())
+                $settings->table(),
+                (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath())
             );
 
             /** no update, due to settings, available - so exit */
@@ -54,10 +54,12 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         }
 
         try {
-            $template = $this->twig->load($route->toSystemData()->template());
+            /** TODO is template nullable? */
+            $template = $this->twig->load($route->toSystemData()->template() ?? '');
         } catch (LoaderError) {
-            $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template(), '')));
-            $template = $this->twig->createTemplate($route->toSystemData()->template());
+            /** TODO is template nullable? */
+            $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template() ?? '', '')));
+            $template = $this->twig->createTemplate($route->toSystemData()->template() ?? '');
         }
 
         $content = (new Spaceless(

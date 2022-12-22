@@ -12,10 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 
 use function array_keys;
 use function array_reduce;
+use function gettype;
+use function in_array;
 use function is_array;
-use function is_int;
 use function is_resource;
-use function is_string;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
@@ -140,21 +140,17 @@ class ESBJsonResponse implements ResponseInterface
 
     public function withStatus($code, $reasonPhrase = '') : self
     {
-        if (! is_int($code) && ! is_string($code)) {
+        if (! in_array(gettype($code), ['integer'])) {
             throw new InvalidArgumentException('Status code has to be an integer');
         }
 
-        $code = (int) $code;
         if ($code < 100 || $code > 599) {
             throw new InvalidArgumentException('Status code has to be an integer between 100 and 599');
         }
 
-        $new             = clone $this;
-        $new->statusCode = $code;
-        if ((null === $reasonPhrase || '' === $reasonPhrase) && isset(self::PHRASES[$new->statusCode])) {
-            $reasonPhrase = self::PHRASES[$new->statusCode];
-        }
-        $new->reasonPhrase = $reasonPhrase;
+        $new               = clone $this;
+        $new->statusCode   = $code;
+        $new->reasonPhrase = $reasonPhrase ?: self::PHRASES[$new->statusCode] ?? 'Unknown';
 
         return $new;
     }

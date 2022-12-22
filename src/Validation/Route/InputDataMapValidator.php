@@ -12,20 +12,6 @@ use Throwable;
 
 use function implode;
 
-/**
- * @psalm-type assert = array{
- *     assert: string,
- *     params: array
- * }
- * @psalm-type validationRuleRow = array{
- *     type: string,
- *     required: bool,
- *     validators: null|array<array-key, assert>,
- *     items: null|validationRuleRow,
- *     properties: null|array<string, validationRuleRow>,
- *     example: null|string
- * }
- */
 class InputDataMapValidator
 {
     public function __construct(private readonly ValidatorsPool $pool)
@@ -33,7 +19,7 @@ class InputDataMapValidator
     }
 
     /** @psalm-param array{
-     *     data: validationRuleRow,
+     *     data: array,
      *     headers: string[],
      *     properties: string[]
      * } $row
@@ -46,6 +32,7 @@ class InputDataMapValidator
             Assertion::isArray($row['properties'] ?? null, 'InputDataMap::properties expected been array');
 
             $data = $row['data'] ?? null;
+            Assertion::isArray($data, 'InputDataMap:on top level row could be array|object only');
             Assertion::inArray($data['type'] ?? '', ['object', 'array'], 'InputDataMap:on top level row could be array|object only');
         } catch (AssertionFailedException $e) {
             throw new ValidationException($e->getMessage(), $propertyPath);
@@ -53,7 +40,6 @@ class InputDataMapValidator
         $this->validateRow($data, $propertyPath);
     }
 
-    /** @psalm-param validationRuleRow $row */
     private function validateRow(array $row, string $propertyPath) : void
     {
         try {
@@ -61,8 +47,6 @@ class InputDataMapValidator
             Assertion::keyExists($row, 'required', 'InputDataMap::required field should present');
             Assertion::keyExists($row, 'example', 'InputDataMap::example field should present');
             Assertion::keyExists($row, 'validators', 'InputDataMap::validators field should present');
-            Assertion::keyExists($row, 'items', 'InputDataMap::items field should present');
-            Assertion::keyExists($row, 'properties', 'InputDataMap::properties field should present');
 
             Assertion::inArray(
                 $row['type'] ?? null,
@@ -71,14 +55,23 @@ class InputDataMapValidator
             );
             Assertion::boolean($row['required'] ?? null, 'InputDataMap::required field expected been boolean');
             Assertion::string($row['example'], 'InputDataMap::example field expected been string');
+
+            Assertion::keyExists($row, 'properties', 'InputDataMap::properties field should present');
+            Assertion::nullOrIsArray($row['properties'], 'Expected array', $propertyPath);
+
+            Assertion::keyExists($row, 'items', 'InputDataMap::items field should present');
+            Assertion::nullOrIsArray($row['items'], 'Expected array', $propertyPath);
+
             switch (true) {
                 case $row['type'] === 'object':
                     Assertion::notEmpty($row['properties'] ?? null, 'InputDataMap::properties required for row.type = object');
                     Assertion::isArray($row['properties'], 'InputDataMap::properties required for row.type = object');
+                    $this->validateProperties($row['properties'], $propertyPath);
                     break;
                 case $row['type'] === 'array':
                     Assertion::notEmpty($row['items'] ?? null, 'InputDataMap::items required for row.type = array');
                     Assertion::isArray($row['items'], 'InputDataMap::items required for row.type = array');
+                    $this->validateItems($row['items'], $propertyPath);
                     break;
             }
             $validators = $row['validators'] ?? null;
@@ -97,12 +90,8 @@ class InputDataMapValidator
         } catch (Throwable $e) {
             throw new ValidationException($e->getMessage(), $propertyPath);
         }
-
-        $this->validateItems($row['items'], $propertyPath);
-        $this->validateProperties($row['properties'], $propertyPath);
     }
 
-    /** @psalm-param null|validationRuleRow $items */
     private function validateItems(?array $items, string $propertyPath) : void
     {
         if (! $items) {
@@ -112,7 +101,6 @@ class InputDataMapValidator
         $this->validateRow($items, $propertyPath);
     }
 
-    /** @psalm-param null|array<string, validationRuleRow> $properties */
     private function validateProperties(?array $properties, string $propertyPath) : void
     {
         if (! $properties) {
@@ -120,7 +108,8 @@ class InputDataMapValidator
         }
         $propertyPath = implode('.', [$propertyPath, 'properties']);
         foreach ($properties as $key => $value) {
-            $propertyPath = implode('.', [$propertyPath, $key]);
+            $propertyPath = implode('.', [$propertyPath, (string) $key]);
+            Assertion::isArray($value, 'Expected array', $propertyPath);
             $this->validateRow($value, $propertyPath);
         }
     }

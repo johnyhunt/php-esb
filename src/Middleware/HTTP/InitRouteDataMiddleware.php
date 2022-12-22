@@ -28,7 +28,7 @@ class InitRouteDataMiddleware implements MiddlewareInterface
         $incomeData  = new IncomeData(
             $request->getHeaders(),
             $request->getAttributes(),
-            $request->getParsedBody() ?: $request->getQueryParams(),
+            (array) $request->getParsedBody() ?: $request->getQueryParams(),
             Uuid::uuid4()->toString(),
         );
 

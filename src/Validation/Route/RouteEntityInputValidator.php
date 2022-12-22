@@ -45,7 +45,7 @@ use function implode;
  *      name: string,
  *      description: string|null,
  *      fromSystem: integrationSystem,
- *      fromSystem_dsn: string,
+ *      fromSystemDsn: string,
  *      fromSystemData: array,
  *      toSystem: integrationSystem,
  *      toSystemDsn: string,
@@ -95,7 +95,7 @@ class RouteEntityInputValidator
             $this->targetRequestMapValidator->validate($row['toSystemData'], implode('.', [$path, 'toSystemData']));
 
             Assertion::keyExists($row, 'syncSettings', 'RouteEntityInputValidator::syncSettings expected null or array');
-            $syncSettings = $row['syncSetting'];
+            $syncSettings = $row['syncSettings'];
             Assertion::nullOrIsArray($syncSettings, 'RouteEntityInputValidator::syncSettings expected null or array');
             if ($syncSettings) {
                 $this->settingsValidator->validate($syncSettings, implode('.', [$path, 'syncSettings']));
@@ -105,9 +105,8 @@ class RouteEntityInputValidator
             $postSuccessHandlers = $row['postSuccessHandlers'];
             Assertion::nullOrIsArray($postSuccessHandlers, 'RouteEntityInputValidator::postSuccessHandlers expected null or array');
             if ($postSuccessHandlers) {
+                Assertion::allString($postSuccessHandlers, 'RouteEntityInputValidator::postSuccessHandlers expected string service aliases');
                 foreach ($postSuccessHandlers as $handler) {
-                    Assertion::string($handler, 'RouteEntityInputValidator::postSuccessHandlers expected string service aliases');
-                    Assertion::notBlank($handler, 'RouteEntityInputValidator::postSuccessHandlers expected string service aliases');
                     /** will throw ESBException if isn`t set */
                     $this->handlersPool->get($handler);
                 }

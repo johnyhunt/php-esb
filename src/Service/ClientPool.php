@@ -13,7 +13,7 @@ use function sprintf;
 class ClientPool
 {
     /** @psalm-var array<string, EsbClientInterface> $clients  */
-    private array $clients;
+    private array $clients = [];
 
     public function __construct(EsbClientInterface ...$clients)
     {

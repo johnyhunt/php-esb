@@ -54,7 +54,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
                     throw new ESBException('ValidatorMiddleware:validate unknown rule type');
             }
         } catch (AssertionFailedException $e) {
-            throw new ValidationException($e->getMessage(), $e->getPropertyPath());
+            throw new ValidationException($e->getMessage(), $e->getPropertyPath() ?? 'unknown PropertyPath');
         }
     }
 
@@ -92,7 +92,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         }
 
         /** @psalm-var Validator $validator */
-        foreach ($rule->validators as $validator) {
+        foreach ($rule->validators ?? [] as $validator) {
             $validation = $this->validators->get($validator->assert);
             $validation->validate($row, $propertyPath, $validator->params);
         }
@@ -102,13 +102,13 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     private function validateObject(array $row, ValidationRule $rule, string $propertyPath) : void
     {
         $this->validateRow($row, $rule, $propertyPath);
-        if (! $properties = $rule->properties) {
+        if (! $rule->properties) {
             Assertion::true(false, 'Properties required for type object', $propertyPath);
         }
         if (! $row && ! $rule->required) {
             return;
         }
-        foreach ($properties as $key => $property) {
+        foreach ($rule->properties ?? [] as $key => $property) {
             $rowValue     = $row[$key] ?? null;
             $propertyPath = implode('.', [$propertyPath, $key]);
             $this->validate($rowValue, $property, $propertyPath);

@@ -4,6 +4,9 @@ namespace ESB\Entity;
 
 class SyncRecord
 {
+    private readonly int $createdAt;
+    private int $updatedAt;
+
     public function __construct(
         private string $fromId,
         private string $toId,
@@ -21,27 +24,27 @@ class SyncRecord
         return $this;
     }
 
-    public function fromId(): string
+    public function fromId() : string
     {
         return $this->fromId;
     }
 
-    public function toId(): string
+    public function toId() : string
     {
         return $this->toId;
     }
 
-    public function requestBody(): string
+    public function requestBody() : string
     {
         return $this->requestBody;
     }
 
-    public function createdAt(): int
+    public function createdAt() : int
     {
         return $this->createdAt;
     }
 
-    public function updatedAt(): int
+    public function updatedAt() : int
     {
         return $this->updatedAt;
     }
