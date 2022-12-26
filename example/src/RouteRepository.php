@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Example;
 
 use ESB\Assembler\DsnInterpreterInterface;
+use ESB\Assembler\InputDataMapAssembler;
 use ESB\Entity\IntegrationSystem;
 use ESB\Entity\Route;
 use ESB\Entity\SyncTable;
@@ -16,7 +17,6 @@ use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
-use Example\Assembler\InputDataMapAssembler;
 
 use function file_get_contents;
 use function implode;
@@ -108,9 +108,9 @@ class RouteRepository implements RouteRepositoryInterface
         return $this->routes[$fromSystemDsn] ?? throw new ESBException('Unknown route');
     }
 
-    public function find(string $name) : ?Route
+    public function getByName(string $name) : Route
     {
-        return null;
+        throw new ESBException(sprintf('%s route wasn`t found', $name));
     }
 
     public function loadAll() : array
