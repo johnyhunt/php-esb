@@ -10,32 +10,30 @@ use ESB\Exception\ValidationException;
 
 class SyncSettingsValidator
 {
-    public function validate(?array $row, string $propertyPath = 'root') : void
+    public function validate(?array $syncSettings, ?array $syncTable, string $propertyPath = 'root') : void
     {
-        if (! $row) {
+        if ($syncSettings === null && $syncTable === null) {
             return;
         }
         try {
-            Assertion::keyExists($row, 'table', 'SyncSettingsValidator::table required');
-            if ($table = $row['table']) {
-                Assertion::isArray($table, 'SyncSettingsValidator::table expected array');
-                Assertion::keyExists($table, 'tableName', 'SyncSettingsValidator::table::tableName expected non-blank string');
-                Assertion::string($table['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
-                Assertion::notBlank($table['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
-            }
-            Assertion::keyExists($row, 'pkPath', 'SyncSettingsValidator::pkPath expected non-blank string');
-            Assertion::string($row['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
-            Assertion::notBlank($row['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
+            Assertion::true($syncSettings !== null && $syncTable !== null, 'SyncSettingsValidator syncTable and syncSettings should be set');
 
-            Assertion::keyExists($row, 'responsePkPath', 'SyncSettingsValidator::responsePkPath expected non-blank string');
-            Assertion::string($row['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
-            Assertion::notBlank($row['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
+            Assertion::keyExists($syncTable, 'tableName', 'SyncSettingsValidator::table::tableName expected non-blank string');
+            Assertion::string($syncTable['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
+            Assertion::notBlank($syncTable['tableName'], 'SyncSettingsValidator::table::tableName expected non-blank string');
 
-            Assertion::boolean($row['syncOnExist'] ?? null, 'SyncSettingsValidator::syncOnExist expected boolean');
-            Assertion::boolean($row['syncOnChange'] ?? null, 'SyncSettingsValidator::syncOnChange expected boolean');
+            Assertion::keyExists($syncSettings, 'pkPath', 'SyncSettingsValidator::pkPath expected non-blank string');
+            Assertion::string($syncSettings['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
+            Assertion::notBlank($syncSettings['pkPath'], 'SyncSettingsValidator::pkPath expected non-blank string');
 
-            Assertion::keyExists($row, 'updateRouteId', 'SyncSettingsValidator::updateRouteId expected null or non-blank string');
-            if ($updateRouteId = $row['updateRouteId']) {
+            Assertion::keyExists($syncSettings, 'responsePkPath', 'SyncSettingsValidator::responsePkPath expected non-blank string');
+            Assertion::string($syncSettings['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
+
+            Assertion::boolean($syncSettings['syncOnExist'] ?? null, 'SyncSettingsValidator::syncOnExist expected boolean');
+            Assertion::boolean($syncSettings['syncOnChange'] ?? null, 'SyncSettingsValidator::syncOnChange expected boolean');
+
+            Assertion::keyExists($syncSettings, 'updateRouteId', 'SyncSettingsValidator::updateRouteId expected null or non-blank string');
+            if ($updateRouteId = $syncSettings['updateRouteId']) {
                 Assertion::string($updateRouteId, 'SyncSettingsValidator::updateRouteId expected non-blank string');
                 Assertion::notBlank($updateRouteId, 'SyncSettingsValidator::updateRouteId expected non-blank string');
             }

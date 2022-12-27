@@ -97,8 +97,12 @@ class RouteEntityInputValidator
             Assertion::keyExists($row, 'syncSettings', 'RouteEntityInputValidator::syncSettings expected null or array');
             $syncSettings = $row['syncSettings'];
             Assertion::nullOrIsArray($syncSettings, 'RouteEntityInputValidator::syncSettings expected null or array');
+            Assertion::keyExists($row, 'syncTable', 'RouteEntityInputValidator::syncTable expected null or array');
+            $syncTable = $row['syncTable'];
+            Assertion::nullOrIsArray($syncSettings, 'RouteEntityInputValidator::syncSettings expected null or array');
+            Assertion::nullOrIsArray($syncTable, 'RouteEntityInputValidator::syncTable expected null or array');
             if ($syncSettings) {
-                $this->settingsValidator->validate($syncSettings, implode('.', [$path, 'syncSettings']));
+                $this->settingsValidator->validate($syncSettings, $syncTable, implode('.', [$path, 'syncSettings']));
             }
 
             Assertion::keyExists($row, 'postSuccessHandlers', 'RouteEntityInputValidator::postSuccessHandlers required');
