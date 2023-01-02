@@ -7,7 +7,6 @@ namespace ESB;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Middleware\ESBMiddlewareInterface;
-use ESB\Exception\StopProcessingException;
 
 class Core
 {
@@ -37,7 +36,6 @@ class Core
         }
     }
 
-    /** @throws StopProcessingException */
     public function run(ProcessingData $data, Route $route) : ProcessingData
     {
         return $this->handler->handle($data, $route);

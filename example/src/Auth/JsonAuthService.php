@@ -8,10 +8,10 @@ use Assert\Assertion;
 use ESB\Auth\AuthServiceInterface;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\VO\ServerDSN;
-use ESB\Exception\ESBException;
 use ESB\Utils\ArrayFetch;
 use Example\Clients\HttpClient;
 
+use Exception;
 use function json_encode;
 
 class JsonAuthService implements AuthServiceInterface
@@ -53,6 +53,6 @@ class JsonAuthService implements AuthServiceInterface
 
             return;
         }
-        throw new ESBException('JsonAuthService::authentication failed');
+        throw new Exception('JsonAuthService::authentication failed');
     }
 }

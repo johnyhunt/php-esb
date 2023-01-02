@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ESB;
 
 use ESB\Auth\AuthServiceInterface;
-use ESB\Exception\ESBException;
+use ESB\Exception\SetupException;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Handlers\QueueMessageHandler;
 use ESB\Middleware\Core\PostSuccessMiddleware;
@@ -85,7 +85,7 @@ class ContainerConfig
                 foreach ($definedRunners as $alias => $runnerClass) {
                     $runner = $container->get($runnerClass);
                     if (! $runner instanceof CoreRunnerInterface) {
-                        throw new ESBException('ESBHandler: runner config invalid');
+                        throw new SetupException('ESBHandler: runner config invalid');
                     }
                     $pool->add($alias, $runner);
                 }
@@ -124,7 +124,7 @@ class ContainerConfig
                 foreach ($authServices as $alias => $serviceClass) {
                     $service = $container->get($serviceClass);
                     if (! $service instanceof AuthServiceInterface) {
-                        throw new ESBException('AuthServicePool: auth config invalid');
+                        throw new SetupException('AuthServicePool: auth config invalid');
                     }
                     $pool->add($alias, $service);
                 }
@@ -141,7 +141,7 @@ class ContainerConfig
                 foreach ($definedValidators as $alias => $validatorClass) {
                     $validator = $container->get($validatorClass);
                     if (! $validator instanceof ValidatorInterface) {
-                        throw new ESBException('ValidatorMiddleware: custom validator config invalid');
+                        throw new SetupException('ValidatorMiddleware: custom validator config invalid');
                     }
                     $pool->add($alias, $validator);
                 }
@@ -158,7 +158,7 @@ class ContainerConfig
                 foreach ($definedHandlers as $alias => $handlerClass) {
                     $containerHandler = $container->get($handlerClass);
                     if (! $containerHandler instanceof PostHandlerInterface) {
-                        throw new ESBException('PostSuccessMiddleware: custom handler config invalid');
+                        throw new SetupException('PostSuccessMiddleware: custom handler config invalid');
                     }
                     $pool->add($alias, $containerHandler);
                 }

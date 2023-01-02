@@ -9,10 +9,10 @@ use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\ServerDSN;
-use ESB\Exception\ESBException;
 use Example\Service\ResponseDecodeService;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
+use RuntimeException;
 
 class HttpClient implements EsbClientInterface
 {
@@ -26,7 +26,7 @@ class HttpClient implements EsbClientInterface
     public function send(AbstractDSN $dsn, TargetRequest $targetRequest, string $responseFormat) : TargetResponse
     {
         if (! $dsn instanceof ServerDSN) {
-            throw new ESBException('Http client expects dsn been ServerDSN instance');
+            throw new RuntimeException('Http client expects dsn been ServerDSN instance');
         }
         $requestTime = 0;
         $response    = $this->client->request(

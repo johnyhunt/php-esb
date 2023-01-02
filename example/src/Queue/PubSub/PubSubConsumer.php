@@ -7,10 +7,10 @@ namespace Example\Queue\PubSub;
 use ESB\DTO\Message\Envelope;
 use ESB\DTO\Message\Message;
 use ESB\DTO\Message\ReceiveStamp;
-use ESB\Exception\ESBException;
 use ESB\Queue\QueueConfigInterface;
 use ESB\Queue\QueueConsumerInterface;
 use Example\Entity\VO\PubSubDSN;
+use Exception;
 use Google\Cloud\PubSub\Message as PubSubMessage;
 use Google\Cloud\PubSub\Subscription;
 
@@ -45,7 +45,7 @@ class PubSubConsumer implements QueueConsumerInterface
         $receivedStamp = $envelope->getStamp(ReceiveStamp::class);
         $nativeMessage = $receivedStamp?->nativeMessage;
         if (! $nativeMessage instanceof PubSubMessage) {
-            throw new ESBException('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
+            throw new Exception('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
         }
         $this->subscription->acknowledge($nativeMessage);
     }
@@ -61,7 +61,7 @@ class PubSubConsumer implements QueueConsumerInterface
         $receivedStamp = $envelope->getStamp(ReceiveStamp::class);
         $nativeMessage = $receivedStamp?->nativeMessage;
         if (! $nativeMessage instanceof PubSubMessage) {
-            throw new ESBException('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
+            throw new Exception('PubSubConsumer::acknowledge expects native message been instance of PubSubMessage');
         }
         $this->subscription->modifyAckDeadline($nativeMessage, $delay);
     }

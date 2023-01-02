@@ -6,7 +6,7 @@ namespace ESB\Service;
 
 use ESB\Client\EsbClientInterface;
 use ESB\Entity\VO\AbstractDSN;
-use ESB\Exception\ESBException;
+use ESB\Exception\SetupException;
 
 use function sprintf;
 
@@ -19,7 +19,7 @@ class ClientPool
     {
         foreach ($clients as $client) {
             if ($this->clients[$client->dsnMatchClass()] ?? null) {
-                throw new ESBException(sprintf('ClientPool invalid setup, dsn matches more than 1 client, %s', $client->dsnMatchClass()));
+                throw new SetupException(sprintf('ClientPool invalid setup, dsn matches more than 1 client, %s', $client->dsnMatchClass()));
             }
             $this->clients[$client->dsnMatchClass()] = $client;
         }
@@ -27,6 +27,6 @@ class ClientPool
 
     public function get(AbstractDSN $dsn) : EsbClientInterface
     {
-        return $this->clients[$dsn::class] ?? throw new ESBException(sprintf('ClientPool - no client matches dsn %s', $dsn::class));
+        return $this->clients[$dsn::class] ?? throw new SetupException(sprintf('ClientPool - no client matches dsn %s', $dsn::class));
     }
 }

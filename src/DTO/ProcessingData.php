@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ESB\DTO;
 
 use ESB\Entity\SyncRecord;
-use ESB\Exception\ESBException;
+use RuntimeException;
 
 class ProcessingData
 {
@@ -51,7 +51,7 @@ class ProcessingData
     public function targetRequest() : TargetRequest
     {
         if (! $this->targetRequest) {
-            throw new ESBException("TargetRequest must be setup on this stage");
+            throw new RuntimeException("TargetRequest must be setup on this stage");
         }
         return $this->targetRequest;
     }
@@ -59,7 +59,7 @@ class ProcessingData
     public function targetResponse() : TargetResponse
     {
         if (! $this->targetResponse) {
-            throw new ESBException("TargetResponse must be setup on this stage");
+            throw new RuntimeException("TargetResponse must be setup on this stage");
         }
         return $this->targetResponse;
     }

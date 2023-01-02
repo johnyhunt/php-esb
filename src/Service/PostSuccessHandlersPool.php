@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ESB\Service;
 
-use ESB\Exception\ESBException;
+use ESB\Exception\SetupException;
 use ESB\Handlers\PostHandlerInterface;
 
 class PostSuccessHandlersPool
@@ -19,6 +19,6 @@ class PostSuccessHandlersPool
 
     public function get(string $alias) : PostHandlerInterface
     {
-        return $this->handlers[$alias] ?? throw new ESBException(sprintf('PostSuccessHandlersPool - handler %s isn`t registered in container config', $alias));
+        return $this->handlers[$alias] ?? throw new SetupException(sprintf('PostSuccessHandlersPool - handler %s isn`t registered in container config', $alias));
     }
 }

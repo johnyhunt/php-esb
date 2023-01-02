@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ESB\Service;
 
 use ESB\Auth\AuthServiceInterface;
-use ESB\Exception\ESBException;
+use ESB\Exception\SetupException;
 
 use function sprintf;
 
@@ -21,6 +21,6 @@ class AuthServicePool
 
     public function get(string $alias) : AuthServiceInterface
     {
-        return $this->pool[$alias] ?? throw new ESBException(sprintf('AuthServicePool::get unknown alias %s', $alias));
+        return $this->pool[$alias] ?? throw new SetupException(sprintf('AuthServicePool::get unknown alias %s', $alias));
     }
 }

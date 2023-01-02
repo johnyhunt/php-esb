@@ -15,9 +15,9 @@ use ESB\Entity\VO\InputDataMap;
 use ESB\Entity\VO\SyncSettings;
 use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
-use ESB\Exception\ESBException;
 use ESB\Repository\RouteRepositoryInterface;
 
+use Exception;
 use function file_get_contents;
 use function implode;
 use function json_decode;
@@ -105,12 +105,12 @@ class RouteRepository implements RouteRepositoryInterface
 
     public function get(string $fromSystemDsn) : Route
     {
-        return $this->routes[$fromSystemDsn] ?? throw new ESBException('Unknown route');
+        return $this->routes[$fromSystemDsn] ?? throw new Exception('Unknown route');
     }
 
     public function getByName(string $name) : Route
     {
-        throw new ESBException(sprintf('%s route wasn`t found', $name));
+        throw new Exception(sprintf('%s route wasn`t found', $name));
     }
 
     public function loadAll() : array

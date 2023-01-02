@@ -11,7 +11,7 @@ use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Entity\VO\ValidationRule;
 use ESB\Entity\VO\Validator;
-use ESB\Exception\ESBException;
+use ESB\Exception\RouteConfigException;
 use ESB\Exception\ValidationException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Service\ValidatorsPool;
@@ -33,7 +33,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         return $handler->handle($data, $route);
     }
 
-    /** @throws ValidationException */
+    /** @throws RouteConfigException */
     private function validate(mixed $row, ValidationRule $rule, string $propertyPath) : void
     {
         try {
@@ -51,14 +51,14 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
                     $this->validateRow($row, $rule, $propertyPath);
                     break;
                 default:
-                    throw new ESBException('ValidatorMiddleware:validate unknown rule type');
+                    throw new RouteConfigException('ValidatorMiddleware:validate unknown rule type');
             }
         } catch (AssertionFailedException $e) {
             throw new ValidationException($e->getMessage(), $e->getPropertyPath() ?? 'unknown PropertyPath');
         }
     }
 
-    /** @throws AssertionFailedException|ESBException */
+    /** @throws AssertionFailedException */
     private function validateRow(mixed $row, ValidationRule $rule, string $propertyPath) : void
     {
         switch (true) {

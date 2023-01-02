@@ -10,7 +10,6 @@ use ESB\Entity\IntegrationSystem;
 use ESB\Entity\SyncTable;
 use ESB\Entity\VO\SyncSettings;
 use ESB\Entity\VO\TargetRequestMap;
-use ESB\Exception\ESBException;
 use ESB\Exception\ValidationException;
 use ESB\Service\CoreRunnersPool;
 use ESB\Service\PostSuccessHandlersPool;
@@ -128,7 +127,7 @@ class RouteEntityInputValidator
             if ($row['description'] !== null) {
                 Assertion::notBlank($row['description'], 'RouteEntityInputValidator::description expected non-blank string');
             }
-        } catch (AssertionFailedException|ESBException $e) {
+        } catch (AssertionFailedException $e) {
             throw new ValidationException($e->getMessage(), $path);
         }
     }

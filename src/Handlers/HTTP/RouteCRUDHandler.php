@@ -6,7 +6,7 @@ namespace ESB\Handlers\HTTP;
 
 use ESB\Assembler\RouteEntityAssembler;
 use ESB\Entity\Route;
-use ESB\Exception\ESBException;
+use ESB\Exception\ValidationException;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Response\ESBJsonResponse;
 use ESB\Validation\Route\RouteEntityInputValidator;
@@ -41,7 +41,7 @@ class RouteCRUDHandler
     {
         $requestData = $request->getParsedBody();
         if (! is_array($requestData)) {
-            throw new ESBException('RouteCRUDHadler - wrong request body');
+            throw new ValidationException('RouteCRUDHadler - wrong request body', '');
         }
         $this->validator->validate($requestData);
         $route = $this->assembler->buildRoute($requestData);
@@ -62,7 +62,7 @@ class RouteCRUDHandler
     {
         $requestData = $request->getParsedBody();
         if (! is_array($requestData)) {
-            throw new ESBException('RouteCRUDHadler - wrong request body');
+            throw new ValidationException('RouteCRUDHadler - wrong request body', '');
         }
         $this->validator->validate($requestData);
         $route = $this->assembler->buildRoute($requestData);
@@ -76,7 +76,7 @@ class RouteCRUDHandler
         $name  = $request->getAttribute('name');
         $route = array_filter($this->routeRepository->loadAll(), fn(Route $route) => $route->name() === $name);
         if (! $route) {
-            throw new ESBException('Unknown route');
+            throw new ValidationException('Unknown route', '');
         }
         $this->routeRepository->delete(reset($route));
 

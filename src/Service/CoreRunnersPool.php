@@ -6,7 +6,7 @@ namespace ESB\Service;
 
 use ESB\CoreRunner;
 use ESB\CoreRunnerInterface;
-use ESB\Exception\ESBException;
+use ESB\Exception\SetupException;
 
 use function sprintf;
 
@@ -29,6 +29,6 @@ class CoreRunnersPool
             return $this->coreRunner;
         }
 
-        return $this->runners[$alias] ?? throw new ESBException(sprintf('CoreRunnersPool - runner for %s isn`t set', $alias));
+        return $this->runners[$alias] ?? throw new SetupException(sprintf('CoreRunnersPool - runner for %s isn`t set', $alias));
     }
 }

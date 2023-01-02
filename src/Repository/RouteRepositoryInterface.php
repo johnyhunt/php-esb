@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace ESB\Repository;
 
 use ESB\Entity\Route;
-use ESB\Exception\ESBException;
 
 interface RouteRepositoryInterface
 {
-    /** @throws ESBException */
     public function get(string $fromSystemDsn) : Route;
 
     public function getByName(string $name) : Route;
