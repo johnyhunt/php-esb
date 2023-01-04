@@ -88,7 +88,6 @@ class RouteEntityInputValidator
             $this->integrationSystemValidator->validate($row['toSystem'], implode('.', [$path, 'toSystem']));
 
             Assertion::string($row['toSystemDsn'] ?? null, 'RouteEntityInputValidator::toSystemDsn expected non-blank string');
-            Assertion::notBlank($row['toSystemDsn'] ?? null, 'RouteEntityInputValidator::toSystemDsn expected non-blank string');
 
             Assertion::isArray($row['toSystemData'] ?? null, 'RouteEntityInputValidator::toSystemData expected array');
             $this->targetRequestMapValidator->validate($row['toSystemData'], implode('.', [$path, 'toSystemData']));

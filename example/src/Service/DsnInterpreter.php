@@ -7,6 +7,7 @@ namespace Example\Service;
 use Assert\Assertion;
 use ESB\Assembler\DsnInterpreterInterface;
 use ESB\Entity\VO\AbstractDSN;
+use ESB\Entity\VO\EmptyDSN;
 use ESB\Entity\VO\ServerDSN;
 use Example\Entity\VO\PubSubDSN;
 
@@ -18,6 +19,9 @@ class DsnInterpreter implements DsnInterpreterInterface
 {
     public function __invoke(string $dsn) : AbstractDSN
     {
+        if ($dsn === '') {
+            return new EmptyDSN();
+        }
         $matches = [];
         preg_match('/^[a-zA-Z]+/', $dsn, $matches);
         $client = $matches[0] ?? null;
