@@ -10,18 +10,12 @@ use Nyholm\Psr7\MessageTrait;
 use Nyholm\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 
-use function array_keys;
-use function array_reduce;
 use function gettype;
 use function in_array;
-use function is_array;
-use function is_resource;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
-use function property_exists;
 use function sprintf;
-use function strtolower;
 
 use const JSON_ERROR_NONE;
 
@@ -95,36 +89,23 @@ class ESBJsonResponse implements ResponseInterface
         511 => 'Network Authentication Required',
     ];
 
-    private string $reasonPhrase = '';
-
-    private int $statusCode;
-
     /**
      * @psalm-suppress NoInterfaceProperties
      * @psalm-param mixed $body
      */
     public function __construct(
-        $body,
-        int $status = 200,
+        array|JsonSerializable $body,
+        private int $statusCode = 200,
         array $headers = [],
         string $version = '1.1',
-        ?string $reason = null,
-        int $encodingOptions = self::DEFAULT_JSON_FLAGS
+        private string $reasonPhrase = '',
+        private int $encodingOptions = self::DEFAULT_JSON_FLAGS
     ) {
-        if (! $body instanceof JsonSerializable && ! is_array($body)) {
-            throw new InvalidArgumentException('Cannot JSON encode non-arrays');
-        }
         $jsonBody         = $this->jsonEncode($body, $encodingOptions);
         $this->stream     = Stream::create($jsonBody);
-        $this->statusCode = $body instanceof JsonSerializable && property_exists($body, 'code') ? (int) $body->code : $status;
-        $headers          = $this->injectContentType('application/json', $headers);
-        $this->setHeaders($headers);
-        if (null === $reason && isset(self::PHRASES[$this->statusCode])) {
-            $this->reasonPhrase = self::PHRASES[$status];
-        } else {
-            $this->reasonPhrase = $reason ?? '';
-        }
+        $this->setHeaders(['content-type' => 'application/json'] + $headers);
 
+        $this->reasonPhrase ?: $this->reasonPhrase = self::PHRASES[$this->statusCode] ?? '';
         $this->protocol = $version;
     }
 
@@ -155,13 +136,8 @@ class ESBJsonResponse implements ResponseInterface
         return $new;
     }
 
-    /** @psalm-param mixed $data */
-    private function jsonEncode($data, int $encodingOptions) : string
+    private function jsonEncode(array|JsonSerializable $data, int $encodingOptions) : string
     {
-        if (is_resource($data)) {
-            throw new InvalidArgumentException('Cannot JSON encode resources');
-        }
-
         /** @psalm-suppress UnusedFunctionCall */
         json_encode(null); // Clear json_last_error()
 
@@ -178,24 +154,5 @@ class ESBJsonResponse implements ResponseInterface
         }
 
         return $json;
-    }
-
-    private function injectContentType(string $contentType, array $headers) : array
-    {
-        /** @var array|bool $hasContentType */
-        $hasContentType = array_reduce(
-            array_keys($headers),
-            function ($carry, $item) {
-                /** @var string $item */
-                return $carry ?: strtolower($item) === 'content-type';
-            },
-            false
-        );
-
-        if (! $hasContentType) {
-            $headers['content-type'] = [$contentType];
-        }
-
-        return $headers;
     }
 }

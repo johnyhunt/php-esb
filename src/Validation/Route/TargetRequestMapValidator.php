@@ -40,12 +40,13 @@ class TargetRequestMapValidator
 
             Assertion::isArray($row['headers'] ?? null, 'TargetRequestMapValidator::headers expected string array');
             Assertion::allString($row['headers'], 'TargetRequestMapValidator::headers expected string array');
-            Assertion::nullOrString($row['template'] ?? false, 'TargetRequestMapValidator::template could be string only');
+            Assertion::keyExists($row, 'template', 'TargetRequestMapValidator::template should be set');
+            Assertion::nullOrString($row['template'], 'TargetRequestMapValidator::template could be string or null');
             if ($row['template'] !== null) {
                 Assertion::notBlank($row['template'], 'TargetRequestMapValidator::template could not be empty string');
                 $this->twig->parse($this->twig->tokenize(new Source($row['template'], '')));
             }
-            Assertion::nullOrIsArray($row['auth'] ?? false, 'TargetRequestMapValidator::auth expected array');
+            Assertion::nullOrIsArray($row['auth'], 'TargetRequestMapValidator::auth expected array');
             if ($row['auth'] !== null) {
                 $auth = $row['auth'];
                 Assertion::string($auth['serviceAlias'] ?? null, 'TargetRequestMapValidator::auth::serviceAlias expected non-blank string');
