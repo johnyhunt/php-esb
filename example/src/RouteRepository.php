@@ -16,8 +16,8 @@ use ESB\Entity\VO\SyncSettings;
 use ESB\Entity\VO\TargetRequestMap;
 use ESB\Entity\VO\PostHandler;
 use ESB\Repository\RouteRepositoryInterface;
-
 use Exception;
+
 use function file_get_contents;
 use function implode;
 use function json_decode;
@@ -42,6 +42,7 @@ class RouteRepository implements RouteRepositoryInterface
                 toSystemData: new TargetRequestMap(responseFormat: 'json'),
                 syncSettings: null,
                 postSuccessHandlers: null,
+                postErrorHandlers: null,
                 customRunner: null
             ),
             new Route(
@@ -64,7 +65,6 @@ class RouteRepository implements RouteRepositoryInterface
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
                 toSystemData: new TargetRequestMap(template: file_get_contents(self::__FIXTURES__ . 'template1.xml.twig')),
-                syncSettings: null
             ),
             new Route(
                 name: 'route_3',
@@ -94,7 +94,6 @@ class RouteRepository implements RouteRepositoryInterface
                 toSystem: new IntegrationSystem('system_2'),
                 toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
                 toSystemData: new TargetRequestMap(template: ''),
-                syncSettings: null,
             ),
         ];
 

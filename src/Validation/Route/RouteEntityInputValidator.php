@@ -12,6 +12,7 @@ use ESB\Entity\VO\SyncSettings;
 use ESB\Entity\VO\TargetRequestMap;
 use ESB\Exception\ValidationException;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\PostErrorHandlersPool;
 use ESB\Service\PostSuccessHandlersPool;
 
 use function implode;
@@ -52,6 +53,7 @@ use function implode;
  *      syncTable: syncTable|null,
  *      syncSettings: syncSettings|null,
  *      postSuccessHandlers: string[]|null,
+ *      postErrorHandlers: string[]|null,
  *      customRunner: string|null,
  * }
  */
@@ -62,7 +64,8 @@ class RouteEntityInputValidator
         private readonly IntegrationSystemValidator $integrationSystemValidator,
         private readonly TargetRequestMapValidator $targetRequestMapValidator,
         private readonly SyncSettingsValidator $settingsValidator,
-        private readonly PostSuccessHandlersPool $handlersPool,
+        private readonly PostSuccessHandlersPool $successHandlersPool,
+        private readonly PostErrorHandlersPool $errorHandlersPool,
         private readonly CoreRunnersPool $coreRunnersPool,
     ) {
     }
@@ -109,10 +112,22 @@ class RouteEntityInputValidator
             if ($postSuccessHandlers) {
                 Assertion::allString($postSuccessHandlers, 'RouteEntityInputValidator::postSuccessHandlers expected string service aliases');
                 foreach ($postSuccessHandlers as $handler) {
-                    /** will throw ESBException if isn`t set */
-                    $this->handlersPool->get($handler);
+                    /** will throw SetupException if isn`t set */
+                    $this->successHandlersPool->get($handler);
                 }
             }
+
+            Assertion::keyExists($row, 'postErrorHandlers', 'RouteEntityInputValidator::postErrorHandlers required');
+            $postErrorHandlers = $row['postErrorHandlers'];
+            Assertion::nullOrIsArray($postErrorHandlers, 'RouteEntityInputValidator::postErrorHandlers expected null or array');
+            if ($postErrorHandlers) {
+                Assertion::allString($postErrorHandlers, 'RouteEntityInputValidator::postErrorHandlers expected string service aliases');
+                foreach ($postErrorHandlers as $handler) {
+                    /** will throw SetupException if isn`t set */
+                    $this->errorHandlersPool->get($handler);
+                }
+            }
+
             Assertion::keyExists($row, 'customRunner', 'RouteEntityInputValidator::customRunner required');
             Assertion::nullOrString($row['customRunner'], 'RouteEntityInputValidator::customRunner expected null or string');
             if ($row['customRunner'] !== null) {

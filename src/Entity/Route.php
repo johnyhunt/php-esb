@@ -23,8 +23,9 @@ class Route implements JsonSerializable
         private IntegrationSystem $toSystem,
         private AbstractDSN       $toSystemDsn,
         private TargetRequestMap  $toSystemData,
-        private ?SyncSettings     $syncSettings,
-        private ?array            $postSuccessHandlers = [],
+        private ?SyncSettings     $syncSettings = null,
+        private ?array            $postSuccessHandlers = null,
+        private ?array            $postErrorHandlers = null,
         private ?string           $customRunner = null,
         private ?string           $description = null,
     ) {
@@ -74,6 +75,12 @@ class Route implements JsonSerializable
     public function postSuccessHandlers() : array
     {
         return $this->postSuccessHandlers ?? [];
+    }
+
+    /** @psalm-return array<int, PostHandler> */
+    public function postErrorHandlers() : array
+    {
+        return $this->postErrorHandlers ?? [];
     }
 
     public function customRunner() : ?string

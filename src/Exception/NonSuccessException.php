@@ -5,6 +5,7 @@ namespace ESB\Exception;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use Exception;
+use Throwable;
 
 class NonSuccessException extends Exception
 {
@@ -12,8 +13,9 @@ class NonSuccessException extends Exception
 
     public function __construct(
         public readonly Route $route,
-        public readonly ProcessingData $data
+        public readonly ProcessingData $data,
+        Throwable $previous = null,
     ) {
-        parent::__construct(self::EXCEPTION_MSG);
+        parent::__construct(self::EXCEPTION_MSG, previous: $previous);
     }
 }

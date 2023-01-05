@@ -49,6 +49,7 @@ use function array_map;
  *      syncTable: syncTable|null,
  *      syncSettings: syncSettings|null,
  *      postSuccessHandlers: string[]|null,
+ *      postErrorHandlers: string[]|null,
  *      customRunner: string|null,
  * }
  */
@@ -83,6 +84,7 @@ class RouteEntityAssembler
             toSystemData: ($this->toSystemDataAssembler)($route['toSystemData']),
             syncSettings: ($this->syncSettingsAssembler)($route['syncTable'], $route['syncSettings']),
             postSuccessHandlers: $route['postSuccessHandlers'] ? array_map(fn(string $name) => new PostHandler($name), $route['postSuccessHandlers']) : null,
+            postErrorHandlers: $route['postErrorHandlers'] ? array_map(fn(string $name) => new PostHandler($name), $route['postErrorHandlers']) : null,
             customRunner: $route['customRunner'],
             description: $route['description'],
         );

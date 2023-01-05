@@ -8,6 +8,7 @@ use ESB\Auth\AuthServiceInterface;
 use ESB\Exception\SetupException;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Handlers\QueueMessageHandler;
+use ESB\Middleware\Core\PostErrorMiddleware;
 use ESB\Middleware\Core\PostSuccessMiddleware;
 use ESB\Middleware\Core\ProcessingMiddleware;
 use ESB\Middleware\Core\SyncRecordsMiddleware;
@@ -18,6 +19,7 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\PostErrorHandlersPool;
 use ESB\Service\ValidatorsPool;
 use ESB\Service\PostSuccessHandlersPool;
 use ESB\Validation\ValidatorInterface;
@@ -62,6 +64,7 @@ class ContainerConfig
             {
                 // PostSuccessMiddleware is last, ValidatorMiddleware is first
                 return new Core(
+                    $container->get(PostErrorMiddleware::class),
                     $container->get(PostSuccessMiddleware::class),
                     $container->get(SyncRecordsMiddleware::class),
                     $container->get(TransportMiddleware::class),
@@ -159,6 +162,23 @@ class ContainerConfig
                     $containerHandler = $container->get($handlerClass);
                     if (! $containerHandler instanceof PostHandlerInterface) {
                         throw new SetupException('PostSuccessMiddleware: custom handler config invalid');
+                    }
+                    $pool->add($alias, $containerHandler);
+                }
+
+                return $pool;
+            },
+
+            PostErrorHandlersPool::class => function(ContainerInterface $container) : PostErrorHandlersPool {
+                $pool = new PostErrorHandlersPool();
+                // Get list of defined post success handlers
+                $definedHandlers = $container->get('post-error');
+
+                // Prepare list with all classes
+                foreach ($definedHandlers as $alias => $handlerClass) {
+                    $containerHandler = $container->get($handlerClass);
+                    if (! $containerHandler instanceof PostHandlerInterface) {
+                        throw new SetupException('PostErrorMiddleware: custom handler config invalid');
                     }
                     $pool->add($alias, $containerHandler);
                 }
