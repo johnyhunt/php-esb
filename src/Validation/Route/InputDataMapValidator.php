@@ -78,7 +78,7 @@ class InputDataMapValidator
             Assertion::nullOrIsArray($validators, 'InputDataMap::validators field could be array or null');
             if ($validators) {
                 foreach ($validators as $validatorRow) {
-                    /** will throw ESBException in case of wrong assert */
+                    /** will throw SetupException in case of wrong assert */
                     $this->pool->get($validatorRow['assert']);
 
                     Assertion::isArray($validatorRow, 'InputDataMap::validators expected each row kind [assertion => assert, properties => []] ');

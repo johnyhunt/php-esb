@@ -133,7 +133,7 @@ class RouteEntityInputValidator
             if ($row['customRunner'] !== null) {
                 Assertion::notBlank($row['customRunner'], 'RouteEntityInputValidator::customRunner expected non-blank string');
 
-                /** will throw ESBException if isn`t set */
+                /** will throw SetupException if isn`t set */
                 $this->coreRunnersPool->get($row['customRunner']);
             }
             Assertion::keyExists($row, 'description', 'RouteEntityInputValidator::description required');
