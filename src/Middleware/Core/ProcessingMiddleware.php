@@ -63,7 +63,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         }
 
         $content = (new Spaceless(
-            $template->render($data->incomeData->jsonSerialize())
+            $template->render($data->incomeData->jsonSerialize() + ['properties' => $route->fromSystemData()->properties])
         ))();
 
         // nothing to update, same content passed, duplicate call
