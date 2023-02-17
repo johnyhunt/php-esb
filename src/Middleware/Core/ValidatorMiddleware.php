@@ -99,15 +99,15 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     }
 
     /** @throws  AssertionFailedException */
-    private function validateObject(array $row, ValidationRule $rule, string $propertyPath) : void
+    private function validateObject(?array $row, ValidationRule $rule, string $propertyPath) : void
     {
-        $this->validateRow($row, $rule, $propertyPath);
         if (! $rule->properties) {
             Assertion::true(false, 'Properties required for type object', $propertyPath);
         }
         if (! $row && ! $rule->required) {
             return;
         }
+        $this->validateRow($row, $rule, $propertyPath);
         foreach ($rule->properties ?? [] as $key => $property) {
             $rowValue     = $row[$key] ?? null;
             $propertyPath = implode('.', [$propertyPath, $key]);
@@ -116,8 +116,11 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     }
 
     /** @throws  AssertionFailedException */
-    private function validateArray(array $row, ValidationRule $rule, string $propertyPath) : void
+    private function validateArray(?array $row, ValidationRule $rule, string $propertyPath) : void
     {
+        if (! $row && ! $rule->required) {
+            return;
+        }
         $this->validateRow($row, $rule, $propertyPath);
         $itemsRule = $rule->items;
         Assertion::notEmpty($itemsRule, 'Items required for type array', $propertyPath);
