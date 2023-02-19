@@ -13,7 +13,7 @@ class ValidationException extends Exception
 
     public function __construct(string $message, string $propertyPath, int $code = 0, ?Throwable $previous = null)
     {
-        $this->propertyPath = '';
+        $this->propertyPath = $propertyPath;
 
         parent::__construct($message, $code, $previous);
     }

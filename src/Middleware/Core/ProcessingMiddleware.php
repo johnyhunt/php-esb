@@ -53,18 +53,22 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
             );
         }
 
+        /** We implement spaceless on template content to remove all special chars.
+         * Code within try block will work only with FilesystemLoader. By default, we expect template code passed from toSystemData
+         */
         try {
             /** TODO is template nullable? */
-            $template = $this->twig->load($route->toSystemData()->template() ?? '');
+            $content  = $this->twig->getLoader()->getSourceContext($route->toSystemData()->template() ?? '')->getCode();
+            $template = $this->twig->createTemplate((new Spaceless($content))());
         } catch (LoaderError) {
             /** TODO is template nullable? */
             $this->twig->parse($this->twig->tokenize(new Source($route->toSystemData()->template() ?? '', '')));
-            $template = $this->twig->createTemplate($route->toSystemData()->template() ?? '');
+            $template = $this->twig->createTemplate(
+                (new Spaceless($route->toSystemData()->template() ?? ''))()
+            );
         }
 
-        $content = (new Spaceless(
-            $template->render($data->incomeData->jsonSerialize() + ['properties' => $route->fromSystemData()->properties])
-        ))();
+        $content = $template->render($data->incomeData->jsonSerialize() + ['properties' => $route->fromSystemData()->properties]);
 
         // nothing to update, same content passed, duplicate call
         if ($content === $data->syncRecord?->requestBody()) {

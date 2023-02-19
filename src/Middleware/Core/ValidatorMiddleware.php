@@ -34,7 +34,7 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
     }
 
     /** @throws RouteConfigException */
-    private function validate(mixed $row, ValidationRule $rule, string $propertyPath) : void
+    public function validate(mixed $row, ValidationRule $rule, string $propertyPath) : void
     {
         try {
             switch ($rule->type) {
@@ -124,9 +124,10 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         $this->validateRow($row, $rule, $propertyPath);
         $itemsRule = $rule->items;
         Assertion::notEmpty($itemsRule, 'Items required for type array', $propertyPath);
+        Assertion::notEmpty($row, 'Row data required ben an array', $propertyPath);
         foreach ($row as $rowValue) {
             $propertyPath = implode('.', [$propertyPath, 'items']);
-            $this->validateRow($rowValue, $itemsRule, $propertyPath);
+            $this->validate($rowValue, $itemsRule, $propertyPath);
         }
     }
 }
