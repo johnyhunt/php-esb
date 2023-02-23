@@ -48,11 +48,7 @@ class ContainerConfig
 
             SyncRecordRepositoryInterface::class => new SyncRecordRepository(),
 
-            MyCustomRunner::class => fn(ContainerInterface $container) => new MyCustomRunner($container->get(Core::class)),
-
             ClientPool::class => fn(ContainerInterface $container) => new ClientPool($container->get(HttpClient::class)),
-
-            AuthServicePool::class => fn (ContainerInterface $container) => new AuthServicePool($container->get(JsonAuthService::class)),
         ];
     }
 }

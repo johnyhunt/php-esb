@@ -48,57 +48,27 @@ class RouteRepository implements RouteRepositoryInterface
             new Route(
                 name: 'route_1',
                 fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/test123'])),
-                fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'test.json'), true)),
-                toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', 'app:8080/test'])),
-                toSystemData: new TargetRequestMap(),
-                syncSettings: new SyncSettings(new SyncTable('example'), 'body.id', 'response.soapenv:Envelope.Item.ItemProduct.ProductInternalID', true, true),
-                postSuccessHandlers: [new PostHandler(name: 'my-post-handler')],
-                customRunner: 'my-runner'
-            ),
-            new Route(
-                name: 'route_2',
-                fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'GET', '/v1/test'])),
+                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/test-post'])),
                 fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'validationRules1.json'), true)),
                 toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new TargetRequestMap(template: file_get_contents(self::__FIXTURES__ . 'template1.xml.twig')),
-            ),
-            new Route(
-                name: 'route_3',
-                fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', '/v1/test-post'])),
-                fromSystemData: (new InputDataMapAssembler())(json_decode(file_get_contents(self::__FIXTURES__ . 'validationRules2.json'), true)),
-                toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
+                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'localhost:8080/ping'])),
                 toSystemData: new TargetRequestMap(
-                    template: file_get_contents(self::__FIXTURES__ . 'template2.json.twig'),
+                    template: file_get_contents(self::__FIXTURES__ . 'template1.json.twig'),
                     responseFormat: 'json',
-                    auth: new AuthMap('JsonAuthService', [
+                    auth: new AuthMap('jsonAuthService', [
                         'data'        => ['login' => '123', 'password' => '345'],
-                        'dsn'         => implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com']),
-                        'headers'     => ['Content-Type' => 'application/json'],
-                        'token'       => 'response.body.session',
+                        'dsn'         => implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'localhost:8080/ping']),
+                        'token'       => 'status',
                         'output-name' => 'token',
                     ]),
                 ),
-                syncSettings: new SyncSettings(new SyncTable('example'), 'body.id', 'data.externalId', true, false),
-            ),
-            new Route(
-                name: 'route_4',
-                fromSystem: new IntegrationSystem('system_1'),
-                fromSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['pubsub', 'example', 'example.sub', 'test-action'])),
-                fromSystemData: new InputDataMap(),
-                toSystem: new IntegrationSystem('system_2'),
-                toSystemDsn: ($this->dsnInterpreter)(implode(AbstractDSN::DSN_SEPARATOR, ['HTTP', 'POST', 'google.com'])),
-                toSystemData: new TargetRequestMap(template: ''),
-            ),
+                syncSettings: new SyncSettings(new SyncTable('example'), 'body.orderId', 'clientResponse.status', true, false),
+                postSuccessHandlers: [new PostHandler(name: 'my-post-handler')],
+            )
         ];
 
         foreach ($routes as $route) {
-            $this->routes[$route->name()] = $route;
+            $this->routes[$route->fromSystemDsn()->dsn()] = $route;
         }
     }
 
@@ -109,6 +79,12 @@ class RouteRepository implements RouteRepositoryInterface
 
     public function getByName(string $name) : Route
     {
+        foreach ($this->routes as $route) {
+            if ($route->name() === $name) {
+                return $route;
+            }
+        }
+
         throw new Exception(sprintf('%s route wasn`t found', $name));
     }
 

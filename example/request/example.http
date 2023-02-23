@@ -1,14 +1,4 @@
-POST http://localhost:8888/middleware/v1/empty-test
-xroute: route_1
-content-type: application/json
-
-{
-    "id": "7680d5f6-bd4b-4e66-8670-753b30504147",
-    "name" : "BMW"
-}
-
-#######
-POST localhost:8888/middleware/v1/test-post
+POST localhost:8081/middleware/v1/test-post
 content-type: application/json
 
 {

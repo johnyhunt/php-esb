@@ -20,4 +20,8 @@ $app->get('/', function (ServerRequest $request, Response $response, $args) {
     return new ESBJsonResponse(['status' => 'ok']);
 });
 
+$app->map(['GET', 'POST', 'PUT', 'PATCH'], '/ping', function (ServerRequest $request, Response $response, $args) {
+    return new ESBJsonResponse(['status' => 'ok']);
+});
+
 $app->run();

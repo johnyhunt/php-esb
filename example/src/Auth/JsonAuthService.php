@@ -10,8 +10,8 @@ use ESB\DTO\TargetRequest;
 use ESB\Entity\VO\ServerDSN;
 use ESB\Utils\ArrayFetch;
 use Example\Clients\HttpClient;
-
 use Exception;
+
 use function json_encode;
 
 class JsonAuthService implements AuthServiceInterface
@@ -25,7 +25,7 @@ class JsonAuthService implements AuthServiceInterface
         $dsn  = ServerDSN::fromString($settings['dsn'] ?? '');
         $data = $settings['data'] ?? null;
         Assertion::isArray($data, 'JsonAuthService::settings::data expected been array');
-        $headers = $settings['headers'] ?? null;
+        $headers = $settings['headers'] ?? [];
         Assertion::isArray($data, 'JsonAuthService::settings::headers expected been array');
         $headers += ['Content-Type' => 'application/json'];
 
@@ -37,7 +37,7 @@ class JsonAuthService implements AuthServiceInterface
         Assertion::string($outputTokenName, 'JsonAuthService::settings::output-name expected been non-blank string');
         Assertion::notBlank($outputTokenName, 'JsonAuthService::settings::output-name expected been non-blank string');
 
-        $response = $this->client->send($dsn, new TargetRequest(json_encode($data), $headers), $settings['responseFormat'] ?? '');
+        $response = $this->client->send($dsn, new TargetRequest(json_encode($data), $headers), 'json');
 
         foreach ($response->headers as $key => $value) {
             if ($key === $token) {
@@ -47,7 +47,7 @@ class JsonAuthService implements AuthServiceInterface
                 return;
             }
         }
-        Assertion::isJsonString($response->content, 'JsonAuthService::response::content expected been json-string');
+
         if ($tokenValue = (new ArrayFetch($response->content))($token)) {
             $targetRequest->headers += [$outputTokenName => $tokenValue];
 
