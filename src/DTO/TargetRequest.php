@@ -10,7 +10,7 @@ use function get_object_vars;
 
 class TargetRequest implements JsonSerializable
 {
-    public function __construct(public string $body, public array $headers = [])
+    public function __construct(public string $body, public array $headers = [], public array $params = [])
     {
     }
 
