@@ -47,6 +47,8 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
                 case 'int':
                 case 'float':
                 case 'string':
+                case 'scalar':
+                case 'numeric':
                 case 'bool':
                     $this->validateRow($row, $rule, $propertyPath);
                     break;
