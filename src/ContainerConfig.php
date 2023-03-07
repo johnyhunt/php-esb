@@ -19,6 +19,8 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\DynamicPropertiesFetcher;
+use ESB\Service\DynamicPropertiesFetcherInterface;
 use ESB\Service\PostErrorHandlersPool;
 use ESB\Service\ValidatorsPool;
 use ESB\Service\PostSuccessHandlersPool;
@@ -27,8 +29,6 @@ use Psr\Container\ContainerInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFunction;
-
-use function getenv;
 
 class ContainerConfig
 {
@@ -185,6 +185,8 @@ class ContainerConfig
 
                 return $pool;
             },
+
+            DynamicPropertiesFetcherInterface::class => fn() => new DynamicPropertiesFetcher(),
         ];
     }
 }

@@ -10,6 +10,7 @@ use ESB\Exception\DuplicateRecordException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
+use ESB\Service\DynamicPropertiesFetcherInterface;
 use ESB\Utils\ArrayFetch;
 use ESB\Utils\Spaceless;
 use Twig\Environment;
@@ -22,6 +23,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         private readonly SyncRecordRepositoryInterface $recordRepository,
         private readonly Environment $twig,
         private readonly RouteRepositoryInterface $routeRepository,
+        private readonly DynamicPropertiesFetcherInterface $dynamicPropertiesFetcher,
     ) {
     }
 
@@ -76,7 +78,9 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         }
 
         return $handler->handle(
-            $data->withTargetRequest(new TargetRequest($content, $route->toSystemData()->headers())),
+            $data->withTargetRequest(
+                new TargetRequest($content, ($this->dynamicPropertiesFetcher)($data->incomeData, $route->toSystemData()->headers()))
+            ),
             $route
         );
     }
