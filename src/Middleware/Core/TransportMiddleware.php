@@ -9,6 +9,7 @@ use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\CommunicationLogInterface;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
+use ESB\Service\DynamicPropertiesFetcherInterface;
 
 use function filter_var;
 use function getenv;
@@ -20,6 +21,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
     public function __construct(
         private readonly ClientPool $clientPool,
         private readonly AuthServicePool $authServicePool,
+        private readonly DynamicPropertiesFetcherInterface $dynamicPropertiesFetcher,
         private readonly ?CommunicationLogInterface $communicationLog = null,
     ) {
     }
@@ -28,7 +30,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
     {
         if ($authMap = $route->toSystemData()->auth()) {
             $authService = $this->authServicePool->get($authMap->serviceAlias());
-            $authService->authenticate($data->targetRequest(), $authMap->settings());
+            $authService->authenticate($data->targetRequest(), ($this->dynamicPropertiesFetcher)($data->incomeData, $authMap->settings()));
         }
         $client     = $this->clientPool->get($route->toSystemDsn());
         $resultData = $handler->handle(
