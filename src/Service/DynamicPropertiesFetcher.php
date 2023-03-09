@@ -12,12 +12,11 @@ use function trim;
 
 class DynamicPropertiesFetcher implements DynamicPropertiesFetcherInterface
 {
-    /** @psalm-param array<string, string|numeric> $properties */
     public function __invoke(IncomeData $data, array $properties) : array
     {
         $result = [];
         foreach ($properties as $key => $value) {
-            preg_match('/\\{\\{(.+)}}/', $value, $matches);
+            preg_match('/\\{\\{(.+)}}/', (string) $value, $matches);
             if (! $matches) {
                 $result[$key] = $value;
                 continue;
