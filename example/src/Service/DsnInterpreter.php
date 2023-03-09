@@ -8,10 +8,9 @@ use Assert\Assertion;
 use ESB\Assembler\DsnInterpreterInterface;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\EmptyDSN;
-use ESB\Entity\VO\ServerDSN;
-use Example\Entity\VO\PubSubDSN;
-
+use ESB\Entity\VO\HttpDSN;
 use Exception;
+
 use function preg_match;
 use function strtoupper;
 
@@ -28,9 +27,8 @@ class DsnInterpreter implements DsnInterpreterInterface
         Assertion::string($client, 'DsnInterpreter: expecting client in dsn been string value');
 
         return match (strtoupper($client)) {
-            'HTTP'   => ServerDSN::fromString($dsn),
-            'PUBSUB' => PubSubDSN::fromString($dsn),
-            default  => throw new Exception('DsnInterpreter: unknown client')
+            HttpDSN::CODE => HttpDSN::fromString($dsn),
+            default       => throw new Exception('DsnInterpreter: unknown client')
         };
     }
 }

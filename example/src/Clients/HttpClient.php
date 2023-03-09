@@ -8,7 +8,7 @@ use ESB\Client\EsbClientInterface;
 use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
 use ESB\Entity\VO\AbstractDSN;
-use ESB\Entity\VO\ServerDSN;
+use ESB\Entity\VO\HttpDSN;
 use Example\Service\ResponseDecodeService;
 use Nyholm\Psr7\Response;
 use RuntimeException;
@@ -91,7 +91,7 @@ class HttpClient implements EsbClientInterface
 
     public function send(AbstractDSN $dsn, TargetRequest $targetRequest, string $responseFormat) : TargetResponse
     {
-        if (! $dsn instanceof ServerDSN) {
+        if (! $dsn instanceof HttpDSN) {
             throw new RuntimeException('Http client expects dsn been ServerDSN instance');
         }
         $requestTime = 0;
@@ -113,6 +113,6 @@ class HttpClient implements EsbClientInterface
 
     public function dsnMatchClass() : string
     {
-        return ServerDSN::class;
+        return HttpDSN::class;
     }
 }

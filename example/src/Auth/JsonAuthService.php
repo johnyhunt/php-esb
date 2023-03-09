@@ -7,7 +7,7 @@ namespace Example\Auth;
 use Assert\Assertion;
 use ESB\Auth\AuthServiceInterface;
 use ESB\DTO\TargetRequest;
-use ESB\Entity\VO\ServerDSN;
+use ESB\Entity\VO\HttpDSN;
 use ESB\Utils\ArrayFetch;
 use Example\Clients\HttpClient;
 use Exception;
@@ -22,7 +22,7 @@ class JsonAuthService implements AuthServiceInterface
 
     public function authenticate(TargetRequest $targetRequest, array $settings): void
     {
-        $dsn  = ServerDSN::fromString($settings['dsn'] ?? '');
+        $dsn  = HttpDSN::fromString($settings['dsn'] ?? '');
         $data = $settings['data'] ?? null;
         Assertion::isArray($data, 'JsonAuthService::settings::data expected been array');
         $headers = $settings['headers'] ?? [];

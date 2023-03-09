@@ -27,7 +27,6 @@ class CommunicationLogService implements CommunicationLogInterface
             [
                 'data' => [
                     'route'         => $route->name(),
-                    'client'        => $route->toSystemDsn()->client ?? null,
                     'method'        => $route->toSystemDsn()->method ?? null,
                     'topic'         => $route->toSystemDsn()->topic ?? null,
                     'action'        => $route->toSystemDsn()->action ?? null,

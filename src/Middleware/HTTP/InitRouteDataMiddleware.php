@@ -5,7 +5,7 @@ namespace ESB\Middleware\HTTP;
 use ESB\DTO\IncomeData;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
-use ESB\Entity\VO\ServerDSN;
+use ESB\Entity\VO\HttpDSN;
 use ESB\Repository\RouteRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +22,7 @@ class InitRouteDataMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $path = substr($request->getUri()->getPath(), strlen($this->basePath));
-        $dsn  = new ServerDSN(strtoupper($request->getMethod()), $path);
+        $dsn  = new HttpDSN(strtoupper($request->getMethod()), $path);
 
         $routeEntity = $this->routeProvider->get($dsn->dsn());
         $incomeData  = new IncomeData(

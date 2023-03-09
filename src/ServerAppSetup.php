@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ESB;
 
 use Assert\Assertion;
-use ESB\Entity\VO\ServerDSN;
+use ESB\Entity\VO\HttpDSN;
 use ESB\Handlers\HTTP\ESBHandler;
 use ESB\Handlers\HTTP\RouteCRUDHandler;
 use ESB\Handlers\HTTP\RouteListHandler;
@@ -56,7 +56,7 @@ class ServerAppSetup
             });
             foreach ($routes as $route) {
                 $routeDsn = $route->fromSystemDsn();
-                if (! $routeDsn instanceof ServerDSN) {
+                if (! $routeDsn instanceof HttpDSN) {
                     continue;
                 }
                 $group->map([$routeDsn->method], $routeDsn->path, ESBHandler::class);
