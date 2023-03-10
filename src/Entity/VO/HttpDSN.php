@@ -20,10 +20,13 @@ class HttpDSN extends AbstractDSN
 
     public const CODE = 'HTTP';
 
+    protected string $client;
+
     public function __construct(
         public readonly string $method,
         public readonly string $path,
     ) {
+        $this->client = static::CODE;
     }
 
     public static function fromString(string $dsn) : static
