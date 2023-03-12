@@ -78,6 +78,20 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
             case $rule->type == 'float':
                 Assertion::nullOrFloat($row, 'Value expected float', $propertyPath);
                 break;
+            case $rule->type == 'numeric' && $rule->required:
+                Assertion::notBlank($row, 'Value required', $propertyPath);
+                Assertion::numeric($row, 'Value expected numeric', $propertyPath);
+                break;
+            case $rule->type == 'numeric':
+                Assertion::nullOrNumeric($row, 'Value expected numeric', $propertyPath);
+                break;
+            case $rule->type == 'scalar' && $rule->required:
+                Assertion::notBlank($row, 'Value required', $propertyPath);
+                Assertion::scalar($row, 'Value expected scalar', $propertyPath);
+                break;
+            case $rule->type == 'scalar':
+                Assertion::nullOrScalar($row, 'Value expected scalar', $propertyPath);
+                break;
             case $rule->type == 'string' && $rule->required:
                 Assertion::notBlank($row, 'Value required', $propertyPath);
                 Assertion::string($row, 'Value expected string', $propertyPath);
