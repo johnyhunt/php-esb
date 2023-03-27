@@ -141,8 +141,8 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         $itemsRule = $rule->items;
         Assertion::notEmpty($itemsRule, 'Items required for type array', $propertyPath);
         Assertion::notEmpty($row, 'Row data required ben an array', $propertyPath);
-        foreach ($row as $rowValue) {
-            $newPropertyPath = implode('.', [$propertyPath, 'items']);
+        foreach ($row as $key => $rowValue) {
+            $newPropertyPath = implode('.', [$propertyPath, $key]);
             $this->validate($rowValue, $itemsRule, $newPropertyPath);
         }
     }
