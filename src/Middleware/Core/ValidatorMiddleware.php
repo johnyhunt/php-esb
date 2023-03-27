@@ -125,9 +125,9 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         }
         $this->validateRow($row, $rule, $propertyPath);
         foreach ($rule->properties ?? [] as $key => $property) {
-            $rowValue     = $row[$key] ?? null;
-            $propertyPath = implode('.', [$propertyPath, $key]);
-            $this->validate($rowValue, $property, $propertyPath);
+            $rowValue        = $row[$key] ?? null;
+            $newPropertyPath = implode('.', [$propertyPath, $key]);
+            $this->validate($rowValue, $property, $newPropertyPath);
         }
     }
 
@@ -142,8 +142,8 @@ class ValidatorMiddleware implements ESBMiddlewareInterface
         Assertion::notEmpty($itemsRule, 'Items required for type array', $propertyPath);
         Assertion::notEmpty($row, 'Row data required ben an array', $propertyPath);
         foreach ($row as $rowValue) {
-            $propertyPath = implode('.', [$propertyPath, 'items']);
-            $this->validate($rowValue, $itemsRule, $propertyPath);
+            $newPropertyPath = implode('.', [$propertyPath, 'items']);
+            $this->validate($rowValue, $itemsRule, $newPropertyPath);
         }
     }
 }
