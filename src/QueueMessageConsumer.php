@@ -14,9 +14,9 @@ use function pcntl_signal;
 
 class QueueMessageConsumer
 {
-    private bool $run = true;
+    protected bool $run = true;
 
-    public function __construct(private readonly QueueFactoryInterface $factory, private QueueMessageHandler $handler)
+    public function __construct(protected readonly QueueFactoryInterface $factory, protected QueueMessageHandler $handler)
     {
         pcntl_async_signals(true);
         pcntl_signal(SIGTERM, fn () => $this->run = false);
