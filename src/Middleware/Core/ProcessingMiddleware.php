@@ -50,7 +50,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
 
         if (! $route->toSystemData()->template()) {
             return $handler->handle(
-                $data->withTargetRequest(new TargetRequest('', $route->toSystemData()->headers())),
+                $data->withTargetRequest(new TargetRequest('', ($this->dynamicPropertiesFetcher)($data->incomeData, $route->toSystemData()->headers()))),
                 $route,
             );
         }
