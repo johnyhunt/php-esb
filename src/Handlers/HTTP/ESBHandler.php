@@ -11,7 +11,7 @@ use ESB\Service\CoreRunnersPool;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ESBHandler
+class ESBHandler implements ESBHandlerInterface
 {
     public function __construct(private readonly CoreRunnersPool $runnersPool)
     {

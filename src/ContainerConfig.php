@@ -6,6 +6,8 @@ namespace ESB;
 
 use ESB\Auth\AuthServiceInterface;
 use ESB\Exception\SetupException;
+use ESB\Handlers\HTTP\ESBHandler;
+use ESB\Handlers\HTTP\ESBHandlerInterface;
 use ESB\Handlers\PostHandlerInterface;
 use ESB\Handlers\QueueMessageHandler;
 use ESB\Middleware\Core\PostErrorMiddleware;
@@ -187,6 +189,8 @@ class ContainerConfig
             },
 
             DynamicPropertiesFetcherInterface::class => fn() => new DynamicPropertiesFetcher(),
+
+            ESBHandlerInterface::class => fn(ContainerInterface $container) => $container->get(ESBHandler::class)
         ];
     }
 }

@@ -6,7 +6,7 @@ namespace ESB;
 
 use Assert\Assertion;
 use ESB\Entity\VO\HttpDSN;
-use ESB\Handlers\HTTP\ESBHandler;
+use ESB\Handlers\HTTP\ESBHandlerInterface;
 use ESB\Handlers\HTTP\RouteCRUDHandler;
 use ESB\Handlers\HTTP\RouteListHandler;
 use ESB\Middleware\HTTP\InitRouteDataMiddleware;
@@ -59,7 +59,7 @@ class ServerAppSetup
                 if (! $routeDsn instanceof HttpDSN) {
                     continue;
                 }
-                $group->map([$routeDsn->method], $routeDsn->path, ESBHandler::class);
+                $group->map([$routeDsn->method], $routeDsn->path, ESBHandlerInterface::class);
             }
         })->add(new InitRouteDataMiddleware($this->provider, $this->basePath));
     }
