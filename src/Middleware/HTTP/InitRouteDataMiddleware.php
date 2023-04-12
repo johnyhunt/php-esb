@@ -21,6 +21,9 @@ class InitRouteDataMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
+        if ($request->getMethod() === 'OPTIONS') {
+            return $handler->handle($request);
+        }
         $path = substr($request->getUri()->getPath(), strlen($this->basePath));
         $dsn  = new HttpDSN(strtoupper($request->getMethod()), $path);
 
