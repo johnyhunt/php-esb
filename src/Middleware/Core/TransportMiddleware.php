@@ -23,7 +23,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
         private readonly ClientPool $clientPool,
         private readonly AuthServicePool $authServicePool,
         private readonly DynamicPropertiesFetcherInterface $dynamicPropertiesFetcher,
-        private readonly DynamicDsnParserInterface $dynamicDsnParser,
+        private readonly ?DynamicDsnParserInterface $dynamicDsnParser = null,
         private readonly ?CommunicationLogInterface $communicationLog = null,
     ) {
     }
@@ -35,7 +35,10 @@ class TransportMiddleware implements ESBMiddlewareInterface
             $authService->authenticate($data->targetRequest(), ($this->dynamicPropertiesFetcher)($data->incomeData, $authMap->settings()));
         }
         $client     = $this->clientPool->get($route->toSystemDsn());
-        $requestDsn = ($this->dynamicDsnParser)($data->incomeData, $route->toSystemDsn());
+        $requestDsn = $route->toSystemDsn();
+        if ($this->dynamicDsnParser) {
+            $requestDsn = ($this->dynamicDsnParser)($data->incomeData, $route->toSystemDsn());
+        }
         $resultData = $handler->handle(
             $data->withTargetResponse(
                 $client->send($requestDsn, $data->targetRequest(), $route->toSystemData()->responseFormat())

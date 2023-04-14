@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ESB\Service;
+namespace Example\Service;
 
 use ESB\DTO\IncomeData;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Exception\RouteConfigException;
+use ESB\Service\DynamicDsnParserInterface;
 use ESB\Utils\ArrayFetch;
-
 use function preg_match_all;
 use function sprintf;
 use function str_replace;

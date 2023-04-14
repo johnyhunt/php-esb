@@ -21,13 +21,11 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
-use ESB\Service\DynamicDsnParser;
-use ESB\Service\DynamicDsnParserInterface;
 use ESB\Service\DynamicPropertiesFetcher;
 use ESB\Service\DynamicPropertiesFetcherInterface;
 use ESB\Service\PostErrorHandlersPool;
-use ESB\Service\ValidatorsPool;
 use ESB\Service\PostSuccessHandlersPool;
+use ESB\Service\ValidatorsPool;
 use ESB\Validation\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
@@ -191,8 +189,6 @@ class ContainerConfig
             },
 
             DynamicPropertiesFetcherInterface::class => fn() => new DynamicPropertiesFetcher(),
-
-            DynamicDsnParserInterface::class => fn() => new DynamicDsnParser(),
 
             ESBHandlerInterface::class => fn(ContainerInterface $container) => $container->get(ESBHandler::class)
         ];
