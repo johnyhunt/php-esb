@@ -24,7 +24,7 @@ class RouteEntityAssemblerTest extends TestCase
     private readonly SyncSettingsAssembler $syncSettingsAssembler;
     private readonly ToSystemDataAssembler $toSystemDataAssembler;
     private readonly RouteEntityAssembler $routeEntityAssembler;
-    protected function setUp(): void
+    public function setUp(): void
     {
        $this->inputDataMapAssembler = $this->createMock(InputDataMapAssembler::class);
        $this->dsnInterpreter        = $this->createMock(DsnInterpreterInterface::class);

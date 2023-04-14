@@ -9,6 +9,7 @@ use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\CommunicationLogInterface;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
+use ESB\Service\DynamicDsnParserInterface;
 use ESB\Service\DynamicPropertiesFetcherInterface;
 
 use function filter_var;
@@ -22,6 +23,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
         private readonly ClientPool $clientPool,
         private readonly AuthServicePool $authServicePool,
         private readonly DynamicPropertiesFetcherInterface $dynamicPropertiesFetcher,
+        private readonly DynamicDsnParserInterface $dynamicDsnParser,
         private readonly ?CommunicationLogInterface $communicationLog = null,
     ) {
     }
@@ -33,9 +35,10 @@ class TransportMiddleware implements ESBMiddlewareInterface
             $authService->authenticate($data->targetRequest(), ($this->dynamicPropertiesFetcher)($data->incomeData, $authMap->settings()));
         }
         $client     = $this->clientPool->get($route->toSystemDsn());
+        $requestDsn = ($this->dynamicDsnParser)($data->incomeData, $route->toSystemDsn());
         $resultData = $handler->handle(
             $data->withTargetResponse(
-                $client->send($route->toSystemDsn(), $data->targetRequest(), $route->toSystemData()->responseFormat())
+                $client->send($requestDsn, $data->targetRequest(), $route->toSystemData()->responseFormat())
             ),
             $route,
         );

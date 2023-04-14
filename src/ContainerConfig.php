@@ -21,6 +21,8 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\DynamicDsnParser;
+use ESB\Service\DynamicDsnParserInterface;
 use ESB\Service\DynamicPropertiesFetcher;
 use ESB\Service\DynamicPropertiesFetcherInterface;
 use ESB\Service\PostErrorHandlersPool;
@@ -189,6 +191,8 @@ class ContainerConfig
             },
 
             DynamicPropertiesFetcherInterface::class => fn() => new DynamicPropertiesFetcher(),
+
+            DynamicDsnParserInterface::class => fn() => new DynamicDsnParser(),
 
             ESBHandlerInterface::class => fn(ContainerInterface $container) => $container->get(ESBHandler::class)
         ];
