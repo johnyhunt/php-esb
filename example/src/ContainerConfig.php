@@ -9,7 +9,6 @@ use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Service\ClientPool;
 use ESB\Service\DynamicDsnParserInterface;
-use Example\Auth\JsonAuthService;
 use Example\Clients\HttpClient;
 use Example\Formatter\SellerMap;
 use Example\Handlers\Success\MyPostSuccessHandler;
@@ -39,7 +38,7 @@ class ContainerConfig
                 'my-runner' => MyCustomRunner::class,
             ],
             'auth'         => [
-                'jsonAuthService' => JsonAuthService::class,
+                // 'jsonAuthService' => JsonAuthService::class,
             ],
 
             RouteRepositoryInterface::class => fn(ContainerInterface $container) => $container->get(RouteRepository::class),

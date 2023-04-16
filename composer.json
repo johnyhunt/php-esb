@@ -17,7 +17,6 @@
     "require": {
         "ext-json": "*",
         "ext-pcntl": "*",
-        "ext-simplexml": "*",
         "ext-curl": "*",
         "php": "^8.1",
         "php-di/php-di": "^6.4",

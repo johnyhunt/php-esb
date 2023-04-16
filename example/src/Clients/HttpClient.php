@@ -22,10 +22,7 @@ use function curl_setopt;
 use function fopen;
 use function fseek;
 use function fwrite;
-use function http_build_query;
-use function json_decode;
 
-use function var_dump;
 use const CURLINFO_HTTP_CODE;
 use const CURLOPT_HTTPGET;
 use const CURLOPT_HTTPHEADER;
@@ -36,6 +33,7 @@ use const CURLOPT_URL;
 
 class HttpClient implements EsbClientInterface
 {
+    private $client;
 
     public function __construct(private readonly ResponseDecodeService $responseDecodeService)
     {
