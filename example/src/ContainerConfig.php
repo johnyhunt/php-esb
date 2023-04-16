@@ -10,7 +10,7 @@ use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Service\ClientPool;
 use ESB\Service\DynamicDsnParserInterface;
 use Example\Clients\HttpClient;
-use Example\Formatter\SellerMap;
+use Example\Formatter\CustomFormatter;
 use Example\Handlers\Success\MyPostSuccessHandler;
 use Example\Runner\MyCustomRunner;
 use Example\Service\DsnInterpreter;
@@ -29,7 +29,7 @@ class ContainerConfig
                 'assertValidator' => AssertValidator::class,
             ],
             'formatters'   => [
-                'sellerMap' => SellerMap::class,
+                'customFormatter' => CustomFormatter::class,
             ],
             'post-success' => [
                 'my-post-handler' => MyPostSuccessHandler::class
