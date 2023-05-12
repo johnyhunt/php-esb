@@ -6,16 +6,10 @@ use ESB\CoreHandlerInterface;
 use ESB\DTO\ProcessingData;
 use ESB\Entity\Route;
 use ESB\Middleware\ESBMiddlewareInterface;
-use ESB\Repository\CommunicationLogInterface;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\DynamicDsnParserInterface;
 use ESB\Service\DynamicPropertiesFetcherInterface;
-
-use function filter_var;
-use function getenv;
-
-use const FILTER_VALIDATE_BOOLEAN;
 
 class TransportMiddleware implements ESBMiddlewareInterface
 {
@@ -24,7 +18,6 @@ class TransportMiddleware implements ESBMiddlewareInterface
         private readonly AuthServicePool $authServicePool,
         private readonly DynamicPropertiesFetcherInterface $dynamicPropertiesFetcher,
         private readonly ?DynamicDsnParserInterface $dynamicDsnParser = null,
-        private readonly ?CommunicationLogInterface $communicationLog = null,
     ) {
     }
 
@@ -45,10 +38,6 @@ class TransportMiddleware implements ESBMiddlewareInterface
             ),
             $route,
         );
-
-        if (filter_var(getenv('PHPESB_RUN_COMMUNICATION_LOG'), FILTER_VALIDATE_BOOLEAN)) {
-            $this->communicationLog?->log($route, $resultData);
-        }
 
         return $resultData;
     }
