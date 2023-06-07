@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ESB;
 
+use Bus\Service\BusDynamicPropertiesFetcher;
 use ESB\Auth\AuthServiceInterface;
 use ESB\Exception\SetupException;
 use ESB\Handlers\HTTP\ESBHandler;
@@ -21,6 +22,8 @@ use ESB\Middleware\Queue\RunCoreMiddleware;
 use ESB\Service\AuthServicePool;
 use ESB\Service\ClientPool;
 use ESB\Service\CoreRunnersPool;
+use ESB\Service\DynamicDsnParser;
+use ESB\Service\DynamicDsnParserInterface;
 use ESB\Service\DynamicPropertiesFetcher;
 use ESB\Service\DynamicPropertiesFetcherInterface;
 use ESB\Service\PostErrorHandlersPool;
@@ -188,7 +191,9 @@ class ContainerConfig
                 return $pool;
             },
 
-            DynamicPropertiesFetcherInterface::class => fn() => new DynamicPropertiesFetcher(),
+            DynamicPropertiesFetcherInterface::class => static fn(ContainerInterface $container) => $container->get(DynamicPropertiesFetcher::class),
+
+            DynamicDsnParserInterface::class => fn() => new DynamicDsnParser(),
 
             ESBHandlerInterface::class => fn(ContainerInterface $container) => $container->get(ESBHandler::class)
         ];

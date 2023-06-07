@@ -5,24 +5,33 @@ declare(strict_types=1);
 namespace ESB\Service;
 
 use ESB\DTO\IncomeData;
-use ESB\Utils\ArrayFetch;
+use ESB\Exception\SetupException;
+use Throwable;
+use Twig\Environment;
 
-use function preg_match;
-use function trim;
+use function is_string;
 
 class DynamicPropertiesFetcher implements DynamicPropertiesFetcherInterface
 {
+    public function __construct(private readonly Environment $twig)
+    {
+    }
+
     public function __invoke(IncomeData $data, array $properties) : array
     {
         $result = [];
-        foreach ($properties as $key => $value) {
-            preg_match('/\\{\\{(.+)}}/', (string) $value, $matches);
-            if (! $matches) {
-                $result[$key] = $value;
-                continue;
+        try {
+            foreach ($properties as $key => $value) {
+                if (! is_string($value)) {
+                    $result[$key] = $value;
+
+                    continue;
+                }
+                $template     = $this->twig->createTemplate($value);
+                $result[$key] = $template->render($data->jsonSerialize());
             }
-            $normalizedValueKey = trim($matches[1] ?? '');
-            $result[$key]       = (new ArrayFetch($data->jsonSerialize()))($normalizedValueKey);
+        } catch (Throwable $e) {
+            throw new SetupException($e->getMessage());
         }
 
         return $result;
