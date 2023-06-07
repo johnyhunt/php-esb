@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ESB;
 
-use Bus\Service\BusDynamicPropertiesFetcher;
 use ESB\Auth\AuthServiceInterface;
 use ESB\Exception\SetupException;
 use ESB\Handlers\HTTP\ESBHandler;
