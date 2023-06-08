@@ -7,6 +7,7 @@ namespace Example\Clients;
 use ESB\Client\EsbClientInterface;
 use ESB\DTO\TargetRequest;
 use ESB\DTO\TargetResponse;
+use ESB\Entity\IntegrationSystem;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Entity\VO\HttpDSN;
 use Example\Service\ResponseDecodeService;
@@ -87,7 +88,8 @@ class HttpClient implements EsbClientInterface
         };
     }
 
-    public function send(AbstractDSN $dsn, TargetRequest $targetRequest, string $responseFormat) : TargetResponse
+    /** targetSystem could be used to determine whether TargetResponse is success */
+    public function send(AbstractDSN $dsn, TargetRequest $targetRequest, IntegrationSystem $targetSystem, string $responseFormat) : TargetResponse
     {
         if (! $dsn instanceof HttpDSN) {
             throw new RuntimeException('Http client expects dsn been ServerDSN instance');
