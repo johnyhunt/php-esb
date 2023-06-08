@@ -31,7 +31,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
         $requestDsn = ($this->dynamicDsnParser)($data->incomeData, $route->toSystemDsn());
         $resultData = $handler->handle(
             $data->withTargetResponse(
-                $client->send($requestDsn, $data->targetRequest(), $route->toSystemData()->responseFormat())
+                $client->send($requestDsn, $data->targetRequest(), $route->toSystem(), $route->toSystemData()->responseFormat())
             ),
             $route,
         );
