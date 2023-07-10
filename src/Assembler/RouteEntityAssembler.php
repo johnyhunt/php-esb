@@ -15,7 +15,8 @@ use function array_map;
 
 /**
  * @psalm-type integrationSystem = array{
- *      code: string
+ *      code: string,
+ *      config: array
  * }
  * @psalm-type authMap = array{
  *      serviceAlias: string,

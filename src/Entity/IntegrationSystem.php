@@ -8,7 +8,7 @@ use function get_object_vars;
 
 class IntegrationSystem implements JsonSerializable
 {
-    public function __construct(private string $code)
+    public function __construct(private string $code, array $config = [])
     {
     }
 
