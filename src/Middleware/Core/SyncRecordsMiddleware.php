@@ -9,11 +9,11 @@ use ESB\Entity\SyncRecord;
 use ESB\Exception\RouteConfigException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
-use ESB\Utils\ArrayFetch;
+use Twig\Environment;
 
 class SyncRecordsMiddleware implements ESBMiddlewareInterface
 {
-    public function __construct(private readonly SyncRecordRepositoryInterface $recordRepository)
+    public function __construct(private readonly SyncRecordRepositoryInterface $recordRepository, private readonly Environment $twig)
     {
     }
 
@@ -29,10 +29,10 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
 
         $toId = '';
         if ($settings->responsePkPath()) {
-            $toId = (new ArrayFetch($fetchSource))($settings->responsePkPath()) ?? throw new RouteConfigException('Invalid syncSettings::responsePkPath or result is non-success');
+            $toId = $this->twig->createTemplate($settings->responsePkPath())->render($fetchSource) ?: throw new RouteConfigException('Invalid syncSettings::responsePkPath or result is non-success');
         }
         if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
-            $fromId     = (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath()) ?? throw new RouteConfigException('Invalid syncSettings::pkPath');
+            $fromId     = $this->twig->createTemplate($settings->pkPath())->render($data->incomeData->jsonSerialize()) ?: throw new RouteConfigException('Invalid syncSettings::pkPath');
             $syncRecord = new SyncRecord($fromId, (string) $toId, $data->targetRequest()->body);
         }
 

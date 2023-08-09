@@ -7,11 +7,11 @@ use ESB\DTO\ProcessingData;
 use ESB\DTO\TargetRequest;
 use ESB\Entity\Route;
 use ESB\Exception\DuplicateRecordException;
+use ESB\Exception\RouteConfigException;
 use ESB\Middleware\ESBMiddlewareInterface;
 use ESB\Repository\RouteRepositoryInterface;
 use ESB\Repository\SyncRecordRepositoryInterface;
 use ESB\Service\DynamicPropertiesFetcherInterface;
-use ESB\Utils\ArrayFetch;
 use ESB\Utils\Spaceless;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -33,7 +33,7 @@ class ProcessingMiddleware implements ESBMiddlewareInterface
         if ($settings = $route->syncSettings()) {
             $prevSyncedRecord = $this->recordRepository->findByPk(
                 $settings->table(),
-                (new ArrayFetch($data->incomeData->jsonSerialize()))($settings->pkPath())
+                $this->twig->createTemplate($settings->pkPath())->render($data->incomeData->jsonSerialize()) ?: throw new RouteConfigException('Invalid syncSettings::pkPath')
             );
 
             /** no update, due to settings, available - so exit */
