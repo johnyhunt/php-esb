@@ -35,7 +35,6 @@ use function array_map;
  *      pkPath: string,
  *      responsePkPath: string,
  *      syncOnExist: string,
- *      syncOnChange: string,
  *      updateRouteId: string|null,
  * }
  * @psalm-type inputRow = array{

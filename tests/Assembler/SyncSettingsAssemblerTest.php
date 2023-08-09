@@ -17,7 +17,6 @@ class SyncSettingsAssemblerTest extends TestCase
             'pkPath'         => 'some_pk_path',
             'responsePkPath' => 'some_response_pk_path',
             'syncOnExist'    => true,
-            'syncOnChange'   => true,
             'updateRouteId'  => 'newRoute',
         ];
         $syncSettings = (new SyncSettingsAssembler())(
@@ -30,7 +29,6 @@ class SyncSettingsAssemblerTest extends TestCase
         $this->assertSame('some_pk_path', $syncSettings->pkPath());
         $this->assertSame('some_response_pk_path', $syncSettings->responsePkPath());
         $this->assertSame(true, $syncSettings->syncOnExist());
-        $this->assertSame(true, $syncSettings->syncOnChange());
         $this->assertSame('newRoute', $syncSettings->updateRouteId());
     }
 
@@ -40,7 +38,6 @@ class SyncSettingsAssemblerTest extends TestCase
             'pkPath' => 'some_pk_path',
             'responsePkPath' => 'some_response_pk_path',
             'syncOnExist' => true,
-            'syncOnChange' => true,
             'updateRouteId' => 'newRoute',
         ];
         $syncSettings = (new SyncSettingsAssembler())(

@@ -12,7 +12,6 @@ class SyncSettings implements JsonSerializable
         private string    $pkPath,
         private string    $responsePkPath,
         private bool      $syncOnExist,
-        private bool      $syncOnChange,
         private ?string   $updateRouteId = null,
     ) {
     }
@@ -37,11 +36,6 @@ class SyncSettings implements JsonSerializable
         return $this->table;
     }
 
-    public function syncOnChange(): bool
-    {
-        return $this->syncOnChange;
-    }
-
     public function syncOnExist(): bool
     {
         return $this->syncOnExist;
@@ -53,7 +47,6 @@ class SyncSettings implements JsonSerializable
             'pkPath'         => $this->pkPath,
             'responsePkPath' => $this->responsePkPath,
             'syncOnExist'    => $this->syncOnExist,
-            'syncOnChange'   => $this->syncOnChange,
             'updateRouteId'   => $this->updateRouteId,
         ];
     }

@@ -30,7 +30,6 @@ class SyncSettingsValidator
             Assertion::string($syncSettings['responsePkPath'], 'SyncSettingsValidator::responsePkPath expected non-blank string');
 
             Assertion::boolean($syncSettings['syncOnExist'] ?? null, 'SyncSettingsValidator::syncOnExist expected boolean');
-            Assertion::boolean($syncSettings['syncOnChange'] ?? null, 'SyncSettingsValidator::syncOnChange expected boolean');
 
             Assertion::keyExists($syncSettings, 'updateRouteId', 'SyncSettingsValidator::updateRouteId expected null or non-blank string');
             if ($updateRouteId = $syncSettings['updateRouteId']) {

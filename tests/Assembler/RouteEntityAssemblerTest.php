@@ -95,7 +95,7 @@ class RouteEntityAssemblerTest extends TestCase
                 'toSystemDsn'         => '',
                 'fromSystemData'      => [],
                 'toSystemData'        => [],
-                'syncTable'           => 'some_table',
+                'syncTable'           => ['some_table'],
                 'syncSettings'        => [],
                 'postSuccessHandlers' => [],
                 'postErrorHandlers'   => [],

@@ -38,7 +38,6 @@ use function implode;
  *      pkPath: string,
  *      responsePkPath: string,
  *      syncOnExist: string,
- *      syncOnChange: string,
  *      updateRouteId: string|null,
  * }
  * @psalm-type inputRow = array{
