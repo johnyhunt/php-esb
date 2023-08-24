@@ -31,7 +31,7 @@ class SyncRecordsMiddleware implements ESBMiddlewareInterface
         if ($settings->responsePkPath()) {
             $toId = $this->twig->createTemplate($settings->responsePkPath())->render($fetchSource) ?: throw new RouteConfigException('Invalid syncSettings::responsePkPath or result is non-success');
         }
-        if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body)) {
+        if (! $syncRecord = $data->syncRecord?->updateRecord($data->targetRequest()->body, $toId)) {
             $fromId     = $this->twig->createTemplate($settings->pkPath())->render($data->incomeData->jsonSerialize()) ?: throw new RouteConfigException('Invalid syncSettings::pkPath');
             $syncRecord = new SyncRecord($fromId, (string) $toId, $data->targetRequest()->body);
         }

@@ -16,8 +16,9 @@ class SyncRecord
         $this->updatedAt = time();
     }
 
-    public function updateRecord(string $requestHash) : self
+    public function updateRecord(string $requestHash, string $toId) : self
     {
+        $this->toId        = $toId;
         $this->requestBody = $requestHash;
         $this->updatedAt   = time();
 
