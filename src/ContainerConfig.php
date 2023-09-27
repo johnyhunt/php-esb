@@ -190,11 +190,11 @@ class ContainerConfig
                 return $pool;
             },
 
-            DynamicPropertiesFetcherInterface::class => static fn(ContainerInterface $container) => $container->get(DynamicPropertiesFetcher::class),
+            DynamicPropertiesFetcherInterface::class => static fn(ContainerInterface $container) : mixed => $container->get(DynamicPropertiesFetcher::class),
 
             DynamicDsnParserInterface::class => fn() => new DynamicDsnParser(),
 
-            ESBHandlerInterface::class => fn(ContainerInterface $container) => $container->get(ESBHandler::class)
+            ESBHandlerInterface::class => fn(ContainerInterface $container) : mixed => $container->get(ESBHandler::class)
         ];
     }
 }
