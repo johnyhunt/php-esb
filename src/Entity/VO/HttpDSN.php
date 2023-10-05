@@ -6,7 +6,10 @@ namespace ESB\Entity\VO;
 
 use Assert\Assertion;
 
+use function array_filter;
 use function explode;
+use function get_object_vars;
+use function implode;
 use function preg_match;
 use function sprintf;
 use function strtoupper;
@@ -16,7 +19,7 @@ use function strtoupper;
  */
 class HttpDSN extends AbstractDSN
 {
-    protected const PATTERN = '/(\w|\/+%s){2}\w+/';
+    protected const PATTERN = '/(\w|\/+%s){2,3}\w+/';
 
     public const CODE = 'HTTP';
 
@@ -25,6 +28,7 @@ class HttpDSN extends AbstractDSN
     public function __construct(
         public readonly string $method,
         public readonly string $path,
+        public readonly ?string $host = null,
     ) {
         $this->client = static::CODE;
     }
@@ -33,10 +37,17 @@ class HttpDSN extends AbstractDSN
     {
         Assertion::true(! ! preg_match(sprintf(static::PATTERN, static::DSN_SEPARATOR), $dsn), 'DSN string invalid');
 
-        $items = [$client, $method, $path] = explode(static::DSN_SEPARATOR, $dsn);
+        $list  = explode(static::DSN_SEPARATOR, $dsn);
+        $items = [$client, $method, $path] = $list;
+        $host  = $list[3] ?? null;
         Assertion::allString($items);
         Assertion::true(strtoupper($client) === static::CODE, 'Expecting string as client');
 
-        return new static(strtoupper($method), $path);
+        return new static(strtoupper($method), $path, $host);
+    }
+
+    public function dsn() : string
+    {
+        return implode(static::DSN_SEPARATOR, array_filter(get_object_vars($this)));
     }
 }
