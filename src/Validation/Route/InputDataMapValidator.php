@@ -50,8 +50,8 @@ class InputDataMapValidator
 
             Assertion::inArray(
                 $row['type'] ?? null,
-                ['object', 'array', 'int', 'float', 'string', 'bool'],
-                'InputDataMap:type object|array|int|float|string|bool',
+                ['object', 'array', 'int', 'float', 'string', 'bool', 'numeric'],
+                'InputDataMap:type object|array|int|float|string|bool|numeric',
             );
             Assertion::boolean($row['required'] ?? null, 'InputDataMap::required field expected been boolean');
             Assertion::string($row['example'], 'InputDataMap::example field expected been string');
