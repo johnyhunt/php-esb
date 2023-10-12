@@ -25,7 +25,7 @@ class TransportMiddleware implements ESBMiddlewareInterface
     {
         if ($authMap = $route->toSystemData()->auth()) {
             $authService = $this->authServicePool->get($authMap->serviceAlias());
-            $authService->authenticate($data->targetRequest(), ($this->dynamicPropertiesFetcher)($data->incomeData, $authMap->settings()));
+            $authService->authenticate($data->targetRequest(), $route->toSystem(), ($this->dynamicPropertiesFetcher)($data->incomeData, $authMap->settings()));
         }
         $client     = $this->clientPool->get($route->toSystemDsn());
         $requestDsn = ($this->dynamicDsnParser)($data->incomeData, $route->toSystemDsn());
