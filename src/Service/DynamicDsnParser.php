@@ -4,32 +4,27 @@ declare(strict_types=1);
 
 namespace ESB\Service;
 
+use Assert\AssertionFailedException;
 use ESB\DTO\IncomeData;
 use ESB\Entity\VO\AbstractDSN;
 use ESB\Exception\RouteConfigException;
-use ESB\Utils\ArrayFetch;
-
-use function preg_match_all;
+use Twig\Environment;
 use function sprintf;
-use function str_replace;
 
 class DynamicDsnParser implements DynamicDsnParserInterface
 {
-    private const DYNAMIC_PROPERTIES_PATTERN = '/\\{\\{(\w|\\.)+}}/';
+    public function __construct(private readonly Environment $twig)
+    {
+    }
 
     public function __invoke(IncomeData $data, AbstractDSN $dsn) : AbstractDSN
     {
-        $dsnString = $dsn->dsn();
-        preg_match_all(self::DYNAMIC_PROPERTIES_PATTERN, $dsnString, $matches);
-        if (! $matches[0] ?? null) {
-            return $dsn;
-        }
-        foreach ($matches[0] as $key) {
-            $normalizedKey = str_replace(['{', '}'], '', $key);
-            $value         = (string) ((new ArrayFetch($data->jsonSerialize()))($normalizedKey) ?? throw new RouteConfigException(sprintf('Unknown %s for DynamicDsnParser', $key)));
-            $dsnString     = str_replace($key, $value, $dsnString);
-        }
+        $template = $this->twig->createTemplate($dsn->dsn());
 
-        return $dsn::fromString($dsnString);
+        try {
+            return $dsn::fromString($template->render($data->jsonSerialize()));
+        } catch (AssertionFailedException $e) {
+            throw new RouteConfigException(sprintf('Wrong parameter "%s" for DynamicDsnParser', $e->getMessage()));
+        }
     }
 }
