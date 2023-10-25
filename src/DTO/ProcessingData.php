@@ -25,6 +25,8 @@ class ProcessingData
 
         return new self(
             incomeData: $this->incomeData,
+            targetRequest: $this->targetRequest,
+            targetResponse: $this->targetResponse,
             syncRecord: $syncRecord,
         );
     }
