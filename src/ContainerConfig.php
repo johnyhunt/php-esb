@@ -192,7 +192,7 @@ class ContainerConfig
 
             DynamicPropertiesFetcherInterface::class => static fn(ContainerInterface $container) : mixed => $container->get(DynamicPropertiesFetcher::class),
 
-            DynamicDsnParserInterface::class => fn() => new DynamicDsnParser(),
+            DynamicDsnParserInterface::class => fn(ContainerInterface $container) => $container->get(DynamicDsnParser::class),
 
             ESBHandlerInterface::class => fn(ContainerInterface $container) : mixed => $container->get(ESBHandler::class)
         ];
