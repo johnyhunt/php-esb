@@ -9,6 +9,7 @@ use ESB\Handlers\QueueMessageHandler;
 use ESB\Queue\QueueConfigInterface;
 use ESB\Queue\QueueFactoryInterface;
 
+use function gc_collect_cycles;
 use function pcntl_async_signals;
 use function pcntl_signal;
 
@@ -42,6 +43,7 @@ class QueueMessageConsumer
                 default:
                     $consumer->reject($envelope);
             }
+            gc_collect_cycles();
         }
     }
 }

@@ -11,6 +11,8 @@ use ESB\Service\CoreRunnersPool;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function gc_collect_cycles;
+
 class ESBHandler implements ESBHandlerInterface
 {
     public function __construct(private readonly CoreRunnersPool $runnersPool)
@@ -25,6 +27,8 @@ class ESBHandler implements ESBHandlerInterface
         $routeData = $request->getAttribute(ProcessingData::class);
 
         $result = $this->runnersPool->get($route->customRunner())->runCore($routeData, $route);
+
+        gc_collect_cycles();
 
         return new ESBJsonResponse(body: $result->targetResponse()->content, statusCode: $result->targetResponse()->statusCode);
     }
