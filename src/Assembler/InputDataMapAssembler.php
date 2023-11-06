@@ -18,6 +18,7 @@ class InputDataMapAssembler
             $this->buildRow($row['data']),
             $row['headers'] ?? [],
             $row['properties'] ?? [],
+            $row['docs'] ?? [],
         );
     }
 
