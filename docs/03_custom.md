@@ -87,3 +87,50 @@ And after that you can use it in twig template!
     "some_data": "{{ customFormatter(body.id) }}"
 }
 ```
+
+## Runner(Splitter)
+
+If you need to split message to pieces and pass to different systems in one process, or other customization, you can set
+Runner to Route.
+
+ContainerConfig:
+```php
+    'runner' => [
+        'my-runner' => MyCustomRunner::class,
+    ],
+```
+
+RouteConfig:
+```php 
+    "customRunner": "my-runner",
+```
+Example:
+```php
+    class MyCustomRunner implements CoreRunnerInterface
+    {
+        public function __construct(private readonly Core $core)
+        {
+        }
+
+        public function runCore(ProcessingData $data, Route $route) : ProcessingData
+        {
+            foreach ($this->normalizeMessage($data) as $groupedMessage) {
+                $runnerData = $this->core->run($groupedMessage, $route);
+                /** if got failed, return fail response */
+                if (! $runnerData->targetResponse()->isSuccess) {
+                    return $runnerData;
+                }
+            }
+
+            return $data->withTargetResponse(
+                new TargetResponse(['code' => 200, 'message' => 'success'], 0)
+            );
+        }
+
+        /** @psalm-return ProcessingData[] */
+        private function normalizeMessage(ProcessingData $processingData) : array
+        {
+            // will split original message by some rules
+        }
+    }
+```
