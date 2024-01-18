@@ -56,3 +56,29 @@ Fields description
 - postErrorHandlers (array) - set of handlers, runs ager unsuccessful transferring data. Can be empty
 - customRunner (string) - override default core runner. Can be empty
 - description - any text describes our Route. Can be empty
+
+### IntegrationSystem
+
+<p style="width: 300px;">
+    <img src="img/01_integration_system.png" alt="">
+</p>
+
+Is container for settings of request lifecycle. Could be used withing client([EsbClientInterface](../src/Client/EsbClientInterface.php))
+to dynamic resolve host(due to environment) or log response due to settings(for debugging). Could be also useful for
+strategy within custom middleware.
+
+### AuthServicePool
+
+Contains services, implementing [AuthServiceInterface](../src/Auth/AuthServiceInterface.php).
+Route has dedicated config section to match Auth-service.
+
+### ClientPull
+
+Contains services, implementing [EsbClientInterface](../src/Client/EsbClientInterface.php).
+Clients matching is happening by **Route::toSystemDsn**
+
+### QueueProcessing
+
+[QueueFactoryInterface](../src/Queue/QueueFactoryInterface.php), [QueueConsumerInterface](../src/Queue/QueueConsumerInterface.php),
+[QueueProducerInterface](../src/Queue/QueueProducerInterface.php), [QueueConfigInterface](../src/Queue/QueueConfigInterface.php)
+have to be implemented to use [QueueMessageConsumer](../src/QueueMessageConsumer.php)
